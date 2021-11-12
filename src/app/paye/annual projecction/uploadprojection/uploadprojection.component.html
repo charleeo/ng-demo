@@ -1,0 +1,249 @@
+<div class="content-wrapper">
+  <div class="content-header">
+
+  </div>
+  <!-- Content Header (Page header) -->
+
+  <!-- /.content-header -->
+
+  <!-- Main content -->
+  <section class="content" data-select2-id="32">
+    <div class="container-fluid " data-select2-id="31">
+      <flash-messages></flash-messages>
+      <!-- SELECT2 EXAMPLE -->
+      <div class="card card-secondary">
+        <div class="card-header custome">
+          <h3 class="card-title">Upload Form H3</h3>
+
+        </div>
+        <!-- /.card-header -->
+        <div class="card-body">
+          <div class="col-auto mbm-30">
+            <div class="row">
+              <div class="show-record">
+                Show &nbsp;
+                <select class="custom-select custom-select-sm form-control form-control-sm"
+                  (change)="setItemsPerPage(page.value)" #page>
+                  <option [selected]="currentPageLength==10">10</option>
+                  <option [selected]="currentPageLength==30">30</option>
+                  <option [selected]="currentPageLength==50">50</option>
+                  <option [selected]="currentPageLength==100">100</option>
+                  <option [selected]="currentPageLength==500">500</option>
+                  <option [selected]="currentPageLength==1000">1000</option>
+                </select>
+                &nbsp; entries
+              </div>
+            </div>
+          </div>
+          <div class="table-responsive">
+          <table class="table table-bordered table-condensed" *ngIf="businessesData; else content" datatable
+            [dtOptions]="dtOptions" width="100%">
+            <thead>
+              <tr>
+                <th>S/N</th>
+                <th>Business ID</th>
+                <th>Business Name</th>
+                <th>Business Address</th>
+                <th>Corporate ID</th>
+                <th>Corporate Name</th>
+                <th>Employee Count</th>
+                <th>View & Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let mydata of businessesData | paginate: config; index as i">
+                <td>{{ i + 1 }}</td>
+                <td>{{ mydata.business_id }}</td>
+                <td>{{ mydata.business_name | titlecase}}</td>
+                <td>{{ mydata.business_address | titlecase}}</td>
+                <td>{{ mydata.taxpayer_id }}</td>
+                <td>{{ mydata.company_name | titlecase }}</td>
+                <td>{{ mydata.employees_count }}</td>
+                <td>
+                  <button class="btn btn-sm btn-outline-primary" (click)="viewBusiness(corporatemodal, mydata)">
+                    <i class="nav-icon fas fa-upload"></i> Upload File
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          </div>
+          <div id="page_info" class="mt-3 record-show-text-bottom" *ngIf="businessesData">
+            Showing {{(config.currentPage-1) * config.itemsPerPage + 1}} - {{config.currentPage *
+            config.itemsPerPage}} &nbsp;
+            of &nbsp;{{ config.totalItems }} &nbsp; entries
+          </div>
+
+          <div class="pagination paging-pull-right" *ngIf="businessesData">
+            <pagination-controls (pageChange)="pageChange($event)" class="my-pagination mt-2 pagination-server">
+            </pagination-controls>
+          </div>
+
+          <ng-template #content>
+            <p style="color: red;"> </p>
+          </ng-template>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+
+<ng-template #corporatemodal let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Business Details</h4>
+
+    <button type="submit" class="btn btn button-login float-right" style="margin: 10px 10px;"
+      (click)="uploadFile(bulkemployeemodal)">
+      <i class="fas fa-plus-square"></i> Upload File</button>
+
+    <!--<button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+              <span aria-hidden="true">&times;</span>
+            </button> -->
+  </div>
+
+  <div class="modal-body">
+    <div class="container">
+
+      <div class="form-row">
+        <div class="col-md-12">
+          <!-- <img src="assets/dist/img/login-user-img.png" class="rounded float-left" alt="User Image"
+                        style="height:90px; width: 130px;"> -->
+        </div>
+      </div>
+
+      <form [formGroup]="corporateForm">
+        <div class="form-row">
+          <div class="form-group col-md-3">
+            <label for="businessName" class="input-label pull-left">Business Name
+            </label>
+            <input type="text" formControlName="businessName" class="form-control" id="businessName"
+                placeholder="Business Name" [attr.disabled]="true"
+                [ngClass]="{ 'is-invalid': submitted &amp;&amp; corporateForm.controls.businessName.errors }" />
+
+            <div *ngIf="submitted &amp;&amp; corporateForm.controls.businessName.errors" class="text-danger">
+            </div>
+        </div>
+
+        <div class="form-group col-md-3">
+            <label for="businessID" class="input-label pull-left">Business ID
+            </label>
+            <input type="text" formControlName="businessID" class="form-control" id="businessID"
+                [attr.disabled]="true" placeholder="Business ID"
+                [ngClass]="{ 'is-invalid': submitted &amp;&amp; corporateForm.controls.businessID.errors }" />
+            <div *ngIf="submitted &amp;&amp; corporateForm.controls.businessID.errors" class="text-danger">
+            </div>
+        </div>
+
+        <div class="form-group col-md-3">
+            <label for="companyName" class="input-label pull-left">Company Name
+            </label>
+            <input type="text" formControlName="companyName" class="form-control" id="companyName"
+                placeholder="Company Name" [attr.disabled]="true"
+                [ngClass]="{ 'is-invalid': submitted &amp;&amp; corporateForm.controls.companyName.errors }" />
+
+            <div *ngIf="submitted &amp;&amp; corporateForm.controls.companyName.errors" class="text-danger">
+            </div>
+        </div>
+        
+        <div class="form-group col-md-3">
+            <label for="companyID" class="input-label pull-left">Company ID
+            </label>
+            <input type="text" formControlName="companyID" class="form-control" id="companyID"
+                placeholder="Company ID" [attr.disabled]="true"
+                [ngClass]="{ 'is-invalid': submitted &amp;&amp; corporateForm.controls.companyID.errors }" />
+            <div *ngIf="submitted &amp;&amp; corporateForm.controls.companyID.errors" class="text-danger">
+           
+            </div>
+        </div>
+        </div>
+      </form>
+
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-dark button-login" (click)="modal.close('Save click')">Ok</button>
+  </div>
+</ng-template>
+
+<ng-template #bulkemployeemodal let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Upload Annual Projection</h4>
+
+    <!--<button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+              <span aria-hidden="true">&times;</span>
+            </button> -->
+  </div>
+
+  <div class="modal-body">
+    <div class="container">
+
+      <div class="form-row">
+        <div class="col-md-12">
+          <!-- <img src="assets/dist/img/login-user-img.png" class="rounded float-left" alt="User Image"
+                            style="height:90px; width: 130px;"> -->
+        </div>
+      </div>
+
+      <!-- <div class="alert alert-success" role="alert" *ngIf="isResponse==1">
+        {{isMessage}}
+      </div>
+
+      <div class="alert alert-danger" role="alert" *ngIf="isError==1">
+        {{isMessage}}
+      </div> -->
+
+      <form [formGroup]="myForm" (ngSubmit)="submit()">
+        <div class="form-row">
+          <div class="form-group col-md-6">
+            <label for="myfile">Select File to Upload</label>
+
+            <div class="custom-file">
+              <input formControlName="myfile" id="myfile" type="file" class="custom-file-input"
+                (change)="onFileChange($event)" accept=".xls,.xlsx"
+                [ngClass]="{ 'is-invalid': submitted && myForm.controls.myfile.errors || invalidFileType }">
+              <label class="custom-file-label" for="customFile">{{filePath == null ? 'Choose file (xlsx or xls)' : filePath}}</label>
+            </div>
+
+            <div *ngIf="submitted &amp;&amp; f.myfile.touched && f.myfile.invalid" class="text-danger">
+              <div *ngIf="f.myfile.errors.required">File is required.</div>
+            </div>
+
+            <div *ngIf="invalidFileType" class="text-danger">
+              <div>Invalid file format.</div>
+          </div>
+
+          </div>
+          <div class="form-group col-md-4 ml-5">
+            <label for="year">Projection Year<sup class="ml-1 font-wegiht-bold text-danger">*</sup></label>
+            <input type="text" pattern="[^\s]+" formControlName="year" maxlength="4" class="form-control"
+              placeholder="Projection Year Eg: 2019" [ngClass]="{ 'is-invalid': submitted &amp;&amp; f.year.errors }" />
+            <div *ngIf="submitted &amp;&amp; f.year.errors" class="text-danger">
+              <div *ngIf="f.year.errors.required">Projection Year is
+                required</div>
+              <div *ngIf="f.year.errors.minlength">Projection Year must
+                be at least 4 characters long.</div>
+              <div *ngIf="f.year.errors.maxLength">Projection Year must
+                be 4 characters long.</div>
+              <div *ngIf="f.year.errors.pattern">Projection Year must be
+                Number Only</div>
+            </div>
+          </div>
+
+        </div>
+
+        <button type="submit" [disabled]="file==null " class="btn btn button-login">Upload File</button>
+      </form>
+
+      <div class="login-remeber">
+        <a href="{{sample_file}}" target="_blank">
+          Download Annual Projection template here</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-dark button-login" (click)="modal.close('Save click')">Ok</button>
+  </div>
+</ng-template>

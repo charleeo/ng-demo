@@ -1,0 +1,261 @@
+<div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Link Taxpayer</h4>
+
+    <div *ngIf="showSearchTaxpayerButton">
+        <button type="button" class="btn btn button-login float-right" style="margin: 10px 0px;"
+            (click)="showSearchTaxpayerModal(searchtaxpayermodal)">Search Taxpayer</button>
+    </div>
+</div>
+
+<div class="modal-body">
+    <div class="container">
+        <form [formGroup]="linkTaxpayerForm" (ngSubmit)="onSubmitLinkTaxpayer(linkTaxpayerForm.value)">
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="taxpayerTypeId" class="input-label pull-left">Select Taxpayer Type<sup
+                            class=" font-wegiht-bold text-danger">*</sup>
+                    </label>
+                    <select name="taxpayerTypeId" formControlName="taxpayerTypeId" id="taxpayerTypeId"
+                        class="form-control" #linkTaxpayerTypeSelect [attr.disabled]="disableTaxpayerFormControl"
+                        (change)="onLinkTaxpayerTypeSelect(linkTaxpayerTypeSelect.value)"
+                        [ngClass]="{ 'is-invalid': submitted &amp;&amp; linkTaxpayerForm.controls.taxpayerTypeId.errors }">
+                        <option value="">Select Taxpayer Type</option>
+                        <option *ngFor="let taxpayerType of taxpayerTypes" [value]="taxpayerType.name">
+                            {{ taxpayerType.name }}
+                        </option>
+                    </select>
+                    <div *ngIf="submitted &amp;&amp; linkTaxpayerForm.controls.taxpayerTypeId.errors"
+                        class="text-danger">
+                        <div *ngIf="linkTaxpayerForm.controls.taxpayerTypeId.errors.required">Taxpayer Type is required
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group col-md-6">
+                    <label for="taxpayerRoleId" class="input-label pull-left">Taxpayer Role<sup
+                            class=" font-wegiht-bold text-danger">*</sup>
+                    </label>
+                    <select name="taxpayerRoleId" formControlName="taxpayerRoleId" id="taxpayerRoleId" #linkTaxpayerRoleSelect
+                        class="form-control" (change)="onLinkTaxpayerRoleSelect(linkTaxpayerRoleSelect.value)" [attr.disabled]="disableTaxpayerFormControl"
+                        [ngClass]="{ 'is-invalid': submitted &amp;&amp; linkTaxpayerForm.controls.taxpayerRoleId.errors }">
+                        <option value="">Select Taxpayer Role</option>
+                        <option *ngFor="let taxpayerRole of taxpayerRoles" [value]="taxpayerRole?.id">
+                            {{ taxpayerRole?.name }}
+                        </option>
+                    </select>
+                    <div *ngIf="submitted &amp;&amp; linkTaxpayerForm.controls.taxpayerRoleId.errors"
+                        class="text-danger">
+                        <div *ngIf="linkTaxpayerForm.controls.taxpayerRoleId.errors.required">Taxpayer Role is required
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="taxpayerName" class="input-label pull-left">Taxpayer Name<sup
+                            class=" font-wegiht-bold text-danger">*</sup>
+                    </label>
+                    <input type="text" formControlName="taxpayerName" class="form-control" id="taxpayerName"
+                        placeholder="Taxpayer Name" [attr.disabled]="true"
+                        [ngClass]="{ 'is-invalid': submitted &amp;&amp; linkTaxpayerForm.controls.taxpayerName.errors }" />
+                    <div *ngIf="submitted &amp;&amp; linkTaxpayerForm.controls.taxpayerName.errors" class="text-danger">
+                        <div *ngIf="linkTaxpayerForm.controls.taxpayerName.errors.required">Taxpayer Name is required,
+                            use the 'Search Taxpayer' button
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn button-login">
+                Link Taxpayer
+            </button>
+
+        </form>
+    </div>
+</div>
+
+<ng-template #searchtaxpayermodal let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">Search Taxpayer</h4>
+
+        <div>
+            <button *ngIf="showCreateTaxpayerButton" type="button" class="btn btn button-login float-right"
+                style="margin: 10px 10px;" (click)="showCreateTaxpayerModal(createtaxpayermodal)">Create
+                Taxpayer</button>
+        </div>
+    </div>
+
+    <div class="modal-body">
+        <div class="container">
+            <form [formGroup]="searchTaxpayerForm" (ngSubmit)="onSubmitSearchTaxpayer(searchTaxpayerForm.value)">
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="taxpayerName" class="input-label pull-left">Taxpayer Name<sup
+                                class=" font-wegiht-bold text-danger">*</sup>
+                        </label>
+                        <input type="text" formControlName="taxpayerName" class="form-control" id="taxpayerName"
+                            placeholder="Taxpayer Name" maxlength="40"
+                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; searchTaxpayerForm.controls.taxpayerName.errors }" />
+                       
+                        <div *ngIf="submitted &amp;&amp; searchTaxpayerForm.controls.taxpayerName.errors" class="text-danger">
+                            <div *ngIf="searchTaxpayerForm.controls.taxpayerName.errors.required">Taxpayer Name is required
+                            </div>
+                            <div *ngIf="searchTaxpayerForm.controls.taxpayerName.errors.pattern">Only Alphanumeric
+                                Characters
+                                allowed</div>
+                            <div *ngIf="searchTaxpayerForm.controls.taxpayerName.errors.minlength">Taxpayer Name
+                                cannot be less than 3 characters</div>
+                            <div *ngIf="searchTaxpayerForm.controls.taxpayerName.errors.maxlength">Taxpayer Name can not
+                                exceed
+                                40 characters</div>
+                        </div>
+                    </div>
+                
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <button type="submit" class="btn btn button-login">
+                            Search Taxpayer
+                        </button>
+                    </div>
+                </div>
+
+                <!-- <button type="submit" class="btn btn button-login">
+                        <i class="far fa-save"></i> Link Asset
+                    </button> -->
+            </form>
+        </div>
+
+        <div class="container">
+            <div *ngIf="corporatesData.length > 0;">
+                <h6 class="text-center">LIST OF CORPORATES</h6>
+                <table class="table table-bordered table-condensed" datatable *ngIf="corporatesData;"
+                    [dtOptions]="dtOptions" width="100%">
+                    <thead>
+                        <tr>
+                            <th>S/N</th>
+                            <th>Company Name</th>
+                            <th>Tax Payer ID</th>
+                            <th>Industry Sector</th>
+                            <!-- <th>Indusstry Sub Sector</th>                         -->
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let mydata of corporatesData; index as i">
+                            <td>{{ i + 1 }}</td>
+                            <td>{{ mydata.company_name }}</td>
+                            <td>{{ mydata.taxpayer_id }}</td>
+
+                            <td>{{ mydata.industry_sector_name }}</td>
+                            <!-- <td>{{ mydata.industry_subsector_name }}</td> -->
+                            <td>
+                                <button class="btn btn-sm btn-outline-primary" (click)="selectCorporate(mydata)">
+                                    Select</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div *ngIf="individualsData.length > 0;">
+                <h6 class="text-center">LIST OF INDIVIDUALS</h6>
+                <table class="table table-bordered table-condensed" datatable *ngIf="individualsData;" [dtOptions]="dtOptions"
+                    width="100%">
+                    <thead>
+                        <tr>
+                            <th>S/N</th>
+                            <th>Tax Payer Name</th>
+                            <th>Tax Payer ID</th>
+                            <th>Phone Number</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let mydata of individualsData; index as i">
+                            <td>{{ i + 1 }}</td>
+                            <td>{{ mydata.first_name | titlecase }} {{ mydata.surname | titlecase }}</td>
+                            <td>{{ mydata.taxpayer_id }}</td>
+                            <td>{{ mydata.phone }}</td>
+                            <td>
+                                <button class="btn btn-sm btn-outline-primary" (click)="selectIndividual(mydata)">
+                                    Select</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button type="button" class="btn btn-outline-dark button-login" (click)="modal.close('Save click')">Ok</button>
+    </div>
+</ng-template>
+
+
+<ng-template #createtaxpayermodal let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">Add New Taxpayer</h4>
+    </div>
+
+    <div class="modal-body">
+        <div class="container">
+            <form [formGroup]="linkTaxpayerForm">
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="taxpayerTypeId" class="input-label pull-left">Select Taxpayer Type<sup
+                                class=" font-wegiht-bold text-danger">*</sup>
+                        </label>
+                        <select type="text" name="taxpayerTypeId" formControlName="taxpayerTypeId" id="taxpayerTypeId" [attr.disabled]="true"
+                            #selectTaxpayerType (change)="onTaxpayerTypeChange(selectTaxpayerType.value)" class="form-control"
+                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; linkTaxpayerForm.controls.taxpayerTypeId.errors }">
+                            <option value="">Select Taxpayer Type</option>
+                            <option *ngFor="let taxpayerType of taxpayerTypes" [value]="taxpayerType.name">
+                                {{ taxpayerType.name }}
+                            </option>
+                        </select>
+                        <div *ngIf="submitted &amp;&amp; linkTaxpayerForm.controls.taxpayerTypeId.errors" class="text-danger">
+                            <div *ngIf="linkTaxpayerForm.controls.taxpayerTypeId.errors.required">Asset Type is required</div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+    <div style="min-height: 200px;">
+        <app-addcorporate *ngIf="corporateTaxpayer" [modalRef]="createTaxpayerModalRef" [businessId]="businessId" [buildingId]="buildingId" [landId]="landId"
+            [taxPayerRoleId]="selectedTaxpayerRoleId" (reloadLinkedTaxpayers)="getUpdatedLinkedTaxpayers($event)" [corporateId]="null"
+            [showSaveButton]="true"></app-addcorporate>
+
+        <app-addindividual *ngIf="individualTaxpayer" [modalRef]="createTaxpayerModalRef" [businessId]="businessId" [buildingId]="buildingId" [landId]="landId"
+            [taxPayerRoleId]="selectedTaxpayerRoleId" (reloadLinkedTaxpayers)="getUpdatedLinkedTaxpayers($event)" [individualId]="null"
+            [showSaveButton]="true"></app-addindividual>
+
+    </div>
+
+    <div class="modal-footer-1">
+        <div *ngIf="showFooterNote" class="note-1 float-left">
+            <span>
+                <strong>** Note:</strong> This field is required as either CAC Number or TIN
+                Number or you can provide both to proceed further.
+            </span>
+        </div>
+        
+        <div *ngIf="!showFooterNote" class="note-1 float-left">
+            <span>
+                <strong>** Note:</strong> This field is required as either Phone Number or JBT-TIN Number or NIN Number or BVN Number
+                or you can provide all to proceed further.
+            </span>
+        </div>
+
+        <button type="button" class="btn btn-outline-dark button-login" (click)="modal.close('Save click')">Ok</button>
+    </div>
+</ng-template>

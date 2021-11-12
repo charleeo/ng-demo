@@ -1,0 +1,91 @@
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+  
+    </div>
+    <!-- /.content-header -->
+  
+    <!-- Main content -->
+    <section class="content" data-select2-id="32">
+      <div class="container-fluid" data-select2-id="31">
+
+        
+        <!-- SELECT2 EXAMPLE -->
+        <div class="card card-secondary">
+          <div class="card-header custome">
+            <h3 class="card-title">Display All Notification</h3>
+          </div>
+          <!-- /.card-header -->
+          <div class="card-body">
+  
+            <div class="page-header">
+              <h3> </h3>
+            </div>
+           
+            <table class="table table-bordered table-condensed" *ngIf="apidata; else content" datatable [dtOptions]="dtOptions"  width="100%">
+                <thead>
+                  <tr>
+                    <th>S/N</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Application Name</th>
+                    <th>Message</th>
+                   
+                  </tr>
+                </thead>
+                <tbody>
+                    
+                  <tr *ngFor="let mydata of apidata ; index as i">
+                    <td>{{i+1}}</td>
+                    <td>{{ mydata.email}}</td>
+                    <td>{{ mydata.phone}}</td>
+                    <td>{{ mydata.application_name}}</td>
+                    <th><button class="btn btn-sm btn-outline-primary" (click)="open(mymodal, mydata.id)"><i class="nav-icon fas fa-eye"></i> VIEW MESSAGE</button></th>
+    
+                  </tr>
+                </tbody>
+              </table>
+  
+              <ng-template #content > <!-- <p style="color: red;" >No Record Available... </p>--></ng-template>
+  
+  
+          </div>
+          <!-- /.card-body -->
+          <div class="card-footer">
+  
+          </div>
+        </div>
+  
+      </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+  </div>
+ 
+
+  <ng-template #mymodal let-modal>
+    <div class="modal-header">
+      <h4 class="modal-title" id="modal-basic-title">User Message</h4>
+      <!--<button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')"> 
+        <span aria-hidden="true">&times;</span>
+      </button>-->
+    </div>
+    <div class="modal-body">
+      
+        <div class="container">          
+            <table class="table table-bordered">
+             
+                <tr>
+                  <td>{{apiDataById.message}}</td>
+                </tr>
+                
+             
+            </table>
+
+          </div>
+
+
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-outline-dark button-login" (click)="modal.close('Save click')">Ok</button>
+    </div>
+  </ng-template>

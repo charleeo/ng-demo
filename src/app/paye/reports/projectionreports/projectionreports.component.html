@@ -1,0 +1,184 @@
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+
+    </div>
+    <!-- /.content-header -->
+
+    <!-- Main content -->
+    <section class="content" data-select2-id="32">
+        <div class="container-fluid" data-select2-id="31">
+
+            <!-- SELECT2 EXAMPLE -->
+            <div class="card card-secondary">
+                <div class="card-header custome">
+                    <h3 class="card-title font-12-sa">List of Projections</h3>
+                    <a [routerLink]="['/viewreports']" class="btn btn-sm role float-right">
+                        <i class="fas fa-reply-all"></i> Back
+                    </a>
+                </div>
+                <!-- /.card-header -->
+                <div class="card">
+                    <div class="card-body">
+                        <form [formGroup]="searchForm" (ngSubmit)="onSubmitSearch(searchForm.value)">
+                            <div class="form-row">
+
+                                <div class="col-12 col-sm-6 col-md-6 col-lg-2 mt-1">
+                                    <input type="text" formControlName="business_name" class="form-control font-12"
+                                        id="business_name" maxlength="25" placeholder="Business Name"
+                                        [ngClass]="{ 'is-invalid': submitted &amp;&amp; searchForm.controls.business_name.errors }" />
+                                    <div *ngIf="submitted &amp;&amp; searchForm.controls.taxYear.errors" class="text-danger">
+                                        <div *ngIf="searchForm.controls.business_name.errors.pattern"></div>
+                                    </div>
+                                  </div>
+    
+                                  <div class="col-12 col-sm-6 col-md-6 col-lg-2 mt-1">
+                                    <input type="text" formControlName="business_id" class="form-control font-12"
+                                        id="business_id" maxlength="25" placeholder="Business ID"
+                                        [ngClass]="{ 'is-invalid': submitted &amp;&amp; searchForm.controls.business_name.errors }" />
+                                    <div *ngIf="submitted &amp;&amp; searchForm.controls.taxYear.errors" class="text-danger">
+                                        <div *ngIf="searchForm.controls.business_id.errors.pattern"></div>
+                                    </div>
+                                  </div>
+
+                                  
+                                <div class="col-12 col-sm-6 col-md-6 col-lg-2 mt-1">
+                                    <input type="text" formControlName="companyName" class="form-control font-12" id="companyName"
+                                        placeholder="Company Name"
+                                        [ngClass]="{ 'is-invalid': submitted &amp;&amp; searchForm.controls.companyName.errors }" />
+                
+                                </div>
+                
+                                <div *ngIf="showTaxOffice" class=" col-12 col-sm-6 col-md-6 col-lg-2 mt-1">
+                                    <select (change)="taxOfficeChanged($event.target.value)" type="text" name="taxOfficeID"
+                                        formControlName="taxOfficeID" id="taxOffice" class="form-control font-12">
+                                        <option disabled selected value="">Tax Office</option>
+                                        <option *ngFor="let taxTaxOffice of taxTaxOffices" [value]="taxTaxOffice.id">
+                                            {{ taxTaxOffice.name }}
+                                        </option>
+                                    </select>
+                                </div>
+                
+                                <div class="col-12 col-sm-6 col-md-6 col-lg-2 mt-1">
+                                    <input type="text" formControlName="taxYear" class="form-control font-12" id="taxYear" maxlength="4"
+                                        placeholder="Tax Year Eg: 2019"
+                                        [ngClass]="{ 'is-invalid': submitted &amp;&amp; searchForm.controls.taxYear.errors }" />
+                                    <div *ngIf="submitted &amp;&amp; searchForm.controls.taxYear.errors" class="text-danger">
+                                        <div *ngIf="searchForm.controls.taxYear.errors.pattern">Tax Year must be a valid
+                                            year</div>
+                                        <div *ngIf="searchForm.controls.taxYear.errors.minlength">Tax Year must be at least
+                                            4 digits</div>
+                                        <div *ngIf="searchForm.controls.taxYear.errors.maxlength">Tax Year must not exceed 4
+                                            digits</div>
+                                    </div>
+                                </div>
+                
+                                
+                
+                                <div class="col-12 col-sm-6 col-md-6 col-lg-3 mt-1">
+                                    <div class="form-group">
+                                        <div class="input-group">
+                                            <input class="form-control icon-cal font-12" type="text" formControlName="daterangeInput"
+                                                placeholder="Date Range" daterangepicker [options]="options"
+                                                (selected)="selectedDate($event, daterange)" />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-12 col-sm-6 col-md-6 col-lg-2 mt-2">
+                                    <select type="text" name="filedFromId" formControlName="filedFromId" id="filedFromId"
+                                        class="form-control font-12"
+                                        [ngClass]="{ 'is-invalid': submitted &amp;&amp; searchForm.controls.filedFromId.errors }">
+                                        <option value="">Filed From</option>
+                                        <option value="1">Self Service Portal</option>
+                                        <option value="2">Admin Portal</option>
+                                    </select>
+                                </div>
+                
+                                <div class="col-12 col-sm-6 col-md-6 col-lg-3 mt-2">
+                                    <button type="submit" class="btn btn-primary font-12"><i class="fas fa-search"></i>
+                                        Search</button>
+                                    <button type="button" class="btn btn-primary font-12" style="margin-left: 10px;"
+                                        (click)="clearSearch()"><i class="fas fa-sync-alt"></i> Clear</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="card-body table-responsive">
+                    <div class="col-auto mbm-30">
+                        <div class="row" *ngIf="projectionsApiData">
+                          <div class="show-record">
+                            Show &nbsp;
+                            <select class="custom-select custom-select-sm form-control form-control-sm"
+                              (change)="setItemsPerPage(page.value)" #page>
+                              <option [selected]="currentPageLength==10">10</option>
+                              <option [selected]="currentPageLength==30">30</option>
+                              <option [selected]="currentPageLength==50">50</option>
+                              <option [selected]="currentPageLength==100">100</option>
+                              <option [selected]="currentPageLength==500">500</option>
+                              <option [selected]="currentPageLength==1000">1000</option>
+                            </select>
+                            &nbsp; entries
+                          </div>
+                        </div>
+                      </div>
+
+                    <table class="table table-bordered table-condensed " *ngIf="projectionsApiData;" datatable [dtOptions]="dtOptions" width="100%">
+                        <thead>
+                            <tr>
+                                <th>S/N</th>
+                                <th>Business ID</th>
+                                <th>Business Name</th>
+                                <th>Projection ID</th>
+                                <th>Company Name</th>
+                                <th *ngIf="showTaxOffice">Tax Office</th>
+                                <th>Tax Payer ID</th>
+                                <th>Tax Year</th>
+                                <th>Expected Annual Tax(₦)</th>
+                                <th>Date Filed</th>
+                                <th>Filed From</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let mydata of projectionsApiData | paginate: config; index as i">
+                                <td>{{config.itemsPerPage * (config.currentPage - 1) + i + 1}}</td>
+                                <td>{{ mydata.business_id }}</td>
+                                <td>{{ mydata.business_name }}</td>
+
+                                <td>{{ mydata.annual_projection_id }}</td>
+                                <td>{{ mydata.company_name | titlecase }}</td>
+                                <td *ngIf="showTaxOffice">{{ mydata.tax_office | titlecase }}</td>
+                                <td>{{ mydata.taxpayer_id }}</td>
+
+                                <td>{{ mydata.projection_year }}</td>
+                                <td>{{ mydata.expected_annual_tax | number }}</td>
+                                <td>{{ mydata.date_filed | date }}</td>
+                                <td>{{ mydata.app_id == 1 ? "Self Service Portal" : "Admin Portal" }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div id="page_info" class="mt-3 record-show-text-bottom" *ngIf="projectionsApiData">
+                        Showing {{(config.currentPage-1) * config.itemsPerPage + 1}} - {{config.currentPage *
+                        config.itemsPerPage}}
+                        of {{ config.totalItems }} entries
+                    </div>
+            
+                    <div class="pagination paging-pull-right" *ngIf="projectionsApiData">
+                        <pagination-controls (pageChange)="pageChange($event)"
+                            class="my-pagination mt-2 pagination-server">
+                        </pagination-controls>
+                    </div>
+                </div>
+                <!-- /.card-body -->
+                <div class="card-footer">
+
+                </div>
+            </div>
+
+        </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+</div>

@@ -1,0 +1,86 @@
+<div class="container-fluid">
+   <div class="row">
+     <div class="col-lg-12">
+       <nav class="row main-header navbar navbar-expand navbar-white navbar-light" style="margin-left:-15px;padding: 0px 0px 0px 18px;">
+             <div class="col-md-10 col-xs-12"><a [routerLink]="['/']"><img src="assets/dist/img/logo-header.png" height="50px"></a></div>
+             <div class="col-md-2 col-xs-12">        
+               <div class="ml-auto color-white pull-right">
+                 <a [routerLink]="['/login']" >
+                   <i class="fas fa-sign-in-alt"></i> Sign In
+                 </a>
+                 <a [routerLink]="['/faq']">
+                   <i class="far fa-comments"></i> FAQ's
+                 </a>
+               </div>
+             </div>
+         </nav>
+       </div>
+   </div>
+ </div>
+
+
+<div class="row m-0">
+   <div class="col-sm-4 left-side p-0 side-center hide-login-img">
+      <div class="mx-auto">
+         <img src="assets/dist/img/login-logo.png" class="mx-auto img-fluid" alt="">
+      </div>
+   </div>
+   <div class="col-sm-8 p-0">
+      <div class="login-page">
+
+         <h3 class="mb-4 mt-4">Frequently Asked Questions</h3>
+
+         <div class="col-md-12">
+            <div class="login-logo">
+               <!--<img src="assets/dist/img/login-logo.png" alt="myimage"> -->
+            </div>
+            <!-- /.login-logo -->
+            <div class="card">
+               <div class="container my-4">
+                  <div class="container my-4 div-scroll">
+                     <!--Accordion wrapper-->
+                     <div class="accordion md-accordion" id="accordionEx" role="tablist" aria-multiselectable="true">
+                        <!-- Accordion card -->
+                        <div *ngFor="let category of faqCategories;" id="accordionEx1">
+                           <a data-toggle="collapse" data-parent="#accordionEx"
+                              href="#collapseCat{{category.categoryId}}" aria-expanded="false"
+                              aria-controls="collapseCat" class="collapsed color-white">
+                              <h4 class="faq-bg-yellow" style="padding-left: 25px;"><b>{{ category.categoryName }}</b>
+                              </h4>
+                           </a>
+
+                           <div id="collapseCat{{category.categoryId}}" class="collapse" role="tabpanel"
+                              aria-labelledby="" data-parent="#accordionEx">
+
+                              <div class="card" *ngFor="let mydata of category.categoryRecords; index as i">
+                                 <!-- Card header -->
+                                 <div class="card-header faq-bg-green" role="tab" id="headingOne">
+                                    <a data-toggle="collapse" data-parent="#accordionEx1" href="#collapseOne{{mydata.id}}" aria-expanded="false"
+                                       aria-controls="collapseOne" class="collapsed color-white">
+                                       <h5 class="mb-0" [innerHTML]="mydata.question">
+                                          <i class=" float-right fas fa-angle-down rotate-icon"></i>
+                                       </h5>
+                                    </a>
+                                 </div>
+                                 <!-- Card body -->
+                                 <div id="collapseOne{{mydata.id}}" data-toggle="collapse" class="collapse" role="tabpanel"
+                                    aria-labelledby="headingOne" data-parent="#headingOne">
+                                    <div class="card-body" [innerHTML]="mydata.answer" style="font-size: 16px !important;color: #919291;">
+                                    </div>
+                                 </div>
+                              </div>
+
+                           </div>
+
+                        </div>
+
+                     </div>
+                     <!-- Accordion wrapper -->
+                  </div>
+               </div>
+
+               <!-- /.login-card-body -->
+            </div>
+         </div>
+      </div>
+   </div>

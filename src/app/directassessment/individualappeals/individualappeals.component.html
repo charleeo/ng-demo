@@ -1,0 +1,869 @@
+<div class="content-wrapper">
+  <!-- Content Header (Page header) -->
+  <div class="content-header">
+
+  </div>
+  <!-- /.content-header -->
+
+  <!-- Main content -->
+  <section class="content" data-select2-id="32">
+    <div class="container-fluid" data-select2-id="31">
+      <flash-messages></flash-messages>
+      <!-- SELECT2 EXAMPLE -->
+      <div class="card card-secondary">
+        <div class="card-header custome">
+          <h3 class="card-title">Objections</h3>
+
+        </div>
+        <!-- /.card-header -->
+        <div class="card">
+          <div class="card-body">
+            <form [formGroup]="searchForm" (ngSubmit)="onSubmitSearch(searchForm.value)">
+              <div class="form-row">
+                <div class="col-12 col-sm-6 col-md-6 col-lg-2 mt-1">
+                  <input type="text" formControlName="taxYear" class="form-control font-12" id="taxYear" maxlength="4"
+                    placeholder="Tax Year Eg: 2019"
+                    [ngClass]="{ 'is-invalid': submitted &amp;&amp; searchForm.controls.taxYear.errors }" />
+                  <div *ngIf="submitted &amp;&amp; searchForm.controls.taxYear.errors" class="text-danger">
+                    <div *ngIf="searchForm.controls.taxYear.errors.pattern">Tax Year must be a valid
+                      year</div>
+                    <div *ngIf="searchForm.controls.taxYear.errors.minlength">Tax Year must be at
+                      least 4 digits</div>
+                    <div *ngIf="searchForm.controls.taxYear.errors.maxlength">Tax Year must not
+                      exceed 4 digits</div>
+                  </div>
+                </div>
+
+                <div class="col-12 col-sm-6 col-md-6 col-lg-2 mt-1">
+                  <select type="text" name="objectionFromId" formControlName="objectionFromId" id="objectionFromId"
+                    class="form-control font-12"
+                    [ngClass]="{ 'is-invalid': submitted &amp;&amp; searchForm.controls.objectionFromId.errors }">
+                    <option value="">Objection From</option>
+                    <option value="3">Self Service Portal</option>
+                    <option value="2">Admin Portal</option>
+                  </select>
+                </div>
+
+                <div class="col-12 col-sm-6 col-md-6 col-lg-2 mt-1">
+                  <select type="text" name="approvalStatusId" formControlName="approvalStatusId" id="approvalStatusId"
+                    class="form-control font-12"
+                    [ngClass]="{ 'is-invalid': submitted &amp;&amp; searchForm.controls.approvalStatusId.errors }">
+                    <option value="">Approval Status</option>
+                    <option value="0">In Progress</option>
+                    <option value="1">Approved</option>
+                    <option value="2">Rejected</option>
+                  </select>
+                </div>
+                <div class="col-12 col-sm-6 col-md-6 col-lg-3 mt-1">
+                  <div class="form-group">
+                    <div class="input-group">
+                      <input class="form-control icon-cal font-12" type="text" formControlName="daterangeInput"
+                        placeholder="Date From - Date To" daterangepicker [options]="options"
+                        (selected)="selectedDate($event, daterange)" />
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-12 col-sm-6 col-md-6 col-lg-3 mt-1">
+                  <button type="submit" class="btn btn-primary font-12"><i class="fas fa-search"></i>
+                    Search</button>
+                  <button type="button" class="btn btn-primary font-12" style="margin-left: 10px;"
+                    (click)="clearSearch()"><i class="fas fa-sync-alt"></i> Clear</button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+
+
+        <div class="card-body">
+          <div class="col-auto mbm-30">
+            <div class="row" *ngIf="appealsData">
+              <div class="show-record">
+                Show &nbsp;
+                <select class="custom-select custom-select-sm form-control form-control-sm"
+                  (change)="setItemsPerPage(page.value)" #page>
+                  <option [selected]="currentPageLength==10">10</option>
+                  <option [selected]="currentPageLength==30">30</option>
+                  <option [selected]="currentPageLength==50">50</option>
+                  <option [selected]="currentPageLength==100">100</option>
+                  <option [selected]="currentPageLength==500">500</option>
+                  <option [selected]="currentPageLength==1000">1000</option>
+                </select>
+                &nbsp; entries
+              </div>
+            </div>
+          </div>
+          <div class="table-responsive">
+            <table
+              class="table table-bordered table-condensed table-responsive-sm table-responsive-md table-responsive-lg table-responsive-xl"
+              *ngIf="appealsData;" datatable [dtOptions]="dtOptions" width="100%">
+              <thead>
+                <tr>
+                  <th>S/N</th>
+                  <th>Tax Payer Name</th>
+                  <th>Tax Payer ID</th>
+                  <th>Amount (₦)</th>
+                  <th>Tax Year</th>
+                  <th>Objection Date</th>
+                  <th>Objection From</th>
+
+                  <th>Approval Status</th>
+                  <th style="width: 10%">View</th>
+                  <th *ngIf="editorRole" style="width: 10%">Update Assessment</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let mydata of appealsData | paginate: config; index as i">
+                  <td>{{config.itemsPerPage * (config.currentPage - 1) + i + 1}}</td>
+                  <td>{{ mydata.first_name }} {{ mydata.surname }}</td>
+                  <td>{{ mydata.taxpayer_id }}</td>
+
+                  <td>{{ mydata.amount_due | number }}</td>
+                  <td>{{ getTaxYear(mydata.due_date) }}</td>
+                  <td>{{ mydata.created_at | date:'dd MMM yyyy' }}</td>
+                  <td>{{ mydata.application_id == 2 ? "Admin Portal" : "Self Service Portal" }}</td>
+
+                  <td>
+                    <p
+                      [ngClass]="{'text-primary': mydata.status == 0, 'text-success': mydata.status == 1, 'text-danger': mydata.status == 2} ">
+                      {{ mydata.status == 0 ? "In Progress" : mydata.status == 1 ? "Approved" : mydata.status == 2 ? "Rejected" : "Invited for Meeting" }}</p>
+                  </td>
+
+                  <td style="width: 10%">
+                    <button class="btn btn-sm btn-outline-primary" (click)="viewAppeal(mymodal, mydata)"><i
+                        class="nav-icon fas fa-eye"></i>
+                    </button>
+                  </td>
+
+                  <td *ngIf="editorRole" style="width: 10%">
+                    <button class="btn btn-sm btn-outline-primary" [disabled]="mydata.status != 1"
+                      (click)="editAppeal(declarationModal, mydata)"><i class="nav-icon fas fa-edit"></i>
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div id="page_info" class="mt-3 record-show-text-bottom" *ngIf="appealsData">
+            Showing {{(config.currentPage-1) * config.itemsPerPage + 1}} - {{config.currentPage *
+                      config.itemsPerPage}} &nbsp;
+            of &nbsp;{{ config.totalItems }} &nbsp; entries
+          </div>
+
+          <div class="pagination paging-pull-right" *ngIf="appealsData">
+            <pagination-controls (pageChange)="pageChange($event)" class="my-pagination mt-2 pagination-server">
+            </pagination-controls>
+          </div>
+
+          <ng-template #content>
+            <p style="color: red;"> </p>
+          </ng-template>
+
+        </div>
+        <!-- /.card-body -->
+        <div class="card-footer">
+
+        </div>
+      </div>
+
+    </div><!-- /.container-fluid -->
+  </section>
+  <!-- /.content -->
+</div>
+
+<ng-template #mymodal let-modal>
+  <div class="modal-header">
+    <span>
+      <h4 class="modal-title" id="modal-basic-title">Objection Details</h4>
+    </span>
+  </div>
+
+  <div class="modal-body">
+    <div class="container">
+      <form [formGroup]="appealForm">
+        <div class="form-row">
+          <div class="form-group col-md-6">
+            <label for="reason">Objection Ground(s)</label>
+            <input type="text" formControlName="reason" class="form-control" [attr.disabled]="true"
+              [ngClass]="{ 'is-invalid': submitted &amp;&amp; appealForm.controls.reason.errors }" />
+            <div *ngIf="submitted &amp;&amp; appealForm.controls.reason.errors" class="text-danger">
+            </div>
+          </div>
+
+          <div class="form-group col-md-6">
+            <label for="dateAppealed">Date Objected</label>
+            <input type="text" formControlName="dateAppealed" class="form-control" [attr.disabled]="true"
+              [ngClass]="{ 'is-invalid': submitted &amp;&amp; appealForm.controls.dateAppealed.errors }" />
+          </div>
+
+        </div>
+
+        <div class="form-row">
+          <div class="form-group col-md-6">
+            <label for="description">Objection Ground(s) Description</label>
+            <textarea type="text" formControlName="description" class="form-control" rows="8" [attr.disabled]="true"
+              [ngClass]="{ 'is-invalid': submitted &amp;&amp; appealForm.controls.description.errors }"></textarea>
+            <div *ngIf="submitted &amp;&amp; appealForm.controls.description.errors" class="text-danger">
+            </div>
+          </div>
+
+          <div class="form-group col-md-6">
+            <label for="">Assessment ID</label>
+            <input type="text" formControlName="assessmentId" class="form-control" [attr.disabled]="true" />
+
+            <div class="mt-3">
+              <table class="table table-bordered table-condensed" *ngIf="fileData?.length > 0 ">
+                <thead>
+                  <tr>
+                    <th>S/N</th>
+                    <th>File name</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody class="file-scroll">
+                  <tr *ngFor="let mydata of fileData; index as i">
+                    <td>{{ i + 1 }}</td>
+                    <td>File {{ i + 1 }}</td>
+                    <td><a class="  text-primary" href="{{mydata.file_url}}" target="_blank">View </a> |
+                      <a class="  text-success" href="{{mydata.file_url}} " download> Download</a>
+                    </td>
+                </tbody>
+              </table>
+
+            </div>
+          </div>
+        
+        </div>
+      </form>
+
+      <div class="row">
+        <div class="col-md-6 mt-4">
+          <form [formGroup]="appealForm">
+            <div class="form-row">
+              <div class="form-group col-md-12">
+                <label for="approvalStatus">Objection Status</label>
+                <input type="text" formControlName="approvalStatus" class="form-control" [attr.disabled]="true"
+                  [ngClass]="{ 'is-invalid': submitted &amp;&amp; appealForm.controls.approvalStatus.errors }" />
+              </div>
+
+              <div class="form-group col-md-12">
+                <label for="comment">Objection Verdict</label>
+                <textarea type="text" formControlName="comment" class="form-control" rows="4" [attr.disabled]="true"
+                  [ngClass]="{ 'is-invalid': submitted &amp;&amp; appealForm.controls.comment.errors }"></textarea>
+                <div *ngIf="submitted &amp;&amp; appealForm.controls.comment.errors" class="text-danger">
+                </div>
+              </div>
+            </div>
+
+          </form>
+        </div>
+
+        <form [formGroup]="inviteForm" (ngSubmit)="onSubmitInvite(inviteForm.value)" class="col-md-6">
+          <div class="invite">
+            <h4>Invite for Meeting</h4>
+            <div class="form-row">
+              <div class="form-group col-md-6">
+                <label for="inviteDate">Date</label>
+                <input type="date" formControlName="inviteDate" class="form-control" (keyup)="caculateInviteDays()" 
+                  [attr.disabled]="showInvite || disableInviteForm"
+                  [ngClass]="{ 'is-invalid': submitted &amp;&amp; inviteForm.controls.inviteDate.errors || inviteDateHigh || inviteDateLow }" />
+                <div *ngIf="submitted &amp;&amp; inviteForm.controls.inviteDate.errors" class="text-danger">
+                  <div *ngIf="inviteForm.controls.inviteDate.errors.required">Invite Date is required
+                  </div>
+                </div>
+                <div *ngIf="inviteDateHigh" class="text-danger">  
+                  Invite Date cannot be more than 90 days
+                </div>
+                <div *ngIf="inviteDateLow" class="text-danger">
+                  Invite Date cannot be less than 1 day
+                </div>
+              </div>
+
+              <div class="form-group col-md-6">
+                <label for="inviteTime">Time (e.g; hh:mm)</label>
+                <input type="text" formControlName="inviteTime" maxlength="5" class="form-control"
+                  [attr.disabled]="showInvite || disableInviteForm"
+                  [ngClass]="{ 'is-invalid': submitted &amp;&amp; inviteForm.controls.inviteTime.errors }" />
+                <div *ngIf="submitted &amp;&amp; inviteForm.controls.inviteTime.errors" class="text-danger">
+                  <div *ngIf="inviteForm.controls.inviteTime.errors.required">Invite Time is required</div>
+                  <div *ngIf="inviteForm.controls.inviteTime.errors.pattern">Invite Time is not valid</div>
+                </div>
+              </div>
+            </div>
+            <div class="form-group ">
+              <label for="inviteMessage">Comments</label>
+              <textarea type="text" formControlName="inviteMessage" class="form-control" rows="3"
+                [attr.disabled]="showInvite || disableInviteForm"
+                [ngClass]="{ 'is-invalid': submitted &amp;&amp; inviteForm.controls.inviteMessage.errors }"></textarea>
+              <div *ngIf="submitted &amp;&amp; inviteForm.controls.inviteMessage.errors" class="text-danger">
+                <div *ngIf="inviteForm.controls.inviteMessage.errors.required">Invite Comment is required
+                </div>
+              </div>
+            </div>
+          </div>
+          <button type="submit" *ngIf="managerRole && !showInvite" class="btn btn button-login"><i class="far fa-"></i>
+            Submit Invite</button>
+        </form>
+      </div>
+
+    </div>
+
+  </div>
+
+  <div class="modal-footer">
+    <!-- <button type="submit" (click)="submitAppeal(submitAppealmodal)" [disabled]="appealSubmitted == 1"
+                class="btn btn button-login"><i class="fas fa-share"></i> Submit Appeal
+            </button> -->
+    <button *ngIf="showRejectAppeal" type="submit" [disabled]="appealValidityStatus || appealApprovalStatus"
+      (click)="rejectAppeal(rejectAppealModal, false)" class="btn btn button-login">
+      <i class="fas fa-thumbs-down"></i> Reject Objection</button>
+    <button *ngIf="showApproveAppeal" type="submit" [disabled]="appealValidityStatus || appealApprovalStatus"
+      (click)="approveAppeal(approveAppealModal, true)" class="btn btn button-login">
+      <i class="fas fa-thumbs-up"></i> Approve Objection</button>
+
+    <button type="button" class="btn btn-outline-dark button-login" (click)="modal.close('Save click')">Ok</button>
+  </div>
+</ng-template>
+
+<ng-template #approveAppealModal let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">{{ appealModalTitle }}</h4>
+  </div>
+
+  <div class="modal-body">
+    <div class="container">
+
+      <div class="form-row">
+        <div class="col-md-12">
+        </div>
+      </div>
+
+      <form [formGroup]="approveAppealForm" (ngSubmit)="onSubmitApproveAppeal(approveAppealForm.value)">
+        <div class="form-row">
+          <div class="col-md-6">
+            <div class="">
+              <input type="radio" class="m-2" [checked]="!incomeChecked" id="previousAssessment"
+                (change)="previous($event)" /><span> Revert to Previous Assessment (₦ {{amountDue}})</span> <br>
+              <input type="radio" class="m-2" [checked]="incomeChecked" id="newIncome"
+                (change)="changed($event)" /><span> Input new Income</span>
+            </div>
+            <div class="form-row" *ngIf="showIncome">
+              <div class="form-group col-md-6">
+                <label for="income">Income (₦)</label>
+                <input type="text" formControlName="income" maxlength="19" (keyup)="calculateTaxdue()"
+                  class="form-control"
+                  [ngClass]="{ 'is-invalid': submitted &amp;&amp; approveAppealForm.controls.income.errors }" />
+                <div *ngIf="submitted &amp;&amp; approveAppealForm.controls.income.errors" class="text-danger">
+                  <div *ngIf="approveAppealForm.controls.income.errors.required">Total Income is required</div>
+                  <div *ngIf="approveAppealForm.controls.income.errors.pattern">Income must be only numeric value</div>
+                </div>
+              </div>
+
+              <div class="form-group col-md-6">
+                <label for="taxDue">Tax Due (₦)</label>
+                <input type="text" formControlName="taxDue" class="form-control" [attr.disabled]="true"
+                  [ngClass]="{ 'is-invalid': submitted &amp;&amp; approveAppealForm.controls.taxDue.errors }" />
+                <div *ngIf="submitted &amp;&amp; approveAppealForm.controls.taxDue.errors" class="text-danger">
+                  <div *ngIf="approveAppealForm.controls.taxDue.errors.required">Tax Due is required</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group col-md-6">
+            <label for="comment">Comment</label>
+            <textarea type="text" formControlName="message" class="form-control" rows="4"
+              [ngClass]="{ 'is-invalid': submitted &amp;&amp; approveAppealForm.controls.message.errors }"></textarea>
+            <div *ngIf="submitted &amp;&amp; approveAppealForm.controls.message.errors" class="text-danger">
+              <div *ngIf="approveAppealForm.controls.message.errors.required">Comment is required</div>
+              <div *ngIf="approveAppealForm.controls.message.errors.pattern">Comment must start with an alphabet</div>
+            </div>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn button-login">
+          <i class="fas fa-thumbs-up"></i> {{ appealModalTitle }}</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-dark button-login" (click)="modal.close('Save click')">Ok</button>
+  </div>
+</ng-template>
+
+<ng-template #rejectAppealModal let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">{{ appealModalTitle }}</h4>
+  </div>
+
+  <div class="modal-body">
+    <div class="container">
+
+      <div class="form-row">
+        <div class="col-md-12">
+        </div>
+      </div>
+
+      <form [formGroup]="approveAppealForm" (ngSubmit)="onSubmitRejectAppeal()">
+        <button type="submit" class="btn btn button-login">
+          <i class="fas fa-thumbs-up"></i> Reject Objection</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-dark button-login" (click)="modal.close('Save click')">Ok</button>
+  </div>
+</ng-template>
+
+<ng-template #declarationModal let-modal>
+  <div class="mt-4">
+    <div class="container-fluid" data-select2-id="31">
+      <!-- SELECT2 EXAMPLE -->
+      <div class="d-flex border mb-5 text-center">
+        <div class="flex-fill border-left pointer" (click)="backToDeclarationForm()"
+          [ngClass]="{'faq-bg-green': incomeView }"><img src="assets/dist/img/icon/icon-9.png" /><br>Income</div>
+        <div class="flex-fill border-left pointer" (click)="backToDeductionForm()"
+          [ngClass]="{'faq-bg-green': deductionView }"><img src="assets/dist/img/icon/icon-10.png" /><br>Deduction</div>
+        <div class="flex-fill border-left pointer" (click)="backToReliefForm()"
+          [ngClass]="{'faq-bg-green': reliefView }"><img src="assets/dist/img/icon/icon-11.png" /><br>Relief</div>
+      </div>
+
+    </div>
+    <div class="card mlr">
+      <!-- /.card-header -->
+      <div class="card-body" *ngIf="incomeView">
+        <form [formGroup]="declarationForm" (ngSubmit)="onSubmitDeclaration(declarationForm.value) ">
+
+          <div class="">
+            <h4 class="mb-4">Earned Income</h4>
+            <div class="form-row">
+              <div class="form-group col-md-4">
+                <label for="businessIncome">Trade Business Income<sup
+                    class="ml-1 font-wegiht-bold text-danger">*</sup></label>
+                <input type="text" formControlName="businessIncome" class="form-control"
+                  placeholder="Trade Business Income" maxlength="19"
+                  [ngClass]="{ 'is-invalid': submitted &amp;&amp; declarationForm.controls.businessIncome.errors }" />
+                <div *ngIf="submitted &amp;&amp; declarationForm.controls.businessIncome.errors" class="text-danger">
+                  <div *ngIf="declarationForm.controls.businessIncome.errors.required">Trade Business Income is
+                    required</div>
+                  <div *ngIf="declarationForm.controls.businessIncome.errors.pattern">Trade Business must be Number and
+                    only two digits are allowed after decimal</div>
+                </div>
+              </div>
+              <div class="form-group col-md-4">
+                <label for="employmentIncome">Employment Income</label>
+                <input type="text" formControlName="employmentIncome" class="form-control"
+                  placeholder="Employment Income" maxlength="19"
+                  [ngClass]="{ 'is-invalid': submitted &amp;&amp; declarationForm.controls.employmentIncome.errors }" />
+                <div *ngIf="submitted &amp;&amp; declarationForm.controls.employmentIncome.errors" class="text-danger">
+                  <!-- <div *ngIf="declarationForm.controls.employmentIncome.errors.required">Employment Income is required
+                    </div> -->
+                  <div *ngIf="declarationForm.controls.employmentIncome.errors.pattern">Employment must be Number and
+                    only two digits are allowed after decimal
+                  </div>
+                </div>
+              </div>
+              <div class="form-group col-md-4">
+                <label for="professionalFee">Consultantcy/Professional Fee</label>
+                <input type="text" formControlName="professionalFee" class="form-control"
+                  placeholder="Consultantcy/Professional Fee" maxlength="19"
+                  [ngClass]="{ 'is-invalid': submitted &amp;&amp; declarationForm.controls.professionalFee.errors }" />
+                <div *ngIf="submitted &amp;&amp; declarationForm.controls.professionalFee.errors" class="text-danger">
+                  <!-- <div *ngIf="declarationForm.controls.professionalFee.errors.required">Consultantcy/Professional Fee
+                      is required</div> -->
+                  <div *ngIf="declarationForm.controls.professionalFee.errors.pattern">Consultantcy/Professional Fee
+                    must be Number and only two digits are allowed after decimal</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group col-md-4">
+                <label for="otherIncome">Other Income</label>
+                <input type="text" formControlName="otherIncome" class="form-control" placeholder="Other Income"
+                  maxlength="19"
+                  [ngClass]="{ 'is-invalid': submitted &amp;&amp; declarationForm.controls.otherIncome.errors }" />
+                <div *ngIf="submitted &amp;&amp; declarationForm.controls.otherIncome.errors" class="text-danger">
+                  <!-- <div *ngIf="declarationForm.controls.otherIncome.errors.required">Other Income is required</div> -->
+                  <div *ngIf="declarationForm.controls.otherIncome.errors.pattern">Other Income must be Number and only
+                    two digits are allowed after decimal
+                  </div>
+                </div>
+              </div>
+              <div class="form-group col-md-4">
+                <label for="directorFees">Director Fees</label>
+                <input type="text" formControlName="directorFees" class="form-control" placeholder="Director Fees"
+                  maxlength="19"
+                  [ngClass]="{ 'is-invalid': submitted &amp;&amp; declarationForm.controls.directorFees.errors }" />
+                <div *ngIf="submitted &amp;&amp; declarationForm.controls.directorFees.errors" class="text-danger">
+                  <!-- <div *ngIf="declarationForm.controls.directorFees.errors.required">Director Fees is required</div> -->
+                  <div *ngIf="declarationForm.controls.directorFees.errors.pattern">Director Fees must be Number and
+                    only two digits are allowed after decimal
+                  </div>
+                </div>
+              </div>
+              <div class="form-group col-md-4">
+                <label for="benefit">Benefit in Kind</label>
+                <input type="text" formControlName="benefit" class="form-control" placeholder="Benefit in Kind"
+                  maxlength="19"
+                  [ngClass]="{ 'is-invalid': submitted &amp;&amp; declarationForm.controls.benefit.errors }" />
+                <div *ngIf="submitted &amp;&amp; declarationForm.controls.benefit.errors" class="text-danger">
+                  <!-- <div *ngIf="declarationForm.controls.benefit.errors.required">Benefit in Kind is required</div> -->
+                  <div *ngIf="declarationForm.controls.benefit.errors.pattern">Benefit in Kind must be Number and only
+                    two digits are allowed after decimal
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group col-md-4">
+                <label for="terminalBonus">Terminal Bonus</label>
+                <input type="text" formControlName="terminalBonus" class="form-control" placeholder="Terminal Bonus"
+                  maxlength="19"
+                  [ngClass]="{ 'is-invalid': submitted &amp;&amp; declarationForm.controls.terminalBonus.errors }" />
+                <div *ngIf="submitted &amp;&amp; declarationForm.controls.terminalBonus.errors" class="text-danger">
+                  <!-- <div *ngIf="declarationForm.controls.terminalBonus.errors.required">Terminal Bonus is required</div> -->
+                  <div *ngIf="declarationForm.controls.terminalBonus.errors.pattern">Terminal Bonus must be Number and
+                    only two digits are allowed after decimal</div>
+                </div>
+              </div>
+              <div class="form-group col-md-4">
+                <label for="contract">Contract</label>
+                <input type="text" formControlName="contract" class="form-control" placeholder="Contract" maxlength="19"
+                  [ngClass]="{ 'is-invalid': submitted &amp;&amp; declarationForm.controls.contract.errors }" />
+                <div *ngIf="submitted &amp;&amp; declarationForm.controls.contract.errors" class="text-danger">
+                  <!-- <div *ngIf="declarationForm.controls.contract.errors.required">Contract is required</div> -->
+                  <div *ngIf="declarationForm.controls.contract.errors.pattern">Contract must be Number and only two
+                    digits are allowed after decimal</div>
+                </div>
+              </div>
+              <div class="form-group col-md-4">
+                <label for="allowance">Allowance</label>
+                <input type="text" formControlName="allowance" class="form-control" placeholder="Allowance"
+                  maxlength="19"
+                  [ngClass]="{ 'is-invalid': submitted &amp;&amp; declarationForm.controls.allowance.errors }" />
+                <div *ngIf="submitted &amp;&amp; declarationForm.controls.allowance.errors" class="text-danger">
+                  <!-- <div *ngIf="declarationForm.controls.allowance.errors.required">Allowance is required</div> -->
+                  <div *ngIf="declarationForm.controls.allowance.errors.pattern">Allowance must be Number and only two
+                    digits are allowed after decimal</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group col-md-4">
+                <label for="profitSharing">Profit Sharing</label>
+                <input type="text" formControlName="profitSharing" class="form-control" placeholder="Profit Sharing"
+                  maxlength="19"
+                  [ngClass]="{ 'is-invalid': submitted &amp;&amp; declarationForm.controls.profitSharing.errors }" />
+                <div *ngIf="submitted &amp;&amp; declarationForm.controls.profitSharing.errors" class="text-danger">
+                  <!-- <div *ngIf="declarationForm.controls.profitSharing.errors.required">Profit Sharing is required</div> -->
+                  <div *ngIf="declarationForm.controls.profitSharing.errors.pattern">Profit Sharing must be Number and
+                    only two digits are allowed after decimal</div>
+                </div>
+              </div>
+              <div class="form-group col-md-4">
+                <label for="commission">Commission</label>
+                <input type="text" formControlName="commission" class="form-control" placeholder="Commision"
+                  maxlength="19"
+                  [ngClass]="{ 'is-invalid': submitted &amp;&amp; declarationForm.controls.commission.errors }" />
+                <div *ngIf="submitted &amp;&amp; declarationForm.controls.commission.errors" class="text-danger">
+                  <!-- <div *ngIf="declarationForm.controls.commission.errors.required">Commission is required</div> -->
+                  <div *ngIf="declarationForm.controls.commission.errors.pattern">Commission must be Number and only two
+                    digits are allowed after decimal</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="">
+            <h4 class="mb-4 mt-3">Unearned Income</h4>
+            <div class="form-row">
+              <div class="form-group col-md-4">
+                <label for="dividend">Dividend</label>
+                <input type="text" formControlName="dividend" class="form-control" placeholder="Dividend" maxlength="19"
+                  [ngClass]="{ 'is-invalid': submitted &amp;&amp; declarationForm.controls.dividend.errors }" />
+                <div *ngIf="submitted &amp;&amp; declarationForm.controls.dividend.errors" class="text-danger">
+                  <!-- <div *ngIf="declarationForm.controls.dividend.errors.required">Dividend is required</div> -->
+                  <div *ngIf="declarationForm.controls.dividend.errors.pattern">Dividend must be Number and only two
+                    digits are allowed after decimal</div>
+                </div>
+              </div>
+              <div class="form-group col-md-4">
+                <label for="interest">Interest</label>
+                <input type="text" formControlName="interest" class="form-control" placeholder="Interest" maxlength="19"
+                  [ngClass]="{ 'is-invalid': submitted &amp;&amp; declarationForm.controls.interest.errors }" />
+                <div *ngIf="submitted &amp;&amp; declarationForm.controls.interest.errors" class="text-danger">
+                  <!-- <div *ngIf="declarationForm.controls.interest.errors.required">Interest is required</div> -->
+                  <div *ngIf="declarationForm.controls.interest.errors.pattern">Interest must be Number and only two
+                    digits are allowed after decimal</div>
+                </div>
+              </div>
+              <div class="form-group col-md-4">
+                <label for="royalty">Royalty</label>
+                <input type="text" formControlName="royalty" class="form-control" placeholder="Royalty" maxlength="19"
+                  [ngClass]="{ 'is-invalid': submitted &amp;&amp; declarationForm.controls.royalty.errors }" />
+                <div *ngIf="submitted &amp;&amp; declarationForm.controls.royalty.errors" class="text-danger">
+                  <!-- <div *ngIf="declarationForm.controls.royalty.errors.required">Royalty is required</div> -->
+                  <div *ngIf="declarationForm.controls.royalty.errors.pattern">Royalty must be Number and only two
+                    digits are allowed after decimal</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group col-md-4">
+                <label for="rent">Rent</label>
+                <input type="text" formControlName="rent" class="form-control" placeholder="Rent" maxlength="19"
+                  [ngClass]="{ 'is-invalid': submitted &amp;&amp; declarationForm.controls.rent.errors }" />
+                <div *ngIf="submitted &amp;&amp; declarationForm.controls.rent.errors" class="text-danger">
+                  <!-- <div *ngIf="declarationForm.controls.rent.errors.required">Rent is required</div> -->
+                  <div *ngIf="declarationForm.controls.rent.errors.pattern">Rent must be Number and only two digits are
+                    allowed after decimal</div>
+                </div>
+              </div>
+              <div class="form-group col-md-4">
+                <label for="balancingCharge">Balancing Charg</label>
+                <input type="text" formControlName="balancingCharge" class="form-control" placeholder="Balancing Charge"
+                  maxlength="19"
+                  [ngClass]="{ 'is-invalid': submitted &amp;&amp; declarationForm.controls.balancingCharge.errors }" />
+                <div *ngIf="submitted &amp;&amp; declarationForm.controls.balancingCharge.errors" class="text-danger">
+                  <!-- <div *ngIf="declarationForm.controls.balancingCharge.errors.required">Balancing Charge is required
+                    </div> -->
+                  <div *ngIf="declarationForm.controls.balancingCharge.errors.pattern">Balancing Charge must be Number
+                    and only two digits are allowed after decimal</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <button type="button" class="btn btn-outline-dark button-login text-center"
+            (click)="modal.close('Save click')">Ok</button>
+          <button type="submit" class="btn button-login float-right mr-5">Next &nbsp;<i
+              class="fas fa-forward"></i></button>
+        </form>
+      </div>
+
+      <div class="card-body" *ngIf="deductionView">
+        <form [formGroup]="deductionForm" (ngSubmit)="onSubmitDeduction(deductionForm.value) ">
+
+          <div class="other-Deduction">
+            <h4 class="mb-4"> Other Deduction</h4>
+            <div class="form-row">
+              <div class="form-group col-md-6">
+                <label for="gratuities">Gratuities</label>
+                <input type="text" formControlName="gratuities" class="form-control" placeholder="Gratuities"
+                  maxlength="19"
+                  [ngClass]="{ 'is-invalid': submitted &amp;&amp; deductionForm.controls.gratuities.errors }" />
+                <div *ngIf="submitted &amp;&amp; deductionForm.controls.gratuities.errors" class="text-danger">
+                  <!-- <div *ngIf="deductionForm.controls.gratuities.errors.required">Gratuities is required</div> -->
+                  <div *ngIf="deductionForm.controls.gratuities.errors.pattern">Gratuities must be Number and only two
+                    digits are allowed after decimal</div>
+                </div>
+              </div>
+              <div class="form-group col-md-6">
+                <label for="bonus">Bonus</label>
+                <input type="text" formControlName="bonus" class="form-control" placeholder="Bonus" maxlength="19"
+                  [ngClass]="{ 'is-invalid': submitted &amp;&amp; deductionForm.controls.bonus.errors }" />
+                <div *ngIf="submitted &amp;&amp; deductionForm.controls.bonus.errors" class="text-danger">
+                  <!-- <div *ngIf="deductionForm.controls.bonus.errors.required">Bonus is required</div> -->
+                  <div *ngIf="deductionForm.controls.bonus.errors.pattern">Bonus must be Number and only two digits are
+                    allowed after decimal</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group col-md-6">
+                <label for="otherDeduction">Other deductions</label>
+                <input type="text" formControlName="otherDeduction" class="form-control" placeholder="Other Deduction"
+                  maxlength="19"
+                  [ngClass]="{ 'is-invalid': submitted &amp;&amp; deductionForm.controls.otherDeduction.errors }" />
+                <div *ngIf="submitted &amp;&amp; deductionForm.controls.otherDeduction.errors" class="text-danger">
+                  <!-- <div *ngIf="deductionForm.controls.otherDeduction.errors.required">Other deductions is required
+                    </div> -->
+                  <div *ngIf="deductionForm.controls.otherDeduction.errors.pattern">Other deductions must be Number and
+                    only two digits are allowed after decimal</div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <div class="other-Deduction">
+            <h4 class="mb-4">Adjustment</h4>
+            <div class="form-row">
+              <div class="form-group col-md-6">
+                <label for="losses">Losses</label>
+                <input type="text" formControlName="losses" class="form-control" placeholder="Losses" maxlength="19"
+                  [ngClass]="{ 'is-invalid': submitted &amp;&amp; deductionForm.controls.losses.errors }" />
+                <div *ngIf="submitted &amp;&amp; deductionForm.controls.losses.errors" class="text-danger">
+                  <!-- <div *ngIf="deductionForm.controls.losses.errors.required">Losses is required</div> -->
+                  <div *ngIf="deductionForm.controls.losses.errors.pattern">Losses must be Number and only two digits
+                    are allowed after decimal</div>
+                </div>
+              </div>
+              <div class="form-group col-md-6">
+                <label for="balancingAllowance">Balancing Allowance</label>
+                <input type="text" formControlName="balancingAllowance" class="form-control"
+                  placeholder="Balancing Allowance" maxlength="19"
+                  [ngClass]="{ 'is-invalid': submitted &amp;&amp; deductionForm.controls.balancingAllowance.errors }" />
+                <div *ngIf="submitted &amp;&amp; deductionForm.controls.balancingAllowance.errors" class="text-danger">
+                  <!-- <div *ngIf="deductionForm.controls.balancingAllowance.errors.required">Balancing Allowance is
+                      required</div> -->
+                  <div *ngIf="deductionForm.controls.balancingAllowance.errors.pattern">Balancing Allowance must be
+                    Number and only two digits are allowed after decimal</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group col-md-6">
+                <label for="capitalAllowance">Capital Allowance</label>
+                <input type="text" formControlName="capitalAllowance" class="form-control"
+                  placeholder="Capital Allowance" maxlength="19"
+                  [ngClass]="{ 'is-invalid': submitted &amp;&amp; deductionForm.controls.capitalAllowance.errors }" />
+                <div *ngIf="submitted &amp;&amp; deductionForm.controls.capitalAllowance.errors" class="text-danger">
+                  <!-- <div *ngIf="deductionForm.controls.capitalAllowance.errors.required">Capital Allowance is required
+                    </div> -->
+                  <div *ngIf="deductionForm.controls.capitalAllowance.errors.pattern">Capital Allowance must be Number
+                    and only two digits are allowed after decimal</div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+          <button type="submit" class="btn button-login float-right mr-5 ">Next &nbsp;<i
+              class="fas fa-forward"></i></button>
+          <button type="button" class="btn btn-outline-dark button-login text-center"
+            (click)="modal.close('Save click')">Ok</button>
+
+          <button (click)="backToDeclarationForm()" class="btn button-login ml-5"> <i class="fas fa-backward"></i>
+            &nbsp;Previous</button>
+        </form>
+
+      </div>
+
+      <div class="card-body" *ngIf="reliefView">
+        <form [formGroup]="reliefForm" (ngSubmit)="onSubmitRelief(reliefForm.value) ">
+          <div class="other-Deduction">
+            <h4 class="mb-4">Personal Reliefs</h4>
+            <div class="form-row">
+              <div class="form-group col-md-6">
+                <label for="consolidateRelief">Consolidate relief Allowance</label>
+                <input type="text" formControlName="consolidateRelief" class="form-control"
+                  placeholder="Consolidate relief Allowance" maxlength="19"
+                  [ngClass]="{ 'is-invalid': submitted &amp;&amp; reliefForm.controls.consolidateRelief.errors }" />
+                <div *ngIf="submitted &amp;&amp; reliefForm.controls.consolidateRelief.errors" class="text-danger">
+                  <!-- <div *ngIf="reliefForm.controls.consolidateRelief.errors.required">Consolidate relief Allowance is
+                      required</div> -->
+                  <div *ngIf="reliefForm.controls.consolidateRelief.errors.pattern">Consolidate relief Allowance must
+                    be Number and only two digits are allowed after decimal</div>
+                </div>
+              </div>
+              <div class="form-group col-md-6">
+                <label for="personalRelief">Personal Relief Allowance</label>
+                <input type="text" formControlName="personalRelief" class="form-control"
+                  placeholder="Personal Relief Allowance" maxlength="19"
+                  [ngClass]="{ 'is-invalid': submitted &amp;&amp; reliefForm.controls.personalRelief.errors }" />
+                <div *ngIf="submitted &amp;&amp; reliefForm.controls.personalRelief.errors" class="text-danger">
+                  <!-- <div *ngIf="reliefForm.controls.personalRelief.errors.required">Personal Relief Allowance is
+                      required</div> -->
+                  <div *ngIf="reliefForm.controls.personalRelief.errors.pattern">Personal Relief Allowance must be
+                    Number and only two digits are allowed after decimal</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group col-md-6">
+                <label for="nhis">National Health Insurance Scheme (NHIS)</label>
+                <input type="text" formControlName="nhis" class="form-control" placeholder="NHIS" maxlength="19"
+                  [ngClass]="{ 'is-invalid': submitted &amp;&amp; reliefForm.controls.nhis.errors }" />
+                <div *ngIf="submitted &amp;&amp; reliefForm.controls.nhis.errors" class="text-danger">
+                  <!-- <div *ngIf="reliefForm.controls.nhis.errors.required">NHIS is required</div> -->
+                  <div *ngIf="reliefForm.controls.nhis.errors.pattern">NHIS must be Number and only two digits are
+                    allowed after decimal</div>
+                </div>
+              </div>
+              <div class="form-group col-md-6">
+                <label for="nhf">National Housing Fund (NHF)</label>
+                <input type="text" formControlName="nhf" class="form-control" placeholder="NHF" maxlength="19"
+                  [ngClass]="{ 'is-invalid': submitted &amp;&amp; reliefForm.controls.nhf.errors }" />
+                <div *ngIf="submitted &amp;&amp; reliefForm.controls.nhf.errors" class="text-danger">
+                  <!-- <div *ngIf="reliefForm.controls.nhf.errors.required">NHF is required</div> -->
+                  <div *ngIf="reliefForm.controls.nhf.errors.pattern">NHF must be Number and only two digits are allowed
+                    after decimal</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group col-md-6">
+                <label for="lifeAssurance">Life Assurance</label>
+                <input type="text" formControlName="lifeAssurance" class="form-control" placeholder="Life Assurance"
+                  maxlength="19"
+                  [ngClass]="{ 'is-invalid': submitted &amp;&amp; reliefForm.controls.lifeAssurance.errors }" />
+                <div *ngIf="submitted &amp;&amp; reliefForm.controls.lifeAssurance.errors" class="text-danger">
+                  <!-- <div *ngIf="reliefForm.controls.lifeAssurance.errors.required">Life Assurance is required</div> -->
+                  <div *ngIf="reliefForm.controls.lifeAssurance.errors.pattern">Life Assurance must be Number and only
+                    two digits are allowed after decimal
+                  </div>
+                </div>
+              </div>
+              <div class="form-group col-md-6">
+                <label for="nps">National Pension Scheme (NPS)</label>
+                <input type="text" formControlName="nps" class="form-control" placeholder="NPS" maxlength="19"
+                  [ngClass]="{ 'is-invalid': submitted &amp;&amp; reliefForm.controls.nps.errors }" />
+                <div *ngIf="submitted &amp;&amp; reliefForm.controls.nps.errors" class="text-danger">
+                  <!-- <div *ngIf="reliefForm.controls.nps.errors.required">NPS is required</div> -->
+                  <div *ngIf="reliefForm.controls.nps.errors.pattern">NPS must be Number and only two digits are allowed
+                    after decimal</div>
+                </div>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group col-md-6">
+                <label for="personalAllowance">Personal Allowance</label>
+                <input type="text" formControlName="personalAllowance" class="form-control"
+                  placeholder="Personal Allowance" maxlength="19"
+                  [ngClass]="{ 'is-invalid': submitted &amp;&amp; reliefForm.controls.personalAllowance.errors }" />
+                <div *ngIf="submitted &amp;&amp; reliefForm.controls.personalAllowance.errors" class="text-danger">
+                  <!-- <div *ngIf="reliefForm.controls.personalAllowance.errors.required">Personal Allowance is required
+                    </div> -->
+                  <div *ngIf="reliefForm.controls.personalAllowance.errors.pattern">Personal Allowance must be Number
+                    and only two digits are allowed after decimal</div>
+                </div>
+              </div>
+              <div class="form-group col-md-6">
+                <label for="ordinaryShareHolding">Ordinary Share Holding</label>
+                <input type="text" formControlName="ordinaryShareHolding" class="form-control"
+                  placeholder="Ordinary Share Holding" maxlength="19"
+                  [ngClass]="{ 'is-invalid': submitted &amp;&amp; reliefForm.controls.ordinaryShareHolding.errors }" />
+                <div *ngIf="submitted &amp;&amp; reliefForm.controls.ordinaryShareHolding.errors" class="text-danger">
+                  <!-- <div *ngIf="reliefForm.controls.ordinaryShareHolding.errors.required">Ordinary Share Holding is
+                      required</div> -->
+                  <div *ngIf="reliefForm.controls.ordinaryShareHolding.errors.pattern">Ordinary Share Holding must be
+                    Number and only two digits are allowed after decimal</div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+          <button type="submit" class="btn button-login float-right mr-5">Submit</button>
+          <button type="button" class="btn btn-outline-dark button-login text-center"
+            (click)="modal.close('Save click')">Ok</button>
+
+          <button (click)="backToDeductionForm()" class="btn button-login ml-5"><i class="fas fa-backward"></i>
+            &nbsp;Previous</button>
+        </form>
+      </div>
+
+    </div>
+
+  </div>
+
+</ng-template>

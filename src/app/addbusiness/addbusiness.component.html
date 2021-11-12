@@ -1,0 +1,595 @@
+<div *ngIf="showHeader">
+    <div class="modal-header">
+        <h5 class="modal-title" id="modal-basic-title">{{ modalTitle }}</h5>
+    </div>
+    
+    <div class="modal-body">
+        <div class="container">
+            <form [formGroup]="businessForm" (ngSubmit)="onSubmitBusiness(businessForm.value)">
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="taxPayerRoleId" class="input-label pull-left">Taxpayer Role<sup
+                                class=" font-wegiht-bold text-danger">*</sup>
+                        </label>
+                        <select name="taxPayerRoleId" formControlName="taxPayerRoleId" id="taxPayerRoleId"
+                            class="form-control" [attr.disabled]="disableControls"
+                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; businessForm.controls.taxPayerRoleId.errors }">
+                            <option value="">Select Taxpayer Role</option>
+                            <option *ngFor="let taxpayerRole of taxpayerRoles" [value]="taxpayerRole.id">
+                                {{ taxpayerRole.name }}
+                            </option>
+                        </select>
+                        <div *ngIf="submitted &amp;&amp; businessForm.controls.taxPayerRoleId.errors" class="text-danger">
+                            <div *ngIf="businessForm.controls.taxPayerRoleId.errors.required">Taxpayer Role is
+                                required</div>
+                        </div>
+                    </div>
+    
+                    <div class="form-group col-md-6">
+                        <label for="businessName" class="input-label pull-left">Business Name<sup
+                                class=" font-wegiht-bold text-danger">*</sup>
+                        </label>
+                        <input type="text" formControlName="businessName" class="form-control" id="businessName"
+                            placeholder="Business Name" [attr.disabled]="disableControls"
+                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; businessForm.controls.businessName.errors }" />
+                        <div *ngIf="submitted &amp;&amp; businessForm.controls.businessName.errors" class="text-danger">
+                            <div *ngIf="businessForm.controls.businessName.errors.required">Business Name is
+                                required
+                            </div>
+                        </div>
+                    </div>
+                </div>
+    
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="businessTypeId" class="input-label pull-left">Business Type<sup
+                                class=" font-wegiht-bold text-danger">*</sup>
+                        </label>
+                        <select name="businessTypeId" formControlName="businessTypeId" id="businessTypeId" #businessTypeSelect
+                            class="form-control" (change)="onBusinessTypeSelect(businessTypeSelect.value)" [attr.disabled]="disableControls"
+                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; businessForm.controls.businessTypeId.errors }">
+                            <option value="">Select Business Type</option>
+                            <option *ngFor="let businessType of businessTypes" [value]="businessType.id">
+                                {{ businessType.name }}
+                            </option>
+                        </select>
+                        <div *ngIf="submitted &amp;&amp; businessForm.controls.businessTypeId.errors" class="text-danger">
+                            <div *ngIf="businessForm.controls.businessTypeId.errors.required">Business Type is
+                                required</div>
+                        </div>
+                    </div>
+    
+                    <div class="form-group col-md-6">
+                        <label for="businessLocalGovtId" class="input-label pull-left">Business LGA<sup
+                                class=" font-wegiht-bold text-danger">*</sup>
+                        </label>
+                        <select name="businessLocalGovtId" formControlName="businessLocalGovtId" id="businessLocalGovtId" #localGovtSelect
+                            class="form-control" (change)="onLocalGovtSelect(localGovtSelect.value)" [attr.disabled]="disableControls"
+                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; businessForm.controls.businessLocalGovtId.errors }">
+                            <option value="">Select Business LGA</option>
+                            <option *ngFor="let localGovt of localGovts" [value]="localGovt.id">
+                                {{ localGovt.name }}
+                            </option>
+                        </select>
+                        <div *ngIf="submitted &amp;&amp; businessForm.controls.businessLocalGovtId.errors"
+                            class="text-danger">
+                            <div *ngIf="businessForm.controls.businessLocalGovtId.errors.required">Business LGA is
+                                required</div>
+                        </div>
+                    </div>
+                </div>
+    
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="businessMobilityId" class="input-label pull-left">Business Mobility<sup
+                                class=" font-wegiht-bold text-danger">*</sup>
+                        </label>
+                        <select name="businessMobilityId" formControlName="businessMobilityId" id="businessMobilityId" #businessMobilitySelect
+                            class="form-control" (change)="onBusinessMobilitySelect(businessMobilitySelect.value)" [attr.disabled]="disableControls"
+                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; businessForm.controls.businessMobilityId.errors }">
+                            <option value="">Select Business Mobility</option>
+                            <option *ngFor="let businessMobility of businessMobilities" [value]="businessMobility.id">
+                                {{ businessMobility.name }}
+                            </option>
+                        </select>
+                        <div *ngIf="submitted &amp;&amp; businessForm.controls.businessMobilityId.errors"
+                            class="text-danger">
+                            <div *ngIf="businessForm.controls.businessMobilityId.errors.required">Business Mobility
+                                is required</div>
+                        </div>
+                    </div>
+    
+                    <div class="form-group col-md-6">
+                        <label for="businessTownId" class="input-label pull-left">Business Town<sup
+                                class=" font-wegiht-bold text-danger">*</sup>
+                        </label>
+                        <select name="businessTownId" formControlName="businessTownId" id="businessTownId" #businessTownSelect
+                            class="form-control" (change)="onBusinessTownSelect(businessTownSelect.value)" [attr.disabled]="disableControls"
+                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; businessForm.controls.businessTownId.errors }">
+                            <option value="">Select Business Town</option>
+                            <option *ngFor="let town of towns" [value]="town.id">
+                                {{ town.name }}
+                            </option>
+                        </select>
+                        <div *ngIf="submitted &amp;&amp; businessForm.controls.businessTownId.errors" class="text-danger">
+                            <div *ngIf="businessForm.controls.businessTownId.errors.required">Business Town is
+                                required</div>
+                        </div>
+                    </div>
+                </div>
+    
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="industrySectorId" class="input-label pull-left">Industry Sector<sup
+                                class=" font-wegiht-bold text-danger">*</sup>
+                        </label>
+                        <select name="industrySectorId" formControlName="industrySectorId" id="industrySectorId" #industrySectorSelect
+                            class="form-control" (change)="onIndustrySectorSelect(industrySectorSelect.value)" [attr.disabled]="disableControls"
+                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; businessForm.controls.industrySectorId.errors }">
+                            <option value="">Select Industry Sector</option>
+                            <option *ngFor="let industrySector of industrySectors" [value]="industrySector.id">
+                                {{ industrySector.name }}
+                            </option>
+                        </select>
+                        <div *ngIf="submitted &amp;&amp; businessForm.controls.industrySectorId.errors" class="text-danger">
+                            <div *ngIf="businessForm.controls.industrySectorId.errors.required">Industry Sector is
+                                required</div>
+                        </div>
+                    </div>
+    
+                    <div class="form-group col-md-6">
+                        <label for="wardId" class="input-label pull-left">Ward
+                            <sup class=" font-wegiht-bold text-danger">*</sup>
+                        </label>
+                        <select name="wardId" formControlName="wardId" id="wardId" class="form-control" [attr.disabled]="disableControls"
+                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; businessForm.controls.wardId.errors }">
+                            <option value="">Select Ward</option>
+                            <option *ngFor="let landWard of landWards" [value]="landWard.id">
+                                {{ landWard.name }}
+                            </option>
+                        </select>
+                        <div *ngIf="submitted &amp;&amp; businessForm.controls.wardId.errors" class="text-danger">
+                            <div *ngIf="businessForm.controls.wardId.errors.required">Ward is required
+                        </div>
+                        </div>
+                    </div>
+                </div>
+    
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="industrySubSectorId" class="input-label pull-left">Industry Sub Sector<sup
+                                class=" font-wegiht-bold text-danger">*</sup>
+                        </label>
+                        <select name="industrySubSectorId" formControlName="industrySubSectorId" id="industrySubSectorId"
+                            class="form-control" [attr.disabled]="disableControls"
+                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; businessForm.controls.industrySubSectorId.errors }">
+                            <option value="">Select Industry Sub Sector</option>
+                            <option *ngFor="let industrySubSector of industrySubSectors" [value]="industrySubSector.id">
+                                {{ industrySubSector.name }}
+                            </option>
+                        </select>
+                        <div *ngIf="submitted &amp;&amp; businessForm.controls.industrySubSectorId.errors"
+                            class="text-danger">
+                            <div *ngIf="businessForm.controls.industrySubSectorId.errors.required">Industry Sub
+                                Sector is required</div>
+                        </div>
+                    </div>
+    
+                    <div class="form-group col-md-6">
+                        <label for="businessSizeId" class="input-label pull-left">Business Size
+                            <!-- <sup class=" font-wegiht-bold text-danger">*</sup> -->
+                        </label>
+                        <select name="businessSizeId" formControlName="businessSizeId" id="businessSizeId" class="form-control" [attr.disabled]="disableControls"
+                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; businessForm.controls.businessSizeId.errors }">
+                            <option value="">Select Business Size</option>
+                            <option *ngFor="let businessSize of businessSizes" [value]="businessSize">
+                                {{ businessSize }}
+                            </option>
+                        </select>
+                        <div *ngIf="submitted &amp;&amp; businessForm.controls.businessSizeId.errors" class="text-danger">
+                            <!-- <div *ngIf="businessForm.controls.ward.errors.required">Ward is required
+                        </div> -->
+                        </div>
+                    </div>
+                </div>
+    
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="businessStatusId" class="input-label pull-left">Business Status<sup
+                                class=" font-wegiht-bold text-danger">*</sup>
+                        </label>
+                        <select name="businessStatusId" formControlName="businessStatusId" id="businessStatusId"
+                            class="form-control" [attr.disabled]="disableControls"
+                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; businessForm.controls.industrySubSectorId.errors }">
+                            <option value="">Select Business Status</option>
+                            <option *ngFor="let businessStatus of businessStatuses" [value]="businessStatus">
+                                {{ businessStatus }}
+                            </option>
+                        </select>
+                        <div *ngIf="submitted &amp;&amp; businessForm.controls.businessStatusId.errors" class="text-danger">
+                            <div *ngIf="businessForm.controls.businessStatusId.errors.required">Business Status is
+                                required</div>
+                        </div>
+                    </div>
+    
+                    <div class="form-group col-md-6">
+                        <label for="phoneNumber" class="input-label pull-left">Phone Number
+                            <sup class=" font-wegiht-bold text-danger">*</sup>
+                        </label>
+                        <input type="text" formControlName="phoneNumber" class="form-control" id="phoneNumber"
+                            maxlength="11" placeholder="Phone Number" [attr.disabled]="disableControls"
+                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; businessForm.controls.phoneNumber.errors }" />
+                        <div *ngIf="submitted &amp;&amp; businessForm.controls.phoneNumber.errors" class="text-danger">
+                            <div *ngIf="businessForm.controls.phoneNumber.errors.required">Phone
+                                Number is required
+                            </div>
+                            <div *ngIf="businessForm.controls.phoneNumber.errors.maxlength">Phone
+                                Number must not
+                                exceed 11
+                                digits</div>
+                            <div *ngIf="businessForm.controls.phoneNumber.errors.minlength">Phone
+                                Number must be 11
+                                digits</div>
+                            <div *ngIf="businessForm.controls.phoneNumber.errors.pattern">Phone
+                                Number must be Number
+                                Only</div>
+                        </div>
+                    </div>
+                </div>
+    
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="businessOperation" class="input-label pull-left">Business Operation
+                        </label>
+                        <select name="businessOperationId" formControlName="businessOperationId" id="businessOperationId"
+                            class="form-control" [attr.disabled]="disableControls"
+                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; businessForm.controls.businessOperationId.errors }">
+                            <option value="">Select Business Operation</option>
+                            <option *ngFor="let businessOperation of businessOperations" [value]="businessOperation.id">
+                                {{ businessOperation.name }}
+                            </option>
+                        </select>
+                        <div *ngIf="submitted &amp;&amp; businessForm.controls.businessOperationId.errors" class="text-danger">
+                        </div>
+                    </div>
+    
+                    <div class="form-group col-md-6">
+                        <label for="contactName" class="input-label pull-left">Contact Name
+                            <sup class=" font-wegiht-bold text-danger">*</sup>
+                        </label>
+                        <input type="text" formControlName="contactName" class="form-control" id="contactName"
+                            placeholder="contactName" [attr.disabled]="disableControls"
+                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; businessForm.controls.contactName.errors }" />
+                        <div *ngIf="submitted &amp;&amp; businessForm.controls.contactName.errors" class="text-danger">
+                            <div *ngIf="businessForm.controls.contactName.errors.required">Contact Name is required
+                            </div>
+                        </div>
+                    </div>                
+                </div>
+    
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="contactAddress" class="input-label pull-left">Contact Address
+                            <sup class=" font-wegiht-bold text-danger">*</sup>
+                        </label>
+                        <textarea formControlName="contactAddress" class="form-control" id="contactAddress" rows="3"
+                            placeholder="Contact Address" [attr.disabled]="disableControls"
+                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; businessForm.controls.contactAddress.errors }"></textarea>
+                        <div *ngIf="submitted &amp;&amp; businessForm.controls.contactAddress.errors" class="text-danger">
+                            <div *ngIf="businessForm.controls.contactAddress.errors.required">Contact Address is
+                                required</div>
+                            <div *ngIf="businessForm.controls.contactAddress.errors.pattern">Only Alphanumeric
+                                Characters
+                                allowed</div>
+                            <div *ngIf="businessForm.controls.contactAddress.errors.minlength">Contact Address
+                                cannot
+                                contain less than 6 characters</div>
+                            <div *ngIf="businessForm.controls.contactAddress.errors.maxlength">Contact Address
+                                cannot
+                                contain more than 200 characters</div>
+                        </div>
+                    </div>
+                </div>
+    
+                <button *ngIf="showSaveButton" type="submit" class="btn btn button-login">
+                    <i class="far fa-save"></i> Save Asset
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<div *ngIf="!showHeader">
+    <form [formGroup]="businessForm" (ngSubmit)="onSubmitBusiness(businessForm.value)">
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="taxPayerRoleId" class="input-label pull-left">Taxpayer Role<sup
+                        class=" font-wegiht-bold text-danger">*</sup>
+                </label>
+                <select name="taxPayerRoleId" formControlName="taxPayerRoleId" id="taxPayerRoleId"
+                    class="form-control" [attr.disabled]="disableControls"
+                    [ngClass]="{ 'is-invalid': submitted &amp;&amp; businessForm.controls.taxPayerRoleId.errors }">
+                    <option value="">Select Taxpayer Role</option>
+                    <option *ngFor="let taxpayerRole of taxpayerRoles" [value]="taxpayerRole.id">
+                        {{ taxpayerRole.name }}
+                    </option>
+                </select>
+                <div *ngIf="submitted &amp;&amp; businessForm.controls.taxPayerRoleId.errors" class="text-danger">
+                    <div *ngIf="businessForm.controls.taxPayerRoleId.errors.required">Taxpayer Role is
+                        required</div>
+                </div>
+            </div>
+    
+            <div class="form-group col-md-6">
+                <label for="businessName" class="input-label pull-left">Business Name<sup
+                        class=" font-wegiht-bold text-danger">*</sup>
+                </label>
+                <input type="text" formControlName="businessName" class="form-control" id="businessName"
+                    placeholder="Business Name" [attr.disabled]="disableControls"
+                    [ngClass]="{ 'is-invalid': submitted &amp;&amp; businessForm.controls.businessName.errors }" />
+                <div *ngIf="submitted &amp;&amp; businessForm.controls.businessName.errors" class="text-danger">
+                    <div *ngIf="businessForm.controls.businessName.errors.required">Business Name is
+                        required
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="businessTypeId" class="input-label pull-left">Business Type<sup
+                        class=" font-wegiht-bold text-danger">*</sup>
+                </label>
+                <select name="businessTypeId" formControlName="businessTypeId" id="businessTypeId" #businessTypeSelect
+                    (change)="onBusinessTypeSelect(businessTypeSelect.value)" class="form-control" [attr.disabled]="disableControls"
+                    [ngClass]="{ 'is-invalid': submitted &amp;&amp; businessForm.controls.businessTypeId.errors }">
+                    <option value="">Select Business Type</option>
+                    <option *ngFor="let businessType of businessTypes" [value]="businessType.id">
+                        {{ businessType.name }}
+                    </option>
+                </select>
+                <div *ngIf="submitted &amp;&amp; businessForm.controls.businessTypeId.errors" class="text-danger">
+                    <div *ngIf="businessForm.controls.businessTypeId.errors.required">Business Type is
+                        required</div>
+                </div>
+            </div>
+    
+            <div class="form-group col-md-6">
+                <label for="businessLocalGovtId" class="input-label pull-left">Business LGA<sup
+                        class=" font-wegiht-bold text-danger">*</sup>
+                </label>
+                <select name="businessLocalGovtId" formControlName="businessLocalGovtId" id="businessLocalGovtId" #localGovtSelect
+                    class="form-control" (change)="onLocalGovtSelect(localGovtSelect.value)" [attr.disabled]="disableControls"
+                    [ngClass]="{ 'is-invalid': submitted &amp;&amp; businessForm.controls.businessLocalGovtId.errors }">
+                    <option value="">Select Business LGA</option>
+                    <option *ngFor="let localGovt of localGovts" [value]="localGovt.id">
+                        {{ localGovt.name }}
+                    </option>
+                </select>
+                <div *ngIf="submitted &amp;&amp; businessForm.controls.businessLocalGovtId.errors"
+                    class="text-danger">
+                    <div *ngIf="businessForm.controls.businessLocalGovtId.errors.required">Business LGA is
+                        required</div>
+                </div>
+            </div>
+        </div>
+    
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="businessMobilityId" class="input-label pull-left">Business Mobility<sup
+                        class=" font-wegiht-bold text-danger">*</sup>
+                </label>
+                <select name="businessMobilityId" formControlName="businessMobilityId" id="businessMobilityId" #businessMobilitySelect
+                    (change)="onBusinessMobilitySelect(businessMobilitySelect.value)" class="form-control" [attr.disabled]="disableControls"
+                    [ngClass]="{ 'is-invalid': submitted &amp;&amp; businessForm.controls.businessMobilityId.errors }">
+                    <option value="">Select Business Mobility</option>
+                    <option *ngFor="let businessMobility of businessMobilities" [value]="businessMobility.id">
+                        {{ businessMobility.name }}
+                    </option>
+                </select>
+                <div *ngIf="submitted &amp;&amp; businessForm.controls.businessMobilityId.errors"
+                    class="text-danger">
+                    <div *ngIf="businessForm.controls.businessMobilityId.errors.required">Business Mobility
+                        is required</div>
+                </div>
+            </div>
+    
+            <div class="form-group col-md-6">
+                <label for="businessTownId" class="input-label pull-left">Business Town<sup
+                        class=" font-wegiht-bold text-danger">*</sup>
+                </label>
+                <select name="businessTownId" formControlName="businessTownId" id="businessTownId" #businessTownSelect
+                    (change)="onBusinessTownSelect(businessTownSelect.value)" class="form-control" [attr.disabled]="disableControls"
+                    [ngClass]="{ 'is-invalid': submitted &amp;&amp; businessForm.controls.businessTownId.errors }">
+                    <option value="">Select Business Town</option>
+                    <option *ngFor="let town of towns" [value]="town.id">
+                        {{ town.name }}
+                    </option>
+                </select>
+                <div *ngIf="submitted &amp;&amp; businessForm.controls.businessTownId.errors" class="text-danger">
+                    <div *ngIf="businessForm.controls.businessTownId.errors.required">Business Town is
+                        required</div>
+                </div>
+            </div>
+        </div>
+    
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="industrySectorId" class="input-label pull-left">Industry Sector<sup
+                        class=" font-wegiht-bold text-danger">*</sup>
+                </label>
+                <select name="industrySectorId" formControlName="industrySectorId" id="industrySectorId" #industrySectorSelect
+                    class="form-control" (change)="onIndustrySectorSelect(industrySectorSelect.value)" [attr.disabled]="disableControls"
+                    [ngClass]="{ 'is-invalid': submitted &amp;&amp; businessForm.controls.industrySectorId.errors }">
+                    <option value="">Select Industry Sector</option>
+                    <option *ngFor="let industrySector of industrySectors" [value]="industrySector.id">
+                        {{ industrySector.name }}
+                    </option>
+                </select>
+                <div *ngIf="submitted &amp;&amp; businessForm.controls.industrySectorId.errors" class="text-danger">
+                    <div *ngIf="businessForm.controls.industrySectorId.errors.required">Industry Sector is
+                        required</div>
+                </div>
+            </div>
+    
+            <div class="form-group col-md-6">
+                <label for="wardId" class="input-label pull-left">Ward
+                    <sup class=" font-wegiht-bold text-danger">*</sup>
+                </label>
+                <select name="wardId" formControlName="wardId" id="wardId" class="form-control" [attr.disabled]="disableControls"
+                    [ngClass]="{ 'is-invalid': submitted &amp;&amp; businessForm.controls.wardId.errors }">
+                    <option value="">Select Ward</option>
+                    <option *ngFor="let landWard of landWards" [value]="landWard.id">
+                        {{ landWard.name }}
+                    </option>
+                </select>
+                <div *ngIf="submitted &amp;&amp; businessForm.controls.wardId.errors" class="text-danger">
+                    <div *ngIf="businessForm.controls.wardId.errors.required">Ward is required
+                </div>
+                </div>
+            </div>
+        </div>
+    
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="industrySubSectorId" class="input-label pull-left">Industry Sub Sector<sup
+                        class=" font-wegiht-bold text-danger">*</sup>
+                </label>
+                <select name="industrySubSectorId" formControlName="industrySubSectorId" id="industrySubSectorId"
+                    class="form-control" [attr.disabled]="disableControls"
+                    [ngClass]="{ 'is-invalid': submitted &amp;&amp; businessForm.controls.industrySubSectorId.errors }">
+                    <option value="">Select Industry Sub Sector</option>
+                    <option *ngFor="let industrySubSector of industrySubSectors" [value]="industrySubSector.id">
+                        {{ industrySubSector.name }}
+                    </option>
+                </select>
+                <div *ngIf="submitted &amp;&amp; businessForm.controls.industrySubSectorId.errors"
+                    class="text-danger">
+                    <div *ngIf="businessForm.controls.industrySubSectorId.errors.required">Industry Sub
+                        Sector is required</div>
+                </div>
+            </div>
+    
+            <div class="form-group col-md-6">
+                <label for="businessSizeId" class="input-label pull-left">Business Size
+                    <!-- <sup class=" font-wegiht-bold text-danger">*</sup> -->
+                </label>
+                <select name="businessSizeId" formControlName="businessSizeId" id="businessSizeId" class="form-control" [attr.disabled]="disableControls"
+                    [ngClass]="{ 'is-invalid': submitted &amp;&amp; businessForm.controls.businessSizeId.errors }">
+                    <option value="">Select Ward</option>
+                    <option *ngFor="let businessSize of businessSizes" [value]="businessSize">
+                        {{ businessSize }}
+                    </option>
+                </select>
+                <div *ngIf="submitted &amp;&amp; businessForm.controls.businessSizeId.errors" class="text-danger">
+                    <!-- <div *ngIf="businessForm.controls.ward.errors.required">Ward is required
+                </div> -->
+                </div>
+            </div>
+        </div>
+    
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="businessStatusId" class="input-label pull-left">Business Status<sup
+                        class=" font-wegiht-bold text-danger">*</sup>
+                </label>
+                <select name="businessStatusId" formControlName="businessStatusId" id="businessStatusId"
+                    class="form-control" [attr.disabled]="disableControls"
+                    [ngClass]="{ 'is-invalid': submitted &amp;&amp; businessForm.controls.businessStatusId.errors }">
+                    <option value="">Select Business Status</option>
+                    <option *ngFor="let businessStatus of businessStatuses" [value]="businessStatus">
+                        {{ businessStatus }}
+                    </option>
+                </select>
+                <div *ngIf="submitted &amp;&amp; businessForm.controls.businessStatusId.errors" class="text-danger">
+                    <div *ngIf="businessForm.controls.businessStatusId.errors.required">Business Status is
+                        required</div>
+                </div>
+            </div>
+    
+            <div class="form-group col-md-6">
+                <label for="phoneNumber" class="input-label pull-left">Phone Number
+                    <sup class=" font-wegiht-bold text-danger">*</sup>
+                </label>
+                <input type="text" formControlName="phoneNumber" class="form-control" id="phoneNumber"
+                    maxlength="11" placeholder="Phone Number" [attr.disabled]="disableControls"
+                    [ngClass]="{ 'is-invalid': submitted &amp;&amp; businessForm.controls.phoneNumber.errors }" />
+                <div *ngIf="submitted &amp;&amp; businessForm.controls.phoneNumber.errors" class="text-danger">
+                    <div *ngIf="businessForm.controls.phoneNumber.errors.required">Phone
+                        Number is required
+                    </div>
+                    <div *ngIf="businessForm.controls.phoneNumber.errors.maxlength">Phone
+                        Number must not
+                        exceed 11
+                        digits</div>
+                    <div *ngIf="businessForm.controls.phoneNumber.errors.minlength">Phone
+                        Number must be 11
+                        digits</div>
+                    <div *ngIf="businessForm.controls.phoneNumber.errors.pattern">Phone
+                        Number must be Number
+                        Only</div>
+                </div>
+            </div>
+        </div>
+    
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="businessOperation" class="input-label pull-left">Business Operation
+                </label>
+                <select name="businessOperationId" formControlName="businessOperationId" id="businessOperationId" class="form-control"
+                    [attr.disabled]="disableControls"
+                    [ngClass]="{ 'is-invalid': submitted &amp;&amp; businessForm.controls.businessOperationId.errors }">
+                    <option value="">Select Business Operation</option>
+                    <option *ngFor="let businessOperation of businessOperations" [value]="businessOperation.id">
+                        {{ businessOperation.name }}
+                    </option>
+                </select>
+                <div *ngIf="submitted &amp;&amp; businessForm.controls.businessOperationId.errors"
+                    class="text-danger">
+                </div>
+            </div>
+    
+            <div class="form-group col-md-6">
+                <label for="contactName" class="input-label pull-left">Contact Name
+                    <sup class=" font-wegiht-bold text-danger">*</sup>
+                </label>
+                <input type="text" formControlName="contactName" class="form-control" id="contactName"
+                    placeholder="contactName" [attr.disabled]="disableControls"
+                    [ngClass]="{ 'is-invalid': submitted &amp;&amp; businessForm.controls.contactName.errors }" />
+                <div *ngIf="submitted &amp;&amp; businessForm.controls.contactName.errors" class="text-danger">
+                    <div *ngIf="businessForm.controls.contactName.errors.required">Contact Name is required
+                    </div>
+                </div>
+            </div>                
+        </div>
+    
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="contactAddress" class="input-label pull-left">Contact Address
+                    <sup class=" font-wegiht-bold text-danger">*</sup>
+                </label>
+                <textarea formControlName="contactAddress" class="form-control" id="contactAddress" rows="3"
+                    placeholder="Contact Address" [attr.disabled]="disableControls"
+                    [ngClass]="{ 'is-invalid': submitted &amp;&amp; businessForm.controls.contactAddress.errors }"></textarea>
+                <div *ngIf="submitted &amp;&amp; businessForm.controls.contactAddress.errors" class="text-danger">
+                    <div *ngIf="businessForm.controls.contactAddress.errors.required">Contact Address is
+                        required</div>
+                    <div *ngIf="businessForm.controls.contactAddress.errors.pattern">Only Alphanumeric
+                        Characters
+                        allowed</div>
+                    <div *ngIf="businessForm.controls.contactAddress.errors.minlength">Contact Address
+                        cannot
+                        contain less than 6 characters</div>
+                    <div *ngIf="businessForm.controls.contactAddress.errors.maxlength">Contact Address
+                        cannot
+                        contain more than 200 characters</div>
+                </div>
+            </div>
+        </div>
+    
+        <button *ngIf="showSaveButton" type="submit" class="btn btn button-login">
+            <i class="far fa-save"></i> Save Asset
+        </button>
+    </form>
+</div>

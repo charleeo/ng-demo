@@ -1,0 +1,195 @@
+<div class="content-wrapper">
+  <!-- Content Header (Page header) -->
+  <div class="content-header">
+
+  </div>
+  <!-- /.content-header -->
+
+  <!-- Main content -->
+  <section class="content" data-select2-id="32">
+    <div class="container-fluid" data-select2-id="31">
+      <div class="card card-secondary">
+        <div class="card-header custome">
+          <h3 class="card-title">Annual projection</h3>
+        </div>
+
+        <div class="card-body">
+
+          <table class="table table-bordered table-condensed" *ngIf="apidata; else content" datatable
+            [dtOptions]="dtOptions">
+            <thead>
+              <tr>
+                <th>S/N</th>
+                <th>Projection ID</th>
+                <th>Year</th>
+                <th>Company </th>
+                <th>Date Filed</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+
+              <tr *ngFor="let mydata of apidata; index as i">
+                <td>{{ i + 1 }}</td>
+                <td>{{ mydata.projection_id }}</td>
+                <td>
+                   {{ mydata.projection_year }}
+                </td>
+                <td>{{ mydata.company_name | titlecase }}</td>
+                <td>{{ mydata.date_forwarded }}</td>
+                
+                <td><button class="btn btn-sm btn-outline-primary"
+                  (click)="viewProjection(mymodal, mydata)"><i class="nav-icon fas fa-eye"></i>
+                  View</button></td>
+              </tr>
+            </tbody>
+          </table>
+
+          <ng-template #content>
+            <p style="color: red;"> </p>
+          </ng-template>
+
+        </div>
+        
+        <div class="card-footer">
+          <button  type="button" class="btn button-login mr-4" (click)="forwardProjection(projectionmodal)">Forward Projection</button>
+          <button *ngIf="managerRole" type="button" class="btn button-login" (click)="approveProjection(approvemodal)">Approve Projection</button>
+        </div>
+
+      </div>
+    </div><!-- /.container-fluid -->
+  </section>
+  <!-- /.content -->
+</div>
+
+<ng-template #projectionmodal let-modal>
+  <div class="modal-header">
+      <h4 class="modal-title" id="modal-basic-title">Forward Projection</h4>
+      <!--<button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+          </button> -->
+  </div>
+
+  <div class="modal-body">
+      <div class="container">
+
+        <form [formGroup]="forwardProjectionForm" (ngSubmit)="onSubmitProjection(forwardProjectionForm.value)">
+          <div class="form-row">
+            
+                <div class=" col-md-10">
+                  <div class="form-group col-md-12">
+                    <label for="comment">Comment</label>
+                      <textarea type="text" formControlName="comment" class="form-control" rows="4" placeholder="Enter a Comment"
+                          [ngClass]="{ 'is-invalid': submitted &amp;&amp; forwardProjectionForm.controls.comment.errors }"></textarea>
+                      <div *ngIf="submitted &amp;&amp; forwardProjectionForm.controls.comment.errors" class="text-danger">
+                        <div *ngIf="forwardProjectionForm.controls.year.errors.required">Comment is required</div>
+                      </div>
+                  </div>
+                </div>
+
+              </div>
+              <button type="submit" class="btn btn button-login">Forward Projection</button>
+            </form>
+      </div>
+  </div>
+
+  <div class="modal-footer ">
+      <button type="button" class="btn btn-outline-dark button-login" (click)="modal.close('Save click')">Ok</button>
+  </div>
+</ng-template>
+
+<ng-template #approvemodal let-modal>
+  <div class="modal-header">
+      <h4 class="modal-title" id="modal-basic-title">Approve Projection</h4>
+      <!--<button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+          </button> -->
+  </div>
+
+  <div class="modal-body">
+      <div class="container">
+          <h4>Are you sure you want to approve this Projection</h4>
+          <div class="modal-footer ">
+            <button type="button" (click)="postApproveProjection()" class="btn btn button-login mr-3">Approve</button>
+            <button type="button" (click)="onRevertProjection()" class="btn btn button-login mr-3">Revert</button>
+              <button type="button" class="btn btn-outline-dark button-login" (click)="modal.close('Save click')">Cancel</button>
+          </div>
+          
+      </div>
+  </div>
+
+</ng-template>
+
+<ng-template #mymodal let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">Projection Details</h4>
+        <!--<button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+              <span aria-hidden="true">&times;</span>
+            </button> -->
+    </div>
+
+    <div class="modal-body">
+        <div class="container">
+
+            <form [formGroup]="updateProjectionForm" (ngSubmit)="onSubmit(updateProjectionForm.value)">
+
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="projection_id">Projection ID<sup class="ml-1 font-wegiht-bold text-danger">*</sup></label>
+                        <input type="text" formControlName="projection_id" class="form-control"
+                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; updateProjectionForm.controls.projection_id.errors }" readonly/>
+                        <div *ngIf="submitted &amp;&amp; updateProjectionForm.controls.projection_id.errors" class="text-danger">
+                            <div *ngIf="updateProjectionForm.controls.projection_id.errors.required">Projection_id is required</div>
+                            <!-- <div *ngIf="updateProjectionForm.controls.projection_id.errors.minlength">New Password  must be at least 6 characters long</div> -->
+                        </div>
+                    </div>                       
+
+                    <div class="form-group col-md-6">
+                        <label for="company_name">Company name<sup class="ml-1 font-wegiht-bold text-danger">*</sup></label>
+                        <input type="text" formControlName="company_name" class="form-control"
+                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; updateProjectionForm.controls.company_name.errors }" readonly />
+                        <div *ngIf="submitted &amp;&amp; updateProjectionForm.controls.company_name.errors"
+                            class="text-danger">
+                            <div *ngIf="updateProjectionForm.controls.company_name.errors.required">Company name is required</div>
+                            <div *ngIf="updateProjectionForm.controls.company_name.errors.minlength">Company name must not be more than 60 characters long.</div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="projection_year">Year<sup class="ml-1 font-wegiht-bold text-danger">*</sup></label>
+                        <input type="text" formControlName="projection_year" class="form-control"
+                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; updateProjectionForm.controls.projection_year.errors }" />
+                        <div *ngIf="submitted &amp;&amp; updateProjectionForm.controls.projection_year.errors"
+                            class="text-danger">
+                            <div *ngIf="updateProjectionForm.controls.projection_year.errors.required">Year is required</div>
+                            <div *ngIf="updateProjectionForm.controls.projection_year.errors.minlength">Year must be at least 4 characters long.</div>
+                            <div *ngIf="updateProjectionForm.controls.projection_year.errors.maxlength">Year must be 4 Digit Long.</div>
+                            <div *ngIf="updateProjectionForm.controls.projection_year.errors.pattern">Year must be Number Only</div>
+                        </div>
+                    </div>
+
+                    <div class="form-group col-md-6">
+                        <label for="date_forwarded">Date Forwarded</label>
+                        <input type="text" formControlName="date_forwarded" class="form-control"
+                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; updateProjectionForm.controls.date_forwarded.errors }" readonly />
+                        <div *ngIf="submitted &amp;&amp; updateProjectionForm.controls.date_forwarded.errors"
+                            class="text-danger">
+                            <div *ngIf="updateProjectionForm.controls.date_forwarded.errors.required">Date Forwarded is required</div>
+                            <!-- <div *ngIf="updateProjectionForm.controls.date_forwarded.errors.minlength">Confirm Password must be at least 6 characters long.</div> -->
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn d-none btn button-login">Save Projection</button>
+            </form>
+
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button type="button" class="btn btn-outline-dark button-login" (click)="modal.close('Save click')">Ok</button>
+    </div>
+</ng-template>

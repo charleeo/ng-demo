@@ -1,0 +1,338 @@
+<div class="content-wrapper">
+  <!-- Content Header (Page header) -->
+  <div class="content-header">
+
+  </div>
+  <!-- /.content-header -->
+
+  <!-- Main content -->
+  <section class="content" data-select2-id="32">
+
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit(registerForm.value)">
+      <div class="col-12">
+         <!-- Default box -->
+         <div class="card">
+            <div class="card-header custome">
+               <h3 class="card-title">REPORTS</h3>
+               <div class="card-tools">
+                 <!--- <div class="btn-group" role="group" aria-label="Third group">
+                     <button [disabled]="buttonDisable == 1" type="submit" class="btn btn-danger btn-space" ><i class="fas fa-search"></i> Search</button>
+                  </div>-->
+               </div>
+               <!--<div class="card-tools">
+                  <div class="btn-group" role="group" aria-label="Third group">
+                     <button type="reset" class="btn btn-info btn-space" ><i class="fas fa-undo"></i> Clear </button>
+                  </div>
+               </div> -->
+            </div>
+            <div class="card-body">
+              
+
+               <div class="form-row">
+                <div class="form-group col-md-4">
+                  <label for="inputPassword4">Search Options</label>
+                  <!--<select class="form-control" id="keyword" formControlName="keyword" (change)="optionChanged($event)" [ngClass]="{ 'is-invalid': submitted &amp;&amp; registerForm.controls.keyword.errors }" >
+                    <option value="All" [selected]="searchKeyword == 'All'" >All</option>
+                    <option value="Tested Positive" [selected]="searchKeyword == 'Tested Positive'">Tested Positive</option>
+                    <option value="Tested Negative" [selected]="searchKeyword == 'Tested Negative'">Tested Negative</option>
+                    <option value="Defaulters" [selected]="searchKeyword == 'Defaulters'">Defaulters</option>
+                    <option value="Arrival Date" [selected]="searchKeyword == 'Arrival Date'">Arrival Date</option>
+                  </select> -->
+
+                  <select class="form-control" id="keyword" formControlName="keyword" (change)="optionChanged($event)" [ngClass]="{ 'is-invalid': submitted &amp;&amp; registerForm.controls.keyword.errors }" >
+                    <option value="All" [selected]="true" >All</option>
+                    <option value="Tested Positive">Tested Positive</option>
+                    <option value="Tested Negative">Tested Negative</option>
+                    <option value="Defaulters">Defaulters</option>
+                    <option value="Arrival Date">Arrival Date</option>
+                  </select>
+
+
+                  <div *ngIf="submitted &amp;&amp; registerForm.controls.keyword.errors" class="text-danger">
+                    <div *ngIf="registerForm.controls.keyword.errors.required">Search Option is required</div>
+                  </div>
+                </div>
+
+                <div class="col-4" *ngIf="isArrivaldate == true">
+                  <label for="inputPassword4">Select Arrival Date</label>
+                  <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text" style="height:37px; width: 60px">
+                        <i>
+                        <sat-datepicker #picker2 [rangeMode]="false"></sat-datepicker>
+                        <sat-datepicker-toggle matSuffix [for]="picker2"></sat-datepicker-toggle>
+                       </i>   
+                      </span>
+                    </div><input  matInput formControlName="arrivaldate" class="form-control" [satDatepicker]="picker2" [(ngModel)]="arrivaldateVal"
+                    [ngClass]="{ 'is-invalid': submitted &amp;&amp; registerForm.controls.arrivaldate.errors }" placeholder="MM/DD/YYYY" >
+                  </div>
+               </div>
+
+               <div class="col-4">
+               
+                <div class="input-group mt-32">
+                  <button [disabled]="buttonDisable == 1" type="submit" class="btn button-login" ><i class="fas fa-search"></i> Search</button>
+                </div>
+             </div>
+
+
+             </div>
+
+
+               
+
+            </div>
+         </div>
+         <!-- /.card -->
+      </div>
+      </form>
+
+
+    <div class="container-fluid" data-select2-id="31">
+      <!-- SELECT2 EXAMPLE -->
+      <div class="card card-secondary">
+        <div class="card-header custome">
+          <h3 class="card-title">All COVID Cases List</h3>
+        </div>
+        <!-- /.card-header -->
+        <div class="card-body">
+
+          <div class="page-header">
+            <h3> </h3>
+          </div>
+
+          <table class="table table-bordered table-condensed" *ngIf="apidata; else content" datatable [dtOptions]="dtOptions" width="100%">
+            <thead>
+              <tr>
+                <th >S/N</th>
+                <th>Ref No</th>
+                <th>Full Name</th>
+                <th>Gender</th>
+                <th style="width: 8%">Date of Birth</th>
+                <th>Country Visited</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Status</th>
+                <th style="width: 15%">Arrival Date</th>
+                <th>User Question and Answer</th>
+                <th style="width: 10%">Details</th>
+
+              </tr>
+            </thead>
+            <tbody>
+
+                <tr *ngFor="let mydata of apidata ; index as i">
+                <td>{{i+1}}</td>
+                <td>{{ mydata.covid_track_id}}</td>
+                <td>{{ mydata.fullname | titlecase}}</td>
+                <td>{{ mydata.gender }}</td>
+                <td style="width: 8%">{{ mydata.dob }}</td>
+                <td>{{ mydata.last_country_visit }}</td>
+                <td>{{ mydata.email }}</td>
+                <td>{{ mydata.phone }}</td>
+                <td>{{ mydata.corona_final_status | titlecase}}</td>
+                <td style="width: 15%">{{ mydata.created_date }}</td>
+
+                <td>
+                  <ng-container *ngFor="let qusData of mydata.question ; index as j">
+                      <b>Qus:</b> {{qusData.question_text}} <b>Ans:</b> {{qusData.question_answer}}{{qusData.question_comments}}<hr/> <br>
+                  </ng-container>
+                </td>
+
+
+                <!--<td><a [routerLink]="['/edit', mydata.id]" class="btn btn-danger">View</a></td>-->
+                <td style="width: 10%"><button class="btn btn-sm btn-outline-primary" (click)="open(mymodal, mydata.id)"><i
+                      class="nav-icon fas fa-eye"></i> VIEW</button></td>
+
+              </tr>
+            </tbody>
+          </table>
+          <ng-template #content > <p style="color: red;" *ngIf="isErrorDisplay == true" ></p></ng-template>
+
+
+
+        </div>
+        <!-- /.card-body -->
+        <div class="card-footer">
+
+        </div>
+      </div>
+
+    </div><!-- /.container-fluid -->
+  </section>
+  <!-- /.content -->
+</div>
+
+<ng-template #mymodal let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title"> Details of Passengers</h4>
+    <!--<button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button> -->
+  </div>
+  <div class="modal-body">
+     <div class="container">  
+
+      <div class="form-row">
+        <div class="col-md-12">
+          <img src="{{apiDataById.user_image}}" class="rounded float-left"  alt="User Image" style="height:90px; width: 130px;">
+        </div>   
+      </div> 
+      
+      <form>
+        <div class="form-row">
+          <div class="form-group col-md-6">
+            <label for="inputEmail4">Full Name</label>
+            <input type="text"  class="form-control" value="{{apiDataById.fullname}}"  disabled/>
+          </div>
+          <div class="form-group col-md-6">
+            <label for="inputEmail4">Gender</label>
+            <input type="text"  value="{{apiDataById.gender}}" class="form-control" disabled />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group col-md-6">
+            <label for="inputEmail4">Last Country Visited</label>
+            <input type="text"  class="form-control" disabled value="{{apiDataById.last_country_visit}}"/>
+          </div>
+          <div class="form-group col-md-6">
+            <label for="inputEmail4">Date of Birth</label>
+            <input type="text"  class="form-control"  disabled value="{{apiDataById.dob}}"/>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group col-md-6">
+            <label for="inputEmail4">Email</label>
+            <input type="text"  class="form-control" disabled value="{{apiDataById.email}}"/>
+          </div>
+          <div class="form-group col-md-6">
+            <label for="inputEmail4">Phone</label>
+            <input type="text"  class="form-control" disabled value="{{apiDataById.phone}}"/>
+          </div>
+        </div>
+
+        <div *ngFor="let qdata of apiDataById.question ; index as i">
+
+          <div class="form-row" *ngIf="qdata.id == 20">
+            <div class="form-group col-md-12" >
+              <label for="inputEmail4">{{qdata.question_text}} </label>
+              <input type="text"  class="form-control" disabled value="{{qdata.question_answer}} {{qdata.question_comments}}"/>
+            </div>
+          </div>
+          <div class="form-row" *ngIf="qdata.id == 21">
+            <div class="form-group col-md-12" >
+              <label for="inputEmail4">{{qdata.question_text}} </label>
+              <input type="text"  class="form-control" disabled value="{{qdata.question_answer}} {{qdata.question_comments}}"/>
+            </div>
+          </div>
+          <div class="form-row" *ngIf="qdata.id == 22">
+            <div class="form-group col-md-12" >
+              <label for="inputEmail4">{{qdata.question_text}} </label>
+              <input type="text"  class="form-control" disabled value="{{qdata.question_answer}} {{qdata.question_comments}}"/>
+            </div>
+          </div>
+
+          <div class="form-row" *ngIf="qdata.id == 23">
+            <div class="form-group col-md-12" >
+              <label for="inputEmail4">{{qdata.question_text}} </label>
+              <input type="text"  class="form-control" disabled value="{{qdata.question_answer}} {{qdata.question_comments}}"/>
+            </div>
+          </div>
+
+          <div class="form-row" *ngIf="qdata.id == 24">
+            <div class="form-group col-md-12" >
+              <label for="inputEmail4">{{qdata.question_text}} </label>
+              <input type="text"  class="form-control" disabled value="{{qdata.question_answer}} {{qdata.question_comments}}"/>
+            </div>
+          </div>
+
+          <div class="form-row" *ngIf="qdata.id == 25">
+            <div class="form-group col-md-12" >
+              <label for="inputEmail4">{{qdata.question_text}} </label>
+              <input type="text"  class="form-control" disabled value="{{qdata.question_answer}} {{qdata.question_comments}}"/>
+            </div>
+          </div>
+
+          
+          
+
+
+
+          
+
+        <div class="form-row" *ngIf="qdata.id == 1">
+          <div class="form-group col-md-6" >
+            <label for="inputEmail4">{{qdata.question_text}}</label>
+            <input type="text"  class="form-control" disabled value="{{qdata.question_answer.split('|')[0]}}"/>
+          </div>
+          <div class="form-group col-md-6">
+            <label for="inputEmail4">{{qdata.secoundry_question}}</label>
+            <input type="text"  class="form-control"  disabled value="{{qdata.question_answer.split('|')[1]}}" />
+          </div>
+        </div>
+
+        <div class="form-row" *ngIf="qdata.id == 3">
+          <div class="form-group col-md-6">
+            <label for="inputEmail4">{{qdata.question_text}}  </label>
+            <input type="text"  class="form-control" disabled value="{{qdata.question_answer.split('|')[0]}}"/>
+          </div>
+          <div class="form-group col-md-6">
+            <label for="inputEmail4">{{qdata.secoundry_question}}</label>
+            <input type="text"  class="form-control"  disabled value="{{qdata.question_answer.split('|')[1]}}"/>
+          </div>
+        </div>
+
+        <div class="form-row" *ngIf="qdata.id == 5">
+          <div class="form-group col-md-12" >
+            <label for="inputEmail4">{{qdata.question_text}} </label>
+            <input type="text"  class="form-control" disabled value="{{qdata.question_answer}} {{qdata.question_comments}}"/>
+          </div>
+        </div>
+
+        <div class="form-row" *ngIf="qdata.id == 6">
+          <div class="form-group col-md-12" >
+            <label for="inputEmail4">{{qdata.question_text}} </label>
+            <input type="text"  class="form-control"  disabled value="{{qdata.question_answer}} {{qdata.question_comments}}" />
+          </div>
+        </div>
+
+
+        <div class="form-row" *ngIf="qdata.id == 7">
+          <div class="form-group col-md-12" >
+            <label for="inputEmail4">{{qdata.question_text}} </label>
+            <input type="text"  class="form-control" disabled value="{{qdata.question_answer}} {{qdata.question_comments}}" />
+          </div>
+          
+        </div>
+
+        <div class="form-row" *ngIf="qdata.id == 8">
+          <div class="form-group col-md-12" >
+            <label for="inputEmail4">{{qdata.question_text}} </label>
+            <input type="text"  class="form-control"  disabled value="{{qdata.question_answer}} {{qdata.question_comments}}" />
+          </div>
+        </div>
+
+
+        <div class="form-row" *ngIf="qdata.id == 9">
+          <div class="form-group col-md-12" >
+            <label for="inputEmail4">{{qdata.question_text}}  </label>
+            <input type="text"  class="form-control" disabled value="{{qdata.question_answer}} {{qdata.question_comments}}"/>
+          </div>
+          
+        </div>
+
+
+      </div>
+        
+
+      </form>
+
+
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-dark button-login" (click)="modal.close('Save click')">Ok</button>
+  </div>
+</ng-template>

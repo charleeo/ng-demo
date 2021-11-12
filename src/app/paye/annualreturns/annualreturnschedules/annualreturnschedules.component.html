@@ -1,0 +1,495 @@
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+
+    </div>
+    <!-- /.content-header -->
+
+    <!-- Main content -->
+    <section class="content" data-select2-id="32">
+        <div class="container-fluid" data-select2-id="31">
+            <flash-messages></flash-messages>
+            <!-- SELECT2 EXAMPLE -->
+            <div class="card card-secondary">
+                <div class="card-header custome">
+                    <h3 class="card-title">Form H1 Schedules</h3>
+                </div>
+                <!-- /.card-header -->
+                <div class="card-body">
+                    <div class="col-auto mbm-30">
+                        <div class="row" *ngIf="schedulesData">
+                            <div class="show-record">
+                                Show &nbsp;
+                                <select class="custom-select custom-select-sm form-control form-control-sm"
+                                    (change)="setItemsPerPage(page.value)" #page>
+                                    <option [selected]="currentPageLength==10">10</option>
+                                    <option [selected]="currentPageLength==30">30</option>
+                                    <option [selected]="currentPageLength==50">50</option>
+                                    <option [selected]="currentPageLength==100">100</option>
+                                    <option [selected]="currentPageLength==500">500</option>
+                                    <option [selected]="currentPageLength==1000">1000</option>
+                                </select>
+                                &nbsp; entries
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                    <table class="table table-bordered table-condensed" *ngIf="schedulesData; else content" datatable
+                        [dtOptions]="dtOptions" width="100%">
+                        <thead>
+                            <tr>
+                                <th>S/N</th>
+                                <th>Business Name</th>
+                                <th>Business ID</th>
+                                <th>Company Name</th>
+                                <th>Tax Payer ID</th>
+                                <!-- <th>Company TIN</th> -->
+                                <th>Employee Count</th>
+                                <th>Tax Year</th>
+
+                                <th>Forwarded To</th>
+                                <th>Date Forwarded</th>
+                                <th>Due Date</th>
+                                <th>Annual Return Status</th>
+                                <th>View & Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let mydata of schedulesData | paginate: config; index as i">
+                                <td>{{config.itemsPerPage * (config.currentPage - 1) + i + 1}}</td>
+                                <td>{{ mydata.business_name }}</td>
+                                <td>{{ mydata.business_id }}</td>
+                                <td>{{ mydata.company_name }}</td>
+                                <td>{{ mydata.taxpayer_id }}</td>
+                                <!-- <td>{{ mydata.tin }}</td> -->
+                                <td>{{ mydata.employees_count | number }}</td>
+                                <td>{{ getTaxYear(mydata.due_date) }}</td>
+
+                                <td><p
+                                  [ngClass]="{'text-danger': mydata.forwarded_to == 0, 'text-primary': mydata.forwarded_to == 1, 'text-success': mydata.forwarded_to == 2} ">
+                                  {{ mydata.forwarded_to == 0 ? "Not forwaded" : mydata.forwarded_to == 1 ? "Forwarded to Tax Officer" : "Forwarded to Head of Station" }}</p>
+                                </td>
+                                <td>{{ mydata.date_forwarded | date }}</td>
+                                <td>{{ mydata.due_date | date }}</td>
+                                <td><p  [ngClass]="{'text-danger': mydata.annual_return_assessment_status == 0, 'text-success': mydata.annual_return_assessment_status == 1} ">
+                                {{ mydata.annual_return_assessment_status == 0 ? "Still Open" : "Case Closed" }}</p></td>
+                                <!-- <td>{{ mydata.status == 0 ? "In Active" : "Active" }}</td> -->
+
+                                <td style="width: 10%">
+                                    <button class="btn btn-sm btn-outline-primary"
+                                        (click)="viewSchedule(mymodal, mydata)"><i class="nav-icon fas fa-eye"></i>
+                                        View
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    </div>
+                    <div id="page_info" class="mt-3 record-show-text-bottom" *ngIf="schedulesData">
+                        Showing {{(config.currentPage-1) * config.itemsPerPage + 1}} - {{config.currentPage *
+                        config.itemsPerPage}} &nbsp;
+                        of &nbsp;{{ config.totalItems }} &nbsp; entries
+                    </div>
+
+                    <div class="pagination paging-pull-right" *ngIf="schedulesData">
+                        <pagination-controls (pageChange)="pageChange($event)"
+                            class="my-pagination mt-2 pagination-server">
+                        </pagination-controls>
+                    </div>
+
+                    <ng-template #content>
+                        <p style="color: red;"> </p>
+                    </ng-template>
+
+                </div>
+                <!-- /.card-body -->
+                <div class="card-footer">
+
+                </div>
+            </div>
+
+        </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+</div>
+
+<ng-template #mymodal let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">Schedule Details</h4>
+        <!--<button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+              <span aria-hidden="true">&times;</span>
+            </button> -->
+    </div>
+
+    <div class="modal-body">
+        <div class="container">
+
+            <div class="form-row">
+                <div class="col-md-12">
+                    <!-- <img src="assets/dist/img/login-user-img.png" class="rounded float-left" alt="User Image"
+                        style="height:90px; width: 130px;"> -->
+                </div>
+            </div>
+
+            <form [formGroup]="scheduleForm">
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="forwardedTo">Forwarded To</label>
+                        <input type="text" formControlName="forwardedTo" class="form-control" [attr.disabled]="true"
+                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; scheduleForm.controls.forwardedTo.errors }" />
+                    </div>
+
+                    <div class="form-group col-md-6">
+                        <label for="annualReturnStatus">Annual Return Status</label>
+                        <input type="text" formControlName="annualReturnStatus" class="form-control"
+                            [attr.disabled]="true"
+                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; scheduleForm.controls.annualReturnStatus.errors }" />
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="dateForwarded">Date Forwarded</label>
+                        <input type="text" formControlName="dateForwarded" class="form-control" [attr.disabled]="true"
+                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; scheduleForm.controls.dateForwarded.errors }" />
+                    </div>
+
+                    <div class="form-group col-md-6">
+                        <label for="dueDate">Due Date</label>
+                        <input type="text" formControlName="dueDate" class="form-control" [attr.disabled]="true"
+                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; scheduleForm.controls.dueDate.errors }" />
+                    </div>
+                </div>
+
+            </form>
+
+            <div>
+                <table class="table table-bordered table-condensed" *ngIf="scheduleEmployeesData;" datatable
+                    [dtOptions]="dtOptions" width="100%">
+                    <thead>
+                        <tr>
+                            <th>S/N</th>
+                            <!-- <th>Date Created</th> -->
+                            <th>Tax Payer ID</th>
+                            <th>First Name</th>
+                            <th>Middle Name</th>
+                            <th>Surname</th>
+                            <th>Designation</th>
+                            <th>Nationality</th>
+
+                            <th>Monthly Income (₦)</th>
+                            <th>Annual Gross Income (₦)</th>
+                            <!-- <th style="width: 8%">Gross Income</th> -->
+                            <th>Annual Tax Paid (₦)</th>
+                            <th>Month(s)</th>
+                            <th *ngIf="showEditEmployee">Edit</th>
+                            <th *ngIf="showEditEmployee">Delete</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let mydata of scheduleEmployeesData; index as i">
+                            <td>{{ i + 1 }}</td>
+                            <!-- <td>{{ mydata.created_at | date }}</td> -->
+                            <td>{{ mydata.taxpayer_id }}</td>
+                            <td>{{ mydata.first_name | titlecase }}</td>
+                            <td>{{ mydata.middle_name == null ? "N/A" : mydata.middle_name | titlecase }}</td>
+
+                            <td>{{ mydata.surname | titlecase }}</td>
+                            <td>{{ mydata.designation | titlecase }}</td>
+                            <td>{{ mydata.nationality | titlecase }}</td>
+                            <td>{{ mydata.monthly_income | number }}</td>
+                            <td>{{ mydata.annual_gross_income | number }}</td>
+                            <td>{{ mydata.annual_tax_paid | number }}</td>
+                            <td>{{ mydata.months }}</td>
+                            <td *ngIf="showEditEmployee"><button class="btn btn-sm btn-outline-primary" [disabled]="assessmentGenerated"
+                                (click)="editAnnualReturn(annualreturnmodal, mydata)"><i class="nav-icon fas fa-edit"></i> Edit</button>
+                            </td>
+                            <td *ngIf="showEditEmployee">
+                                <button class="btn btn-sm btn-outline-danger"
+                                    (click)="deleteAnnualReturn(mydata.id)"><i class="nav-icon far fa-trash-alt"></i> Delete
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+            </div>
+
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button *ngIf="managerRole" type="submit" [disabled]="approvalClosed || scheduleStatus == 1" (click)="forwardSchedule(schedulemodal)"
+            class="btn btn button-login"><i class="fas fa-backward"></i> Send back to Tax Officer</button>
+        <button *ngIf="editorRole" type="submit" [disabled]="approvalClosed || scheduleStatus == 2" (click)="forwardSchedule(schedulemodal)"
+            class="btn btn button-login"><i class="fas fa-forward"></i> Forward to Head of Station</button>
+        <button *ngIf="showGenerateAssessment" type="submit" [disabled]="approvalClosed || scheduleStatus == 1" (click)="generateAssessment(assessmentmodal)"
+            class="btn btn button-login"><i class="far fa-share-square"></i> File Annual Return</button>
+
+        <!-- <button *ngIf="managerRole" type="submit" (click)="forwardSchedule(schedulemodal)"
+            class="btn btn button-login"><i class="fas fa-backward"></i> Forward back to Editor</button>
+        <button *ngIf="editorRole" type="submit" (click)="forwardSchedule(schedulemodal)"
+            class="btn btn button-login"><i class="fas fa-forward"></i> Forward to Manager</button>
+        <button *ngIf="showGenerateAssessment" type="submit" (click)="generateAssessment(assessmentmodal)"
+            class="btn btn button-login"><i class="far fa-share-square"></i> Generate Assessment</button> -->
+        <button type="button" class="btn btn-outline-dark button-login" (click)="modal.close('Save click')">Ok</button>
+    </div>
+</ng-template>
+
+<ng-template #schedulemodal let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">Forward Schedule</h4>
+        <!--<button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+              <span aria-hidden="true">&times;</span>
+            </button> -->
+    </div>
+
+    <div class="modal-body">
+        <div class="container">
+
+            <div class="form-row">
+                <div class="col-md-12">
+                    <!-- <img src="assets/dist/img/login-user-img.png" class="rounded float-left" alt="User Image"
+                        style="height:90px; width: 130px;"> -->
+                </div>
+            </div>
+
+            <form [formGroup]="forwardScheduleForm" (ngSubmit)="onSubmitSchedule(forwardScheduleForm.value)">
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="scheduleYear">Schedule Year</label>
+                        <input type="text" formControlName="scheduleYear" class="form-control" [attr.disabled]="true"
+                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; forwardScheduleForm.controls.scheduleYear.errors }" />
+                        <div *ngIf="submitted &amp;&amp; forwardScheduleForm.controls.scheduleYear.errors"
+                            class="text-danger">
+                            <div *ngIf="forwardScheduleForm.controls.scheduleYear.errors.required">Schedule Year is
+                                required</div>
+                            <div *ngIf="forwardScheduleForm.controls.scheduleYear.errors.minlength">Schedule Year must
+                                be at least 4 characters long.</div>
+                            <div *ngIf="forwardScheduleForm.controls.scheduleYear.errors.maxLength">Schedule Year must
+                                be 4 characters long.</div>
+                            <div *ngIf="forwardScheduleForm.controls.scheduleYear.errors.pattern">Schedule Year must be
+                                Number Only</div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <button type="submit" class="btn btn button-login"><i class="far fa-save"></i> Forward Schedule</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button type="button" class="btn btn-outline-dark button-login" (click)="modal.close('Save click')">Ok</button>
+    </div>
+</ng-template>
+
+<ng-template #assessmentmodal let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">Generate Assessment</h4>
+        <!--<button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+              <span aria-hidden="true">&times;</span>
+            </button> -->
+    </div>
+
+    <div class="modal-body">
+        <div class="container">
+
+            <div class="form-row">
+                <div class="col-md-12">
+                    <!-- <img src="assets/dist/img/login-user-img.png" class="rounded float-left" alt="User Image"
+                        style="height:90px; width: 130px;"> -->
+                </div>
+            </div>
+
+            <form [formGroup]="assessmentForm" (ngSubmit)="onSubmitAssessment(assessmentForm.value)">
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="assessmentYear">Assessment Year</label>
+                        <input type="text" formControlName="assessmentYear" class="form-control" [attr.disabled]="true"
+                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; assessmentForm.controls.assessmentYear.errors }" />
+                        <div *ngIf="submitted &amp;&amp; assessmentForm.controls.assessmentYear.errors"
+                            class="text-danger">
+                            <div *ngIf="assessmentForm.controls.assessmentYear.errors.required">Assessment Year is
+                                required</div>
+                            <div *ngIf="assessmentForm.controls.assessmentYear.errors.minlength">Assessment Year must
+                                be at least 4 characters long.</div>
+                            <div *ngIf="assessmentForm.controls.assessmentYear.errors.maxLength">Assessment Year must
+                                be 4 characters long.</div>
+                            <div *ngIf="assessmentForm.controls.assessmentYear.errors.pattern">Assessment Year must be
+                                Number Only</div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <button type="submit" class="btn btn button-login"><i class="far fa-share-square"></i> Generate Assessment</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button type="button" class="btn btn-outline-dark button-login" (click)="modal.close('Save click')">Ok</button>
+    </div>
+</ng-template>
+
+<ng-template #annualreturnmodal let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">Edit Annual Return</h4>
+        <!--<button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+              <span aria-hidden="true">&times;</span>
+            </button> -->
+    </div>
+
+    <div class="modal-body">
+        <div class="container">
+
+            <div class="form-row">
+                <div class="col-md-12">
+                    <!-- <img src="assets/dist/img/login-user-img.png" class="rounded float-left" alt="User Image"
+                        style="height:90px; width: 130px;"> -->
+                </div>
+            </div>
+
+            <form [formGroup]="annualReturnForm" (ngSubmit)="onSubmitAnnualReturn(annualReturnForm.value)">
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="taxPayerID">Tax Payer ID</label>
+                        <input type="text" formControlName="taxPayerID" class="form-control" [attr.disabled]="true"
+                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; annualReturnForm.controls.taxPayerID.errors }" />
+                        <div *ngIf="submitted &amp;&amp; annualReturnForm.controls.taxPayerID.errors"
+                            class="text-danger">
+                            <!-- <div *ngIf="annualReturnForm.controls.taxPayerID.errors.required">First Name is required</div> -->
+                        </div>
+                    </div>
+
+                    <div class="form-group col-md-6">
+                        <label for="firstName">First Name</label>
+                        <input type="text" formControlName="firstName" class="form-control"
+                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; annualReturnForm.controls.firstName.errors }" />
+                        <div *ngIf="submitted &amp;&amp; annualReturnForm.controls.firstName.errors" class="text-danger">
+                            <div *ngIf="annualReturnForm.controls.firstName.errors.required">First Name is required</div>
+                            <div *ngIf="annualReturnForm.controls.firstName.errors.pattern">First Name cannot contain numeric value</div>
+                            <div *ngIf="annualReturnForm.controls.firstName.errors.maxlength">First Name must be at most 30 characters</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="middleName">Middle Name</label>
+                        <input type="text" formControlName="middleName" class="form-control"
+                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; annualReturnForm.controls.middleName.errors }" />
+                        <div *ngIf="submitted &amp;&amp; annualReturnForm.controls.middleName.errors" class="text-danger">
+                            <div *ngIf="annualReturnForm.controls.middleName.errors.required">Middle Name is required</div>
+                            <div *ngIf="annualReturnForm.controls.middleName.errors.pattern">Middle Name cannot contain numeric value</div>
+                            <div *ngIf="annualReturnForm.controls.middleName.errors.maxlength">Middle Name must be at most 30 characters</div>
+                        </div>
+                    </div>
+
+                    <div class="form-group col-md-6">
+                        <label for="surname">Surname</label>
+                        <input type="text" formControlName="surname" class="form-control"
+                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; annualReturnForm.controls.surname.errors }" />
+                        <div *ngIf="submitted &amp;&amp; annualReturnForm.controls.surname.errors"
+                            class="text-danger">
+                            <div *ngIf="annualReturnForm.controls.surname.errors.required">Surname is required</div>
+                            <div *ngIf="annualReturnForm.controls.surname.errors.pattern">Surname cannot contain numeric value</div>
+                            <div *ngIf="annualReturnForm.controls.surname.errors.maxlength">Surname must be at most 30 characters</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="monthlyIncome">Monthly Income</label>
+                        <input type="text" formControlName="monthlyIncome" class="form-control"
+                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; annualReturnForm.controls.monthlyIncome.errors }" />
+                        <div *ngIf="submitted &amp;&amp; annualReturnForm.controls.monthlyIncome.errors"
+                            class="text-danger">
+                            <div *ngIf="annualReturnForm.controls.monthlyIncome.errors.required">Monthly Income is
+                                required</div>
+                            <div *ngIf="annualReturnForm.controls.monthlyIncome.errors.pattern">Monthly Income must be
+                                Number Only</div>
+                        </div>
+                    </div>
+
+                    <div class="form-group col-md-6">
+                        <label for="annualGrossIncome">Annual Gross Income</label>
+                        <input type="text" formControlName="annualGrossIncome" class="form-control"
+                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; annualReturnForm.controls.annualGrossIncome.errors }" />
+                        <div *ngIf="submitted &amp;&amp; annualReturnForm.controls.annualGrossIncome.errors"
+                            class="text-danger">
+                            <div *ngIf="annualReturnForm.controls.annualGrossIncome.errors.required">Annual Gross Income is
+                                required</div>
+                            <div *ngIf="annualReturnForm.controls.annualGrossIncome.errors.pattern">Annual Gross Income must be
+                                Number Only</div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="annualTaxPaid">Annual Tax Paid</label>
+                        <input type="text" formControlName="annualTaxPaid" class="form-control"
+                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; annualReturnForm.controls.annualTaxPaid.errors }" />
+                        <div *ngIf="submitted &amp;&amp; annualReturnForm.controls.annualTaxPaid.errors"
+                            class="text-danger">
+                            <div *ngIf="annualReturnForm.controls.annualTaxPaid.errors.required">Annual Tax Paid is
+                                required</div>
+                            <div *ngIf="annualReturnForm.controls.annualTaxPaid.errors.pattern">Annual Tax Paid must be
+                                Number Only</div>
+                        </div>
+                    </div>
+
+                    <div class="form-group col-md-6">
+                        <label for="months">Months</label>
+                        <input type="text" formControlName="months" class="form-control"
+                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; annualReturnForm.controls.months.errors }" />
+                        <div *ngIf="submitted &amp;&amp; annualReturnForm.controls.months.errors" class="text-danger">
+                            <div *ngIf="annualReturnForm.controls.months.errors.required">Months is
+                                required</div>
+                            <div *ngIf="annualReturnForm.controls.months.errors.pattern">Months must be
+                                Number Only</div>
+                            <div *ngIf="annualReturnForm.controls.months.errors.maxlength">Months must be at most 2 characters</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="designation">Designation</label>
+                        <input type="text" formControlName="designation" class="form-control"
+                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; annualReturnForm.controls.designation.errors }" />
+                        <div *ngIf="submitted &amp;&amp; annualReturnForm.controls.designation.errors"
+                            class="text-danger">
+                            <div *ngIf="annualReturnForm.controls.designation.errors.required">Designation is
+                                required</div>
+                        </div>
+                    </div>
+
+                    <div class="form-group col-md-6">
+                        <label for="nationality">Nationality</label>
+                        <input type="text" formControlName="nationality" class="form-control"
+                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; annualReturnForm.controls.nationality.errors }" />
+                        <div *ngIf="submitted &amp;&amp; annualReturnForm.controls.nationality.errors"
+                            class="text-danger">
+                            <div *ngIf="annualReturnForm.controls.nationality.errors.required">Nationality is
+                                required</div>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn button-login">Save Annual Return</button>
+            </form>
+
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button type="button" class="btn btn-outline-dark button-login" (click)="modal.close('Save click')">Ok</button>
+    </div>
+</ng-template>
+

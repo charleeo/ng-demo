@@ -1,0 +1,207 @@
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-lg-12">
+      <nav class="row main-header navbar navbar-expand navbar-white navbar-light" style="margin-left:-15px;padding: 0px 0px 0px 18px;">
+            <div class="col-md-10 col-xs-12"><a [routerLink]="['/']"><img src="assets/dist/img/logo-header.png" height="50px"></a></div>
+            <div class="col-md-2 col-xs-12">
+              <div class="ml-auto color-white pull-right">
+                <!-- <a [routerLink]="['/login']" >
+                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                </a> -->
+                <a [routerLink]="['/login']" >
+                  <i class="fas fa-sign-in-alt"></i> Sign In
+                </a>
+                <a [routerLink]="['/faq']">
+                  <i class="far fa-comments"></i> FAQ's
+                </a>
+              </div>
+            </div>
+        </nav>
+      </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+<div class="row m-0" style="min-height: calc(100vh - 51px);">
+
+
+  <div class="col-sm-4 left-side p-0 side-center hide-login-img">
+
+    <div class="mx-auto">
+      <img src="assets/dist/img/login-logo.png" class="mx-auto img-fluid" alt="" >
+    </div>
+
+  </div>
+
+
+  <div class="col-xs-12 col-sm-8 p-0 mt-5">
+
+
+
+
+
+
+
+
+
+<!-- OLD HTML  -->
+<div class="login-page">
+  <div class="login-box">
+      <div class="login-logo">
+        <!--<img src="assets/dist/img/login-logo.png" alt="myimage"> -->
+      </div>
+      <!-- /.login-logo -->
+      <div class="card">
+        <div class="card-body login-card-body">
+          <div style="margin-top: 0px; text-align: center;">
+            <img src="assets/dist/img/login-user-img.png" alt="myimage">
+          </div>
+
+        <!--<div class="alert alert-danger" role="alert" *ngIf="iserror==1" >
+            {{errormsg}}
+
+        </div> -->
+        <flash-messages></flash-messages>
+        <div *ngIf="showLoginForm" class="validate-form">
+          <p class="login-box-msg bold-black"> Please login to access your portal</p>
+
+          <form [formGroup]="loginForm" (ngSubmit)="onSubmit(loginForm.value)">
+            <!-- <div class="input-group mb-2 dropdown-container">
+              <select type="text" name="taxTypeId" formControlName="taxTypeId" id="taxTypeId" placeholder="Tax Type"
+                (change)="taxTypeChanged($event.target.value)" class="form-control login_select"
+                [ngClass]="{ 'is-invalid': submitted &amp;&amp; loginForm.controls.taxTypeId.errors }">
+                <option value="">Select Tax Type</option>
+                <option *ngFor="let taxPayerType of taxPayerTypes" [value]="taxPayerType.id">
+                  {{ taxPayerType.name }}
+                </option>
+              </select>
+            </div>
+            <div *ngIf="submitted &amp;&amp; loginForm.controls.taxTypeId.errors" class="text-danger validation-error">
+              <div *ngIf="loginForm.controls.taxTypeId.errors.required">Tax Type is required</div>
+            </div> -->
+
+            <div class="input-group mb-2">
+              <input type="text" class="form-control" placeholder="Email Address" formControlName="emailAddress"
+                [ngClass]="{ 'is-invalid': submitted &amp;&amp; loginForm.controls.emailAddress.errors }">
+              <div class="input-group-append">
+                <div class="input-group-text">
+                  <span class="fas fa-envelope"></span>
+                </div>
+              </div>
+            </div>
+            <div *ngIf="submitted &amp;&amp; loginForm.controls.emailAddress.errors" class="text-danger validation-error">
+              <div *ngIf="loginForm.controls.emailAddress.errors.required">Email is required</div>
+              <div *ngIf="loginForm.controls.emailAddress.errors.maxLength">Email must be under 45 characters</div>
+            </div>
+
+            <div class="input-group mb-2">
+              <input [type]="fieldTextType ? 'text' : 'password'" class="form-control" placeholder="Password" formControlName="password"
+                [ngClass]="{ 'is-invalid': submitted &amp;&amp; loginForm.controls.password.errors }">
+
+                <div class="input-group-append">
+                  <div class="input-group-text">
+                    <span class="fa" [ngClass]="{
+                      'fa-eye': !fieldTextType,
+                      'fa-eye-slash': fieldTextType
+                    }"
+                    (click)="toggleFieldTextType()">
+                  </span>
+                  </div>
+                </div>
+
+            </div>
+            <div *ngIf="submitted &amp;&amp; loginForm.controls.password.errors" class="text-danger validation-error">
+              <div *ngIf="loginForm.controls.password.errors.required">Password is required</div>
+            </div>
+
+            <ng-container *ngIf="googleRecaptch">
+              <div class="input-group mb-2">
+                <re-captcha (resolved)="resolved($event)" siteKey="6LcRjvUUAAAAAKKYMVWLspTMguzYHNgd8j3fahY-"></re-captcha>
+              </div>
+              <div *ngIf="submitted" class="text-danger validation-error" id="captchaError">
+              </div>
+          </ng-container>
+
+            <div class="social-auth-links text-center mb-3">
+              <button class="btn btn-block btn button-login" id='mycaptcha'>
+                Login
+              </button>
+            </div>
+          </form>
+          <div class="login-remeber text-center mb-2">
+            <label><input type="checkbox" id="check" name="check"> Remember Me |</label>
+            <a [routerLink]="['/forgotpassword']" style="margin-left: 5px;color: #0D47A1;">Forgot Password?</a>
+          </div>
+
+          <!-- <div class="login-remeber text-center mb-2">
+            <a [routerLink]="['/forgotpassword']" style="margin-left: 20px;color: #0D47A1;">Forgot Password?</a>
+          </div> -->
+        </div>
+
+
+        <div *ngIf="showOtpForm" class="validate-form">
+          <p class="login-box-msg bold-black">Enter 4-digit code to login</p>
+
+          <form [formGroup]="otpForm" (ngSubmit)="onOtpSubmit(otpForm.value)">
+            <!-- <div class=""> -->
+
+            <div class="input-group mb-2" style="width:310px;">
+              <input [type]="fieldTextType2 ? 'text' : 'password'" formControlName="enterOtp" placeholder="Enter 4-digit OTP" class="form-control"
+                id="enterOtp" [ngClass]="{ 'is-invalid': submitted &amp;&amp; otpForm.controls.enterOtp.errors }" maxlength="4"/>
+                <div class="input-group-append">
+                  <div class="input-group-text">
+                    <span class="fa" [ngClass]="{
+                      'fa-eye': !fieldTextType2,
+                      'fa-eye-slash': fieldTextType2
+                    }"
+                    (click)="toggleFieldTextType2()">
+                  </span>
+                  </div>
+                </div>
+            </div>
+            <div *ngIf="submitted &amp;&amp; otpForm.controls.enterOtp.errors" class="text-danger validation-error">
+              <div *ngIf="otpForm.controls.enterOtp.errors.required">OTP is required</div>
+              <div *ngIf="otpForm.controls.enterOtp.errors.maxLength">OTP must be 4 characters</div>
+            </div>
+
+            <!-- <div class="input-group mb-3">
+                  <re-captcha (resolved)="resolved($event)" siteKey="6LcRjvUUAAAAAKKYMVWLspTMguzYHNgd8j3fahY-"></re-captcha>
+                </div>
+                <div *ngIf="submitted" class="text-danger" id="captchaError">
+                </div> -->
+
+            <div class="social-auth-links text-center mb-3">
+              <!-- <button class="btn btn-block btn button-login" id='mycaptcha'>   LOGIN
+                  </button>  -->
+              <button class="btn btn-block btn button-login" type="submit">Verify OTP</button>
+            </div>
+          </form>
+
+          <div class="login-remeber text-center mb-2">
+            <a (click)="requestNewOtp()" style="margin-left: 7px; cursor: pointer;color:#0D47A1;">Request new OTP</a>
+            <a (click)="backToLogin()" style="margin-left: 20px; color: #0D47A1; cursor: pointer;">Back to Login</a>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- /.login-card-body -->
+    </div>
+  </div>
+
+</div>
+<!-- End OLD HTML  -->
+
+
+
+
+
+
+
+
+</div>

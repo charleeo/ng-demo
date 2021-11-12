@@ -1,0 +1,65 @@
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+
+    </div>
+    <!-- /.content-header -->
+
+    <!-- Main content -->
+    <section class="content" data-select2-id="32">
+      <div class="container-fluid" data-select2-id="31">
+        <flash-messages></flash-messages>
+        <!-- SELECT2 EXAMPLE -->
+        <div class="card card-secondary">
+          <div class="card-header custome">
+            <h3 class="card-title">Upload Corporates</h3>
+
+          </div>
+          <!-- /.card-header -->
+          <div class="card-body">
+
+            <div class="alert alert-success" role="alert" *ngIf="isResponse==1">
+              {{isMessage}}
+            </div>
+
+            <div class="alert alert-danger" role="alert" *ngIf="isError==1">
+              {{isMessage}}
+            </div>
+
+            <form [formGroup]="myForm" (ngSubmit)="submit()">
+              <div class="form-row">
+                <div class="form-group col-md-6">
+                  <label for="fileInput">Select File to Upload</label>
+
+                    <div class="custom-file">
+                        <input formControlName="myfile" id="myfile" type="file" class="custom-file-input" (change)="onFileChange($event)"
+                        [ngClass]="{ 'is-invalid': submitted && myForm.controls.myfile.errors }" accept=".xls,.xlsx" >
+                        <label class="custom-file-label" for="customFile">{{filePath == null ? 'Choose file (xlsx or xls)' : filePath}}</label>
+                    </div>
+
+                    <div *ngIf="submitted &amp;&amp; f.myfile.touched && f.myfile.invalid" class="text-danger">
+                      <div *ngIf="f.myfile.errors.required">File is required.</div>
+                    </div>
+
+                </div>
+
+              </div>
+
+              <button type="submit" class="btn btn button-login" [disabled]="file==null">Upload File</button>
+            </form>
+
+            <div class="login-remeber">
+                <a href="{{sample_file}}" target="_blank">
+                    Download corporate template here</a>
+            </div>
+          </div>
+          <!-- /.card-body -->
+          <div class="card-footer">
+
+          </div>
+        </div>
+
+      </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+  </div>

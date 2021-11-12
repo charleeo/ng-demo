@@ -1,0 +1,502 @@
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+
+    </div>
+    <!-- /.content-header -->
+
+    <!-- Main content -->
+    <section class="content" data-select2-id="32">
+        <div class="container-fluid" data-select2-id="31">
+            <flash-messages></flash-messages>
+            <!-- SELECT2 EXAMPLE -->
+            <div class="card card-secondary">
+                <div class="card-header custome">
+                    <h3 class="card-title font-12-sa">List of Assessments</h3>
+                </div>
+                <!-- /.card-header -->
+
+                <div class="card-body">
+                    <div class="col-auto mbm-30">
+                        <div class="row" *ngIf="assessmentsData">
+                            <div class="show-record">
+                                Show &nbsp;
+                                <select class="custom-select custom-select-sm form-control form-control-sm"
+                                    (change)="setItemsPerPage(page.value)" #page>
+                                    <option [selected]="currentPageLength==10">10</option>
+                                    <option [selected]="currentPageLength==30">30</option>
+                                    <option [selected]="currentPageLength==50">50</option>
+                                    <option [selected]="currentPageLength==100">100</option>
+                                    <option [selected]="currentPageLength==500">500</option>
+                                    <option [selected]="currentPageLength==1000">1000</option>
+                                </select>
+                                &nbsp; entries
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table
+                            class="table table-bordered table-condensed table-responsive-sm table-responsive-md table-responsive-lg table-responsive-xl"
+                            *ngIf="assessmentsData; " datatable [dtOptions]="dtOptions" width="100%">
+                            <thead>
+                                <tr>
+                                    <th>S/N</th>
+                                    <th>Date Generated</th>
+                                    <th>Generated From</th>
+                                    <th>Tax Payer Name</th>
+                                    <th>Tax Payer ID</th>
+                                    <th>Instrument Count</th>
+                                    <th>Assessment ID</th>                                    
+                                    <th>Invoice ID</th>
+                                  
+                                    <th>Tax Due(₦)</th>
+                                    <th>Amount Paid(₦)</th>
+                                    <th>Balance(₦)</th>
+                                    <th>Status</th>
+                                    <th style="width: 10%">View & Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let mydata of assessmentsData | paginate: config; index as i">
+                                    <td>{{ config.itemsPerPage * (config.currentPage - 1) + i + 1 }}</td>
+                                    <td>{{ mydata.date_generated | date }}</td>
+                                    <td>{{ mydata.generated_from }}</td>
+                                    <td>{{ mydata.corporate_name == null ? mydata.individual_first_name + " " + mydata.individual_surname : mydata.corporate_name }}</td>
+                                    <td>{{ mydata.taxpayer_id }}</td>
+                                    <td>{{ mydata.instrument_count | number }}</td>
+                                    <td>{{ mydata.stamp_duty_assessment_id }}</td>
+                                                                       
+                                    <td>{{ mydata.invoice_id == null ? 'N/A' : mydata.invoice_id }}</td>
+                                   
+                                    <td>{{ mydata.tax_amount | number }}</td>
+                                    <td>{{ mydata.amount_paid == null ? '0' : mydata.amount_paid | number}}</td>
+                                    <td>{{ mydata.tax_amount - mydata.amount_paid | number }}</td>
+
+                                    <td *ngIf="mydata.payment_status != 1"><span class="text-danger"
+                                            style="font-weight: 600;">Unsettled</span></td>
+                                    <td *ngIf="mydata.payment_status == 1"><span class="text-success"
+                                            style="font-weight: 600;">Settled</span></td>
+                                  
+                                    <td style="width: 10%">
+                                        <button *ngIf="mydata.payment_status != 1" class="btn btn-sm btn-outline-primary"
+                                            (click)="viewAssessment(detailsModal, mydata)"><i
+                                                class="nav-icon fas fa-eye"></i> View
+                                        </button>
+
+                                        <button *ngIf="mydata.payment_status == 1" class="btn btn-sm btn-outline-success"
+                                            (click)="viewAssessment(detailsModal, mydata)"><i
+                                                class="nav-icon fas fa-eye"></i> View
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div id="page_info" class="mt-3 record-show-text-bottom" *ngIf="assessmentsData">
+                        Showing {{(config.currentPage-1) * config.itemsPerPage + 1}} - {{config.currentPage *
+                        config.itemsPerPage}} &nbsp;
+                        of &nbsp;{{ config.totalItems }} &nbsp; entries
+                    </div>
+
+                    <div class="pagination paging-pull-right" *ngIf="assessmentsData">
+                        <pagination-controls (pageChange)="pageChange($event)"
+                            class="my-pagination mt-2 pagination-server">
+                        </pagination-controls>
+                    </div>
+
+                    <ng-template #noBalance>
+                        <td>
+                            <p style="color: rgb(0, 0, 255); font-weight: 600;" class="text-center mt-3"> No Balance
+                            </p>
+                        </td>
+                    </ng-template>
+
+                </div>
+                <!-- /.card-body -->
+                <div class="card-footer">
+                   
+                </div>
+            </div>
+
+        </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+</div>
+
+
+<ng-template #detailsModal let-modal>
+    <div class="row">
+        <div class="col-lg-12">
+            <span *ngIf="editorRole">
+                <button type="button" *ngIf="paymentStatus" (click)="showObjectionModal(objectionModal)" [disabled]="assessmentStatus != 0"
+                    class="btn btn-outline-dark button-login float-right" style="margin: 10px 10px !important;"
+                    printSectionId="printAssessment">
+                    <i class="fas fa-file-invoice"></i> Objection
+                </button>
+            </span>
+
+            <button type="button" class="btn btn-outline-dark button-login float-right" style="margin: 10px 10px;"
+                printSectionId="printAssessment" ngxPrint [useExistingCss]="true">
+                <i class="fas fa-print"></i> Print Assessment
+            </button>
+
+            <span *ngIf="showPayButton">
+                <a type="button" *ngIf="paymentUrl" class="btn btn-outline-dark button-login float-right"
+                    style="margin: 10px 10px;" target="_blank" href="{{apiPaymentUrl}}"
+                    (click)="modal.close('Save click')"><i class="fas fa-credit-card"></i> Pay</a>
+            </span>
+           
+            <button *ngIf="showPayButton && processInvoiceBtn" type="button" (click)="processInvoice()"
+                class="btn btn-outline-dark button-login float-right" style="margin: 10px 10px;"
+                printSectionId="printAssessment">
+                <i class="fas fa-file-invoice"></i> Generate Invoice
+            </button>
+        </div>
+    </div>
+
+    <div id="printAssessment">
+        <div class="modal-header">
+            <div class="col-md-6">
+                <img src="assets/dist/img/logo-NSIRS.png" class="rounded mt-3" alt="RAS Logo">
+            </div>
+
+            <div class="col-md-6 mt-4 text-right">
+                <h5 class="modal-title font-weight-bolder" id="modal-basic-title">REVENUE AUTOMATION SYSTEM</h5>
+                <p class="modal-title " id="modal-basic-title">Lafia tax Office, Makurdi - Jos Rd, Lafia</p>
+            </div>
+        </div>
+
+        <div class="modal-body">
+            <div class="container">
+
+                <div class="form-row">
+                    <div class="col-md-12">
+                     
+                    </div>
+                </div>
+
+                <form [formGroup]="assessmentForm">
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="taxPayerName">Tax Payer Name</label>
+                            <input type="text" formControlName="taxPayerName" class="form-control" [attr.disabled]="true"
+                                [ngClass]="{ 'is-invalid': submitted &amp;&amp; assessmentForm.controls.taxPayerName.errors }" />
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="taxPayerID">Tax Payer ID</label>
+                            <input type="text" formControlName="taxPayerID" class="form-control" [attr.disabled]="true"
+                                [ngClass]="{ 'is-invalid': submitted &amp;&amp; assessmentForm.controls.taxPayerID.errors }" />
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="dateGenerated">Date Generated</label>
+                            <input type="text" formControlName="dateGenerated" class="form-control"
+                                [attr.disabled]="true"
+                                [ngClass]="{ 'is-invalid': submitted &amp;&amp; assessmentForm.controls.dateGenerated.errors }" />
+                        </div>
+
+                        <div class="form-group col-md-6">
+                            <label for="amountToPay">Amount to Pay (₦)</label>
+                            <input type="text" formControlName="amountToPay" class="form-control" [attr.disabled]="true"
+                                [ngClass]="{ 'is-invalid': submitted &amp;&amp; assessmentForm.controls.amountToPay.errors }" />
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="address">Address</label>
+                            <input type="text" formControlName="address" class="form-control" [attr.disabled]="true"
+                                [ngClass]="{ 'is-invalid': submitted &amp;&amp; assessmentForm.controls.address.errors }" />
+                        </div>
+
+                        <div class="form-group col-md-6">
+                            <label for="phoneNumber">Phone Number</label>
+                            <input type="text" formControlName="phoneNumber" class="form-control" [attr.disabled]="true"
+                                [ngClass]="{ 'is-invalid': submitted &amp;&amp; assessmentForm.controls.phoneNumber.errors }" />
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="invoiceID">Invoice ID</label>
+                            <input type="text" formControlName="invoiceID" class="form-control" [attr.disabled]="true"
+                                [ngClass]="{ 'is-invalid': submitted &amp;&amp; assessmentForm.controls.invoiceID.errors }" />
+                        </div>
+                    </div>
+                </form>
+
+                <div class="table-responsive">
+                    <p class="text-center"><b>STAMP DUTY ANALYSIS</b>
+                    </p>
+                    <table class="table table-bordered table-condensed table-responsive-sm table-responsive-md table-responsive-lg table-responsive-xl" 
+                    datatable *ngIf="assessmentTaxpayersData;" [dtOptions]="dtOptions"
+                         width="100%">
+                        <thead>
+                            <tr>
+                                <th>S/N</th>
+                                <th>Instrument Type</th>
+                                <th>Rate Type</th>
+                                <th>Rate</th>
+                                <th>Tax Based Amount</th>
+                                <th>Extra Stamping Copies</th>
+                                <th>Tax Due</th>                                
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let mydata of assessmentTaxpayersData; index as i">
+                                <td>{{ i + 1 }}</td>
+                                <td>{{ mydata.instrument_type }}</td>
+                                <td>{{ mydata.rate_type }}</td>
+                                <td>{{ mydata.rate }}</td>
+                                <td>{{ mydata.tax_base_amount }}</td>
+                                <td>{{ mydata.extra_copies }}</td>
+                                <td>{{ mydata.tax_due | number }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div>
+                    <p class="text-center"><b>ASSESSMENT UPDATES</b></p>
+                    <table class="table table-bordered table-condensed" *ngIf="assessmentUpdatesData; else content" datatable [dtOptions]="dtOptions" width="100%">
+                        <thead>
+                            <tr>
+                                <th>S/N</th>
+                                <th>Self Assessed Tax Due (₦)</th>
+                                <th>Revised Assessment (₦)</th>
+                                <!-- <th>Reassessment</th> -->
+                                <th>Date</th>
+                                <!-- <th>Comment</th> -->
+                                <th>View Invoice</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let mydata of assessmentUpdatesData; index as i">
+                                <td>{{ i + 1 }}</td>
+                                <td>{{ mydata.self_assessed_income | number }}</td>
+                                <td>{{ mydata.revised_assessment_income | number }}</td>
+                                <!-- <td>{{ mydata.revised_assessment_tax | number }}</td> -->
+                                <td>{{ mydata.reassessment_date | date: 'dd MMM yyyy' }}</td>
+                                <!-- <td>{{ mydata.reassessment_reason }}</td> -->
+                                <td><a target="_blank" href="{{mydata.invoice_preview_url}}">View</a></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <ng-template #content>
+                        <p style="color: red;" class="text-center"> No content Available </p>
+                      </ng-template>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="printInvoice" style="display: none;">
+        <div class="modal-header">
+            <div class="col-md-4" style="margin: 15px 0px;">
+                <img src="{{ corporateLogo }}" class="rounded" alt="Corporate Logo" style="height:90px; width: 90px;">
+            </div>
+
+            <div class="col-md-8">
+                <h4 class="modal-title" id="modal-basic-title">Invoice Details</h4>
+            </div>
+
+        </div>
+
+        <div class="modal-body">
+            <div class="container">
+
+                <div class="form-row">
+                    <div class="col-md-12">
+                      
+                    </div>
+                </div>
+
+                <form [formGroup]="assessmentForm">
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="taxPayerName">Tax Payer Name</label>
+                            <input type="text" formControlName="taxPayerName" class="form-control" [attr.disabled]="true"
+                                [ngClass]="{ 'is-invalid': submitted &amp;&amp; assessmentForm.controls.taxPayerName.errors }" />
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="taxPayerID">Tax Payer ID</label>
+                            <input type="text" formControlName="taxPayerID" class="form-control" [attr.disabled]="true"
+                                [ngClass]="{ 'is-invalid': submitted &amp;&amp; assessmentForm.controls.taxPayerID.errors }" />
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="dateGenerated">Date Generated</label>
+                            <input type="text" formControlName="dateGenerated" class="form-control"
+                                [attr.disabled]="true"
+                                [ngClass]="{ 'is-invalid': submitted &amp;&amp; assessmentForm.controls.dateGenerated.errors }" />
+                        </div>
+
+                        <div class="form-group col-md-6">
+                            <label for="amountToPay">Amount to Pay (₦)</label>
+                            <input type="text" formControlName="amountToPay" class="form-control" [attr.disabled]="true"
+                                [ngClass]="{ 'is-invalid': submitted &amp;&amp; assessmentForm.controls.amountToPay.errors }" />
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="address">Address</label>
+                            <input type="text" formControlName="address" class="form-control" [attr.disabled]="true"
+                                [ngClass]="{ 'is-invalid': submitted &amp;&amp; assessmentForm.controls.address.errors }" />
+                        </div>
+
+                        <div class="form-group col-md-6">
+                            <label for="phoneNumber">Phone Number</label>
+                            <input type="text" formControlName="phoneNumber" class="form-control" [attr.disabled]="true"
+                                [ngClass]="{ 'is-invalid': submitted &amp;&amp; assessmentForm.controls.phoneNumber.errors }" />
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="invoiceID">Invoice ID</label>
+                            <input type="text" formControlName="invoiceID" class="form-control" [attr.disabled]="true"
+                                [ngClass]="{ 'is-invalid': submitted &amp;&amp; assessmentForm.controls.invoiceID.errors }" />
+                        </div>
+                    </div>
+                </form>
+
+                <div>
+                    <h5 class="login-box-msg" style="margin: 15px 0px;">Payment Details</h5>
+
+                    <table class="table table-bordered table-condensed" width="100%">
+                        <thead>
+                            <tr>
+                                <th>S/N</th>
+                                <th>Service Description</th>
+                                <th>Amount Due</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td>WithHolding Tax Assessment for {{ assessmentDate }}</td>
+                                <td>₦ {{ totalTaxDue | number }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button type="button" class="btn btn-outline-dark button-login" (click)="modal.close('Save click')">Ok</button>
+    </div>
+</ng-template>
+
+
+<ng-template #objectionModal let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">Generate Objection</h4>
+    </div>
+
+    <div class="modal-body">
+        <div class="container">
+            <div class="form-row">
+                <div class="col-md-12">
+                    
+                </div>
+            </div>
+
+            <form [formGroup]="objectionForm" (ngSubmit)="onSubmitObjection(objectionForm.value)">
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="invoiceNumber">Invoice ID</label>
+                        <input type="text" formControlName="invoiceNumber" class="form-control" [attr.disabled] = "true"
+                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; objectionForm.controls.invoiceNumber.errors }" />
+                        <div *ngIf="submitted &amp;&amp; objectionForm.controls.invoiceNumber.errors" class="text-danger">
+                        </div>
+                    </div>
+
+                    <div class="form-group col-md-6">
+                        <label for="date">Date</label>
+                        <input type="text" formControlName="date" class="form-control" [attr.disabled] = "true"
+                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; objectionForm.controls.date.errors }" />
+                        <div *ngIf="submitted &amp;&amp; objectionForm.controls.date.errors" class="text-danger">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="messageTitle">Reason for Objection</label>
+                        <input type="text" formControlName="messageTitle" class="form-control" maxlength="255"
+                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; objectionForm.controls.messageTitle.errors }" />
+                        <div *ngIf="submitted &amp;&amp; objectionForm.controls.messageTitle.errors" class="text-danger">
+                            <div *ngIf="objectionForm.controls.messageTitle.errors.required">Reason for Objection is required</div>
+                            <div *ngIf="objectionForm.controls.messageTitle.errors.minlength">Reason for Objection must not be less than 3 alphabets</div>
+                            <div *ngIf="objectionForm.controls.messageTitle.errors.pattern">Reason for Objection cannot be spaces only</div>
+                        </div>
+                    </div>
+
+                    <div class="form-group col-md-6">
+                        <label for="fileInput">Select File to Upload (jpeg, jpg, png)</label>
+                        <div class="custom-file">
+                            <input formControlName="myfile" id="myfile" type="file" class="custom-file-input"
+                                (change)="onFileChange($event)" (click)="onClickFileInput()" multiple
+                                [ngClass]="{ 'is-invalid': submitted && objectionForm.controls.myfile.errors || fileExceededSize }" accept=".png,.jpg,.jpeg">
+                            <label class="custom-file-label" for="myfile">{{ filePath == [] ? 'Choose file (jpeg, jpg, png)' : filePath.join(", ")
+                                }}</label>
+                        </div>
+                        <div *ngIf="submitted &amp;&amp; f.myfile.touched && f.myfile.invalid || submitted &amp;&amp; f.myfile.errors || fileExceededSize" class="text-danger">
+                            <div *ngIf="objectionForm.controls.myfile.errors?.required || fileExceededSize">File is required.</div>
+                            <!-- <div *ngIf="fileExceededSize">File size exceeded, File size should not exceed 1MB.</div> -->
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="message">Objection Description</label>
+                        <textarea type="text" formControlName="message" class="form-control" rows="4" maxlength="255"
+                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; objectionForm.controls.message.errors }"></textarea>
+                        <div *ngIf="submitted &amp;&amp; objectionForm.controls.message.errors" class="text-danger">
+                            <div *ngIf="objectionForm.controls.message.errors.required">Objection Description is required</div>
+                            <div *ngIf="objectionForm.controls.message.errors.minlength">Objection Description must not be less than 5 alphabets</div>
+                            <div *ngIf="objectionForm.controls.message.errors.pattern">Objection Description cannot be spaces only</div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                      <table class="table table-bordered table-condensed" *ngIf="filePath.length > 0;">
+                        <thead>
+                          <tr>
+                            <th>S/N</th>
+                            <th>FIle name</th>
+                            <th>Action</th>
+                          </tr>
+                        </thead>
+                        <tbody class="file-scroll">
+                          <tr *ngFor="let mydata of filePath; index as i">
+                            <td>{{ i + 1 }}</td>
+                            <td>{{ mydata }}</td>
+                            <td><a class="btn btn-sm btn-outline-danger" (click)="deleteFile(mydata)">Delete</a></td>
+                        </tbody>
+                      </table>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn button-login"><i class="far fa-share-square"></i>
+                    Generate Objection</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button type="button" class="btn btn-outline-dark button-login" (click)="modal.close('Save click')">Ok</button>
+    </div>
+  </ng-template>

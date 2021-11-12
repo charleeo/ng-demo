@@ -1,0 +1,587 @@
+<div *ngIf="showHeader">
+    <div class="modal-header">
+        <h5 class="modal-title" id="modal-basic-title">{{ modalTitle }}</h5>
+    </div>
+    
+    <div class="modal-body">
+        <div class="container">
+            <form [formGroup]="buildingForm" (ngSubmit)="onSubmitBuilding(buildingForm.value)">
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="taxPayerRoleId" class="input-label pull-left">Taxpayer Role<sup
+                                class=" font-wegiht-bold text-danger">*</sup>
+                        </label>
+                        <select name="taxPayerRoleId" formControlName="taxPayerRoleId" id="taxPayerRoleId"
+                            class="form-control" [attr.disabled]="disableControls"
+                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; buildingForm.controls.taxPayerRoleId.errors }">
+                            <option value="">Select Taxpayer Role</option>
+                            <option *ngFor="let taxpayerRole of taxpayerRoles" [value]="taxpayerRole.id">
+                                {{ taxpayerRole.name }}
+                            </option>
+                        </select>
+                        <div *ngIf="submitted &amp;&amp; buildingForm.controls.taxPayerRoleId.errors" class="text-danger">
+                            <div *ngIf="buildingForm.controls.taxPayerRoleId.errors.required">Taxpayer Role is
+                                required</div>
+                        </div>
+                    </div>
+    
+                    <div class="form-group col-md-6">
+                        <label for="buildingCompletionId" class="input-label pull-left">Building Completion<sup
+                                class=" font-wegiht-bold text-danger">*</sup>
+                        </label>
+                        <select name="buildingCompletionId" formControlName="buildingCompletionId" id="buildingCompletionId"
+                            class="form-control" [attr.disabled]="disableControls"
+                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; buildingForm.controls.buildingCompletionId.errors }">
+                            <option value="">Select Building Completion</option>
+                            <option *ngFor="let buildingCompletion of buildingCompletions" [value]="buildingCompletion.id">
+                                {{ buildingCompletion.name }}
+                            </option>
+                        </select>
+                        <div *ngIf="submitted &amp;&amp; buildingForm.controls.buildingCompletionId.errors"
+                            class="text-danger">
+                            <div *ngIf="buildingForm.controls.buildingCompletionId.errors.required">Land Ownership is
+                                required</div>
+                        </div>
+                    </div>
+                </div>
+    
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="buildingName" class="input-label pull-left">Building Name<sup
+                                class=" font-wegiht-bold text-danger">*</sup>
+                        </label>
+                        <input type="text" formControlName="buildingName" class="form-control" id="buildingName"
+                            placeholder="Building Name" [attr.disabled]="disableControls"
+                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; buildingForm.controls.buildingName.errors }" />
+                        <div *ngIf="submitted &amp;&amp; buildingForm.controls.buildingName.errors" class="text-danger">
+                            <div *ngIf="buildingForm.controls.buildingName.errors.required">Building Name is required
+                            </div>
+                        </div>
+                    </div>
+    
+                    <div class="form-group col-md-6">
+                        <label for="buildingPurposeId" class="input-label pull-left">Building Purpose<sup
+                                class=" font-wegiht-bold text-danger">*</sup>
+                        </label>
+                        <select name="buildingPurposeId" formControlName="buildingPurposeId" id="buildingPurposeId"
+                            class="form-control" [attr.disabled]="disableControls"
+                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; buildingForm.controls.buildingPurposeId.errors }">
+                            <option value="">Select Land Purpose</option>
+                            <option *ngFor="let buildingPurpose of buildingPurposes" [value]="buildingPurpose.id">
+                                {{ buildingPurpose.name }}
+                            </option>
+                        </select>
+                        <div *ngIf="submitted &amp;&amp; buildingForm.controls.buildingPurposeId.errors"
+                            class="text-danger">
+                            <div *ngIf="buildingForm.controls.buildingPurposeId.errors.required">Building Purpose is
+                                required</div>
+                        </div>
+                    </div>
+                </div>
+    
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="houseNumber" class="input-label pull-left">House Number<sup
+                                class=" font-wegiht-bold text-danger">*</sup>
+                        </label>
+                        <input type="text" formControlName="houseNumber" class="form-control" id="houseNumber"
+                            placeholder="House Number" [attr.disabled]="disableControls"
+                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; buildingForm.controls.houseNumber.errors }" />
+                        <div *ngIf="submitted &amp;&amp; buildingForm.controls.houseNumber.errors" class="text-danger">
+                            <div *ngIf="buildingForm.controls.houseNumber.errors.required">House Number
+                                is required</div>
+                        </div>
+                    </div>
+    
+                    <div class="form-group col-md-6">
+                        <label for="buildingTypeId" class="input-label pull-left">Building Type<sup
+                                class=" font-wegiht-bold text-danger">*</sup>
+                        </label>
+                        <select name="buildingTypeId" formControlName="buildingTypeId" id="buildingTypeId"
+                            class="form-control" [attr.disabled]="disableControls"
+                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; buildingForm.controls.buildingTypeId.errors }">
+                            <option value="">Select Building Type</option>
+                            <option *ngFor="let buildingType of buildingTypes" [value]="buildingType.id">
+                                {{ buildingType.name }}
+                            </option>
+                        </select>
+                        <div *ngIf="submitted &amp;&amp; buildingForm.controls.buildingTypeId.errors" class="text-danger">
+                            <div *ngIf="buildingForm.controls.buildingTypeId.errors.required">Building Type
+                                is required</div>
+                        </div>
+                    </div>
+                </div>
+    
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="streetName" class="input-label pull-left">Street Name<sup
+                                class=" font-wegiht-bold text-danger">*</sup>
+                        </label>
+                        <input type="text" formControlName="streetName" class="form-control" id="streetName"
+                            placeholder="Street Name" [attr.disabled]="disableControls"
+                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; buildingForm.controls.streetName.errors }" />
+                        <div *ngIf="submitted &amp;&amp; buildingForm.controls.streetName.errors" class="text-danger">
+                            <div *ngIf="buildingForm.controls.streetName.errors.required">Street Name is
+                                required</div>
+                        </div>
+                    </div>
+    
+                    <div class="form-group col-md-6">
+                        <label for="offStreetName" class="input-label pull-left">Off Street Name<sup
+                                class=" font-wegiht-bold text-danger">*</sup>
+                        </label>
+                        <input type="text" formControlName="offStreetName" class="form-control" id="offStreetName"
+                            placeholder="Off Street Name" [attr.disabled]="disableControls"
+                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; buildingForm.controls.offStreetName.errors }" />
+                        <div *ngIf="submitted &amp;&amp; buildingForm.controls.offStreetName.errors" class="text-danger">
+                            <div *ngIf="buildingForm.controls.offStreetName.errors.required">Off Street Name is required
+                            </div>
+                        </div>
+                    </div>
+                </div>
+    
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="buildingOwnershipId" class="input-label pull-left">Building Ownership
+                            <sup class=" font-wegiht-bold text-danger">*</sup>
+                        </label>
+                        <select name="buildingOwnershipId" formControlName="buildingOwnershipId" id="buildingOwnershipId"
+                            class="form-control" [attr.disabled]="disableControls"
+                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; buildingForm.controls.buildingOwnershipId.errors }">
+                            <option value="">Select Building Ownership</option>
+                            <option *ngFor="let buildingOwnership of buildingOwnerships" [value]="buildingOwnership.id">
+                                {{ buildingOwnership.name }}
+                            </option>
+                        </select>
+                        <div *ngIf="submitted &amp;&amp; buildingForm.controls.buildingOwnershipId.errors"
+                            class="text-danger">
+                            <div *ngIf="buildingForm.controls.buildingOwnershipId.errors.required">Building Ownership is
+                                required
+                            </div>
+                        </div>
+                    </div>
+    
+                    <div class="form-group col-md-6">
+                        <label for="buildingOccupancyId" class="input-label pull-left">Building Occupancy<sup
+                                class=" font-wegiht-bold text-danger">*</sup>
+                        </label>
+                        <select name="buildingOccupancyId" formControlName="buildingOccupancyId" id="buildingOccupancyId"
+                            class="form-control" [attr.disabled]="disableControls"
+                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; buildingForm.controls.buildingOccupancyId.errors }">
+                            <option value="">Select Building Occupancy</option>
+                            <option *ngFor="let buildingOccupancy of buildingOccupancies" [value]="buildingOccupancy.id">
+                                {{ buildingOccupancy.name }}
+                            </option>
+                        </select>
+                        <div *ngIf="submitted &amp;&amp; buildingForm.controls.buildingOccupancyId.errors"
+                            class="text-danger">
+                            <div *ngIf="buildingForm.controls.buildingOccupancyId.errors.required">Building Occupancy is
+                                required</div>
+                        </div>
+                    </div>
+    
+                </div>
+    
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="buildingLocalGovtId" class="input-label pull-left">Building LGA<sup
+                                class=" font-wegiht-bold text-danger">*</sup>
+                        </label>
+                        <select name="buildingLocalGovtId" formControlName="buildingLocalGovtId" id="buildingLocalGovtId"
+                            #localGovtSelect class="form-control" [attr.disabled]="disableControls"
+                            (change)="onLocalGovtSelect(localGovtSelect.value)"
+                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; buildingForm.controls.buildingLocalGovtId.errors }">
+                            <option value="">Select Building LGA</option>
+                            <option *ngFor="let localGovt of localGovts" [value]="localGovt.id">
+                                {{ localGovt.name }}
+                            </option>
+                        </select>
+                        <div *ngIf="submitted &amp;&amp; buildingForm.controls.buildingLocalGovtId.errors"
+                            class="text-danger">
+                            <div *ngIf="buildingForm.controls.buildingLocalGovtId.errors.required">Building LGA is
+                                required</div>
+                        </div>
+                    </div>
+    
+                    <div class="form-group col-md-6">
+                        <label for="buildingTownId" class="input-label pull-left">Building Town<sup
+                                class=" font-wegiht-bold text-danger">*</sup>
+                        </label>
+                        <select name="buildingTownId" formControlName="buildingTownId" id="buildingTownId" #buildingTownSelect
+                            (change)="onBuildingTownSelect(buildingTownSelect.value)" class="form-control" [attr.disabled]="disableControls"
+                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; buildingForm.controls.buildingTownId.errors }">
+                            <option value="">Select Building Town</option>
+                            <option *ngFor="let town of towns" [value]="town.id">
+                                {{ town.name }}
+                            </option>
+                        </select>
+                        <div *ngIf="submitted &amp;&amp; buildingForm.controls.buildingTownId.errors" class="text-danger">
+                            <div *ngIf="buildingForm.controls.buildingTownId.errors.required">Building Town is
+                                required</div>
+                        </div>
+                    </div>                
+                </div>
+    
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="wardId" class="input-label pull-left">Ward<sup
+                                class=" font-wegiht-bold text-danger">*</sup>
+                        </label>
+                        <select name="wardId" formControlName="wardId" id="wardId" class="form-control"
+                            [attr.disabled]="disableControls"
+                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; buildingForm.controls.wardId.errors }">
+                            <option value="">Select Ward</option>
+                            <option *ngFor="let buildingWard of buildingWards" [value]="buildingWard.id">
+                                {{ buildingWard.name }}
+                            </option>
+                        </select>
+                        <div *ngIf="submitted &amp;&amp; buildingForm.controls.wardId.errors" class="text-danger">
+                            <div *ngIf="buildingForm.controls.wardId.errors.required">Ward is
+                                required</div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group col-md-6">
+                        <label for="buildingStatusId" class="input-label pull-left">Building Status<sup
+                                class=" font-wegiht-bold text-danger">*</sup>
+                        </label>
+                        <select name="buildingStatusId" formControlName="buildingStatusId" id="buildingStatusId"
+                            class="form-control" [attr.disabled]="disableControls"
+                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; buildingForm.controls.buildingStatusId.errors }">
+                            <option value="">Select Building Status</option>
+                            <option *ngFor="let buildingStatus of buildingStatuses" [value]="buildingStatus">
+                                {{ buildingStatus }}
+                            </option>
+                        </select>
+                        <div *ngIf="submitted &amp;&amp; buildingForm.controls.buildingStatusId.errors" class="text-danger">
+                            <div *ngIf="buildingForm.controls.buildingStatusId.errors.required">Building Status is
+                                required</div>
+                        </div>
+                    </div>
+                </div>
+    
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="latitude" class="input-label pull-left">Latitude
+                            <sup class=" font-wegiht-bold text-danger">*</sup>
+                        </label>
+                        <input type="text" formControlName="latitude" class="form-control" id="latitude"
+                            placeholder="Latitude" [attr.disabled]="disableControls"
+                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; buildingForm.controls.latitude.errors }" />
+                        <div *ngIf="submitted &amp;&amp; buildingForm.controls.latitude.errors" class="text-danger">
+                            <div *ngIf="buildingForm.controls.latitude.errors.required">Latitude is required
+                            </div>
+                        </div>
+                    </div>
+    
+                    <div class="form-group col-md-6">
+                        <label for="longitude" class="input-label pull-left">Longitude
+                            <sup class=" font-wegiht-bold text-danger">*</sup>
+                        </label>
+                        <input type="text" formControlName="longitude" class="form-control" id="longitude"
+                            placeholder="Longitude" [attr.disabled]="disableControls"
+                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; buildingForm.controls.longitude.errors }" />
+                        <div *ngIf="submitted &amp;&amp; buildingForm.controls.longitude.errors" class="text-danger">
+                            <div *ngIf="buildingForm.controls.longitude.errors.required">Longitude is required
+                            </div>
+                        </div>
+                    </div>
+                </div>
+    
+                <button *ngIf="showSaveButton" type="submit" class="btn btn button-login">
+                    <i class="far fa-save"></i> Save Asset
+                </button>
+            </form>
+        </div>
+    </div>    
+</div>
+
+<div *ngIf="!showHeader">
+    <form [formGroup]="buildingForm" (ngSubmit)="onSubmitBuilding(buildingForm.value)">
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="taxPayerRoleId" class="input-label pull-left">Taxpayer Role<sup
+                        class=" font-wegiht-bold text-danger">*</sup>
+                </label>
+                <select name="taxPayerRoleId" formControlName="taxPayerRoleId" id="taxPayerRoleId"
+                    class="form-control" [attr.disabled]="disableControls"
+                    [ngClass]="{ 'is-invalid': submitted &amp;&amp; buildingForm.controls.taxPayerRoleId.errors }">
+                    <option value="">Select Taxpayer Role</option>
+                    <option *ngFor="let taxpayerRole of taxpayerRoles" [value]="taxpayerRole.id">
+                        {{ taxpayerRole.name }}
+                    </option>
+                </select>
+                <div *ngIf="submitted &amp;&amp; buildingForm.controls.taxPayerRoleId.errors" class="text-danger">
+                    <div *ngIf="buildingForm.controls.taxPayerRoleId.errors.required">Taxpayer Role is
+                        required</div>
+                </div>
+            </div>
+
+            <div class="form-group col-md-6">
+                <label for="buildingCompletionId" class="input-label pull-left">Building Completion<sup
+                        class=" font-wegiht-bold text-danger">*</sup>
+                </label>
+                <select name="buildingCompletionId" formControlName="buildingCompletionId" id="buildingCompletionId"
+                    class="form-control" [attr.disabled]="disableControls"
+                    [ngClass]="{ 'is-invalid': submitted &amp;&amp; buildingForm.controls.buildingCompletionId.errors }">
+                    <option value="">Select Building Completion</option>
+                    <option *ngFor="let buildingCompletion of buildingCompletions" [value]="buildingCompletion.id">
+                        {{ buildingCompletion.name }}
+                    </option>
+                </select>
+                <div *ngIf="submitted &amp;&amp; buildingForm.controls.buildingCompletionId.errors"
+                    class="text-danger">
+                    <div *ngIf="buildingForm.controls.buildingCompletionId.errors.required">Land Ownership is
+                        required</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="buildingName" class="input-label pull-left">Building Name<sup
+                        class=" font-wegiht-bold text-danger">*</sup>
+                </label>
+                <input type="text" formControlName="buildingName" class="form-control" id="buildingName"
+                    placeholder="Building Name" [attr.disabled]="disableControls"
+                    [ngClass]="{ 'is-invalid': submitted &amp;&amp; buildingForm.controls.buildingName.errors }" />
+                <div *ngIf="submitted &amp;&amp; buildingForm.controls.buildingName.errors" class="text-danger">
+                    <div *ngIf="buildingForm.controls.buildingName.errors.required">Building Name is required
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group col-md-6">
+                <label for="buildingPurposeId" class="input-label pull-left">Building Purpose<sup
+                        class=" font-wegiht-bold text-danger">*</sup>
+                </label>
+                <select name="buildingPurposeId" formControlName="buildingPurposeId" id="buildingPurposeId"
+                    class="form-control" [attr.disabled]="disableControls"
+                    [ngClass]="{ 'is-invalid': submitted &amp;&amp; buildingForm.controls.buildingPurposeId.errors }">
+                    <option value="">Select Land Purpose</option>
+                    <option *ngFor="let buildingPurpose of buildingPurposes" [value]="buildingPurpose.id">
+                        {{ buildingPurpose.name }}
+                    </option>
+                </select>
+                <div *ngIf="submitted &amp;&amp; buildingForm.controls.buildingPurposeId.errors"
+                    class="text-danger">
+                    <div *ngIf="buildingForm.controls.buildingPurposeId.errors.required">Building Purpose is
+                        required</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="houseNumber" class="input-label pull-left">House Number<sup
+                        class=" font-wegiht-bold text-danger">*</sup>
+                </label>
+                <input type="text" formControlName="houseNumber" class="form-control" id="houseNumber"
+                    placeholder="House Number" [attr.disabled]="disableControls"
+                    [ngClass]="{ 'is-invalid': submitted &amp;&amp; buildingForm.controls.houseNumber.errors }" />
+                <div *ngIf="submitted &amp;&amp; buildingForm.controls.houseNumber.errors" class="text-danger">
+                    <div *ngIf="buildingForm.controls.houseNumber.errors.required">House Number
+                        is required</div>
+                </div>
+            </div>
+
+            <div class="form-group col-md-6">
+                <label for="buildingTypeId" class="input-label pull-left">Building Type<sup
+                        class=" font-wegiht-bold text-danger">*</sup>
+                </label>
+                <select name="buildingTypeId" formControlName="buildingTypeId" id="buildingTypeId"
+                    class="form-control" [attr.disabled]="disableControls"
+                    [ngClass]="{ 'is-invalid': submitted &amp;&amp; buildingForm.controls.buildingTypeId.errors }">
+                    <option value="">Select Building Type</option>
+                    <option *ngFor="let buildingType of buildingTypes" [value]="buildingType.id">
+                        {{ buildingType.name }}
+                    </option>
+                </select>
+                <div *ngIf="submitted &amp;&amp; buildingForm.controls.buildingTypeId.errors" class="text-danger">
+                    <div *ngIf="buildingForm.controls.buildingTypeId.errors.required">Building Type
+                        is required</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="streetName" class="input-label pull-left">Street Name<sup
+                        class=" font-wegiht-bold text-danger">*</sup>
+                </label>
+                <input type="text" formControlName="streetName" class="form-control" id="streetName"
+                    placeholder="Street Name" [attr.disabled]="disableControls"
+                    [ngClass]="{ 'is-invalid': submitted &amp;&amp; buildingForm.controls.streetName.errors }" />
+                <div *ngIf="submitted &amp;&amp; buildingForm.controls.streetName.errors" class="text-danger">
+                    <div *ngIf="buildingForm.controls.streetName.errors.required">Street Name is
+                        required</div>
+                </div>
+            </div>
+
+            <div class="form-group col-md-6">
+                <label for="offStreetName" class="input-label pull-left">Off Street Name<sup
+                        class=" font-wegiht-bold text-danger">*</sup>
+                </label>
+                <input type="text" formControlName="offStreetName" class="form-control" id="offStreetName"
+                    placeholder="Off Street Name" [attr.disabled]="disableControls"
+                    [ngClass]="{ 'is-invalid': submitted &amp;&amp; buildingForm.controls.offStreetName.errors }" />
+                <div *ngIf="submitted &amp;&amp; buildingForm.controls.offStreetName.errors" class="text-danger">
+                    <div *ngIf="buildingForm.controls.offStreetName.errors.required">Off Street Name is required
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="buildingOwnershipId" class="input-label pull-left">Building Ownership
+                    <sup class=" font-wegiht-bold text-danger">*</sup>
+                </label>
+                <select name="buildingOwnershipId" formControlName="buildingOwnershipId" id="buildingOwnershipId"
+                    class="form-control" [attr.disabled]="disableControls"
+                    [ngClass]="{ 'is-invalid': submitted &amp;&amp; buildingForm.controls.buildingOwnershipId.errors }">
+                    <option value="">Select Building Ownership</option>
+                    <option *ngFor="let buildingOwnership of buildingOwnerships" [value]="buildingOwnership.id">
+                        {{ buildingOwnership.name }}
+                    </option>
+                </select>
+                <div *ngIf="submitted &amp;&amp; buildingForm.controls.buildingOwnershipId.errors"
+                    class="text-danger">
+                    <div *ngIf="buildingForm.controls.buildingOwnershipId.errors.required">Building Ownership is
+                        required
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group col-md-6">
+                <label for="buildingOccupancyId" class="input-label pull-left">Building Occupancy<sup
+                        class=" font-wegiht-bold text-danger">*</sup>
+                </label>
+                <select name="buildingOccupancyId" formControlName="buildingOccupancyId" id="buildingOccupancyId"
+                    class="form-control" [attr.disabled]="disableControls"
+                    [ngClass]="{ 'is-invalid': submitted &amp;&amp; buildingForm.controls.buildingOccupancyId.errors }">
+                    <option value="">Select Building Occupancy</option>
+                    <option *ngFor="let buildingOccupancy of buildingOccupancies" [value]="buildingOccupancy.id">
+                        {{ buildingOccupancy.name }}
+                    </option>
+                </select>
+                <div *ngIf="submitted &amp;&amp; buildingForm.controls.buildingOccupancyId.errors"
+                    class="text-danger">
+                    <div *ngIf="buildingForm.controls.buildingOccupancyId.errors.required">Building Occupancy is
+                        required</div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="buildingLocalGovtId" class="input-label pull-left">Building LGA<sup
+                        class=" font-wegiht-bold text-danger">*</sup>
+                </label>
+                <select name="buildingLocalGovtId" formControlName="buildingLocalGovtId" id="buildingLocalGovtId"
+                    #localGovtSelect class="form-control" [attr.disabled]="disableControls"
+                    (change)="onLocalGovtSelect(localGovtSelect.value)"
+                    [ngClass]="{ 'is-invalid': submitted &amp;&amp; buildingForm.controls.buildingLocalGovtId.errors }">
+                    <option value="">Select Building LGA</option>
+                    <option *ngFor="let localGovt of localGovts" [value]="localGovt.id">
+                        {{ localGovt.name }}
+                    </option>
+                </select>
+                <div *ngIf="submitted &amp;&amp; buildingForm.controls.buildingLocalGovtId.errors"
+                    class="text-danger">
+                    <div *ngIf="buildingForm.controls.buildingLocalGovtId.errors.required">Building LGA is
+                        required</div>
+                </div>
+            </div>
+
+            <div class="form-group col-md-6">
+                <label for="buildingTownId" class="input-label pull-left">Building Town<sup
+                        class=" font-wegiht-bold text-danger">*</sup>
+                </label>
+                <select name="buildingTownId" formControlName="buildingTownId" id="buildingTownId" #buildingTownSelect
+                    class="form-control" (change)="onBuildingTownSelect(buildingTownSelect.value)"  [attr.disabled]="disableControls"
+                    [ngClass]="{ 'is-invalid': submitted &amp;&amp; buildingForm.controls.buildingTownId.errors }">
+                    <option value="">Select Building Town</option>
+                    <option *ngFor="let town of towns" [value]="town.id">
+                        {{ town.name }}
+                    </option>
+                </select>
+                <div *ngIf="submitted &amp;&amp; buildingForm.controls.buildingTownId.errors" class="text-danger">
+                    <div *ngIf="buildingForm.controls.buildingTownId.errors.required">Building Town is
+                        required</div>
+                </div>
+            </div>                
+        </div>
+
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="wardId" class="input-label pull-left">Ward<sup
+                        class=" font-wegiht-bold text-danger">*</sup>
+                </label>
+                <select name="wardId" formControlName="wardId" id="wardId" class="form-control"
+                    [attr.disabled]="disableControls"
+                    [ngClass]="{ 'is-invalid': submitted &amp;&amp; buildingForm.controls.wardId.errors }">
+                    <option value="">Select Ward</option>
+                    <option *ngFor="let buildingWard of buildingWards" [value]="buildingWard.id">
+                        {{ buildingWard.name }}
+                    </option>
+                </select>
+                <div *ngIf="submitted &amp;&amp; buildingForm.controls.wardId.errors" class="text-danger">
+                    <div *ngIf="buildingForm.controls.wardId.errors.required">Ward is
+                        required</div>
+                </div>
+            </div>
+            
+            <div class="form-group col-md-6">
+                <label for="buildingStatusId" class="input-label pull-left">Building Status<sup
+                        class=" font-wegiht-bold text-danger">*</sup>
+                </label>
+                <select name="buildingStatusId" formControlName="buildingStatusId" id="buildingStatusId"
+                    class="form-control" [attr.disabled]="disableControls"
+                    [ngClass]="{ 'is-invalid': submitted &amp;&amp; buildingForm.controls.buildingStatusId.errors }">
+                    <option value="">Select Building Status</option>
+                    <option *ngFor="let buildingStatus of buildingStatuses" [value]="buildingStatus">
+                        {{ buildingStatus }}
+                    </option>
+                </select>
+                <div *ngIf="submitted &amp;&amp; buildingForm.controls.buildingStatusId.errors" class="text-danger">
+                    <div *ngIf="buildingForm.controls.buildingStatusId.errors.required">Building Status is
+                        required</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="latitude" class="input-label pull-left">Latitude
+                    <sup class=" font-wegiht-bold text-danger">*</sup>
+                </label>
+                <input type="text" formControlName="latitude" class="form-control" id="latitude"
+                    placeholder="Latitude" [attr.disabled]="disableControls"
+                    [ngClass]="{ 'is-invalid': submitted &amp;&amp; buildingForm.controls.latitude.errors }" />
+                <div *ngIf="submitted &amp;&amp; buildingForm.controls.latitude.errors" class="text-danger">
+                    <div *ngIf="buildingForm.controls.latitude.errors.required">Latitude is required
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group col-md-6">
+                <label for="longitude" class="input-label pull-left">Longitude
+                    <sup class=" font-wegiht-bold text-danger">*</sup>
+                </label>
+                <input type="text" formControlName="longitude" class="form-control" id="longitude"
+                    placeholder="Longitude" [attr.disabled]="disableControls"
+                    [ngClass]="{ 'is-invalid': submitted &amp;&amp; buildingForm.controls.longitude.errors }" />
+                <div *ngIf="submitted &amp;&amp; buildingForm.controls.longitude.errors" class="text-danger">
+                    <div *ngIf="buildingForm.controls.longitude.errors.required">Longitude is required
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <button *ngIf="showSaveButton" type="submit" class="btn btn button-login">
+            <i class="far fa-save"></i> Save Asset
+        </button>
+    </form>
+</div>

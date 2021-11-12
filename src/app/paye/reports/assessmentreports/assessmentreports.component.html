@@ -1,0 +1,221 @@
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+
+    </div>
+    <!-- /.content-header -->
+
+    <!-- Main content -->
+    <section class="content" data-select2-id="32">
+        <div class="container-fluid" data-select2-id="31">
+            <flash-messages></flash-messages>
+            <!-- SELECT2 EXAMPLE -->
+            <div class="card card-secondary">
+                <div class="card-header custome">
+                    <h3 class="card-title font-12-sa">Monthly Assessments</h3>
+                    <a [routerLink]="['/viewreports']" class="btn btn-sm role float-right">
+                        <i class="fas fa-reply-all"></i> Back
+                    </a>
+                </div>
+                <!-- /.card-header -->
+
+
+                <div class="card">
+                    <div class="card-body">
+                        <form [formGroup]="searchForm" (ngSubmit)="onSubmitSearch(searchForm.value)">
+                            <div class="form-row">
+
+                              <div class="col-12 col-sm-6 col-md-6 col-lg-2 mt-1">
+                                <input type="text" formControlName="business_name" class="form-control font-12"
+                                    id="business_name" maxlength="25" placeholder="Business Name"
+                                    [ngClass]="{ 'is-invalid': submitted &amp;&amp; searchForm.controls.business_name.errors }" />
+                                <div *ngIf="submitted &amp;&amp; searchForm.controls.taxYear.errors" class="text-danger">
+                                    <div *ngIf="searchForm.controls.business_name.errors.pattern"></div>
+                                </div>
+                              </div>
+
+                              <div class="col-12 col-sm-6 col-md-6 col-lg-2 mt-1">
+                                <input type="text" formControlName="business_id" class="form-control font-12"
+                                    id="business_id" maxlength="25" placeholder="Business ID"
+                                    [ngClass]="{ 'is-invalid': submitted &amp;&amp; searchForm.controls.business_name.errors }" />
+                                <div *ngIf="submitted &amp;&amp; searchForm.controls.taxYear.errors" class="text-danger">
+                                    <div *ngIf="searchForm.controls.business_id.errors.pattern"></div>
+                                </div>
+                              </div>
+
+                                <div class="col-12 col-sm-6 col-md-6 col-lg-2 mt-1">
+                                    <input type="text" formControlName="taxYear" class="form-control font-12"
+                                        id="taxYear" maxlength="4" placeholder="Tax Year Eg: 2019"
+                                        [ngClass]="{ 'is-invalid': submitted &amp;&amp; searchForm.controls.taxYear.errors }" />
+                                    <div *ngIf="submitted &amp;&amp; searchForm.controls.taxYear.errors"
+                                        class="text-danger">
+                                        <div *ngIf="searchForm.controls.taxYear.errors.pattern">Tax Year must be a valid
+                                            year</div>
+                                        <div *ngIf="searchForm.controls.taxYear.errors.minlength">Tax Year must be at
+                                            least 4 digits</div>
+                                        <div *ngIf="searchForm.controls.taxYear.errors.maxlength">Tax Year must not
+                                            exceed 4 digits</div>
+                                    </div>
+                                </div>
+
+                                <div *ngIf="showTaxOffice" class="col-12 col-sm-6 col-md-6 col-lg-2 mt-1">
+                                    <select (change)="taxOfficeChanged($event.target.value)" type="text"
+                                        name="taxOfficeID" formControlName="taxOfficeID" id="taxOffice"
+                                        class="form-control font-12">
+                                        <option disabled selected value="">Tax Office</option>
+                                        <option *ngFor="let taxTaxOffice of taxTaxOffices" [value]="taxTaxOffice.id">
+                                            {{ taxTaxOffice.name }}
+                                        </option>
+                                    </select>
+                                </div>
+
+                                <div class="col-12 col-sm-6 col-md-6 col-lg-2 mt-1">
+                                    <select type="text" name="taxMonthId" formControlName="taxMonthId" id="taxMonthId"
+                                        class="form-control font-12"
+                                        [ngClass]="{ 'is-invalid': submitted &amp;&amp; searchForm.controls.taxMonthId.errors }">
+                                        <option value="">Tax Month</option>
+                                        <option value="01">January</option>
+                                        <option value="02">February</option>
+                                        <option value="03">March</option>
+                                        <option value="04">April</option>
+                                        <option value="05">May</option>
+                                        <option value="06">June</option>
+                                        <option value="07">July</option>
+                                        <option value="08">August</option>
+                                        <option value="09">September</option>
+                                        <option value="10">October</option>
+                                        <option value="11">November</option>
+                                        <option value="12">December</option>
+                                    </select>
+                                </div>
+
+
+                                <div class="col-12 col-sm-6 col-md-6 col-lg-3 mt-1">
+                                    <div class="form-group">
+                                        <div class="input-group">
+                                            <input class="form-control icon-cal font-12" type="text"
+                                                formControlName="daterangeInput" placeholder="Date From - Date To"
+                                                daterangepicker [options]="options"
+                                                (selected)="selectedDate($event, daterange)" />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-12 col-sm-6 col-md-6 col-lg-2 mt-2">
+                                    <select type="text" name="statusId" formControlName="statusId" id="statusId"
+                                        class="form-control font-12"
+                                        [ngClass]="{ 'is-invalid': submitted &amp;&amp; searchForm.controls.statusId.errors }">
+                                        <option value="">Payment Status</option>
+                                        <option value="0">Unsettled</option>
+                                        <option value="1">Settled</option>
+                                        <option value="2">Overdue</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-12 col-sm-6 col-md-6 col-lg-3 mt-2">
+                                    <button type="submit" class="btn btn-primary font-12"><i class="fas fa-search"></i>
+                                        Search</button>
+                                    <button type="button" class="btn btn-primary font-12" style="margin-left: 10px;"
+                                        (click)="clearSearch()"><i class="fas fa-sync-alt"></i> Clear</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="card-body table-responsive">
+                    <div class="col-auto mbm-30">
+                        <div class="row" *ngIf="assessmentsData">
+                            <div class="show-record">
+                                Show &nbsp;
+                                <select class="custom-select custom-select-sm form-control form-control-sm"
+                                    (change)="setItemsPerPage(page.value)" #page>
+                                    <option [selected]="currentPageLength==10">10</option>
+                                    <option [selected]="currentPageLength==30">30</option>
+                                    <option [selected]="currentPageLength==50">50</option>
+                                    <option [selected]="currentPageLength==100">100</option>
+                                    <option [selected]="currentPageLength==500">500</option>
+                                    <option [selected]="currentPageLength==1000">1000</option>
+                                </select>
+                                &nbsp; entries
+                            </div>
+                        </div>
+                    </div>
+
+                    <table class="table table-bordered table-condensed" *ngIf="assessmentsData;" datatable
+                        [dtOptions]="dtOptions" width="100%">
+                        <thead>
+                            <tr>
+                                <th>S/N</th>
+                                <th>Business ID</th>
+                                <th>Business Name</th>
+                                <th>Company Name</th>
+                                <th>Tax Payer ID</th>
+                                <th *ngIf="showTaxOffice">Tax Office</th>
+                                <th>Date Generated</th>
+                                <th>Generated From</th>
+                                <th>Invoice ID</th>
+
+                                <th>Tax Year</th>
+                                <th>Tax Month</th>
+                                <th>Employees Count</th>
+                                <th>Total Monthly Tax(₦)</th>
+                                <th>Amount Paid(₦)</th>
+                                <th>Balance(₦)</th>
+                                <th>Status</th>
+                                <!-- <th style="width: 10%">Action</th> -->
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let mydata of assessmentsData | paginate: config; index as i">
+                                <td>{{ i + 1 }}</td>
+                                <td>{{ mydata.business_id }}</td>
+                                <td>{{ mydata.business_name }}</td>
+                                <td>{{ mydata.company_name }}</td>
+                                <td>{{ mydata.taxpayer_id }}</td>
+                                <td *ngIf="showTaxOffice">{{ mydata.name | titlecase }}</td>
+                                <td>{{ mydata.created_at | date }}</td>
+                                <td>{{ mydata.application_id == 1 ? "Self Service Portal" : "Admin Portal" }}</td>
+                                <td>{{ mydata.invoice_number == null ? 'N/A' : mydata.invoice_number }}</td>
+                                <!-- <td>{{ mydata.invoice_number }}</td> -->
+                                <td>{{ getTaxYear(mydata.due_date) }}</td>
+                                <td>{{ getTaxMonth(mydata.due_date) }}</td>
+                                <td>{{ mydata.employees_count | number }}</td>
+                                <td>{{ mydata.monthly_tax_due | number }}</td>
+                                <!-- <td>{{ mydata.amount_paid | number }}</td> -->
+                                <td>{{ mydata.amount_paid == null ? '0' : mydata.amount_paid | number }}</td>
+                                <td>{{ mydata.monthly_tax_due - mydata.amount_paid | number }}</td>
+
+                                <td *ngIf="mydata.payment_status == 0" class="text-danger" style="font-weight: 600;">
+                                    Unsettled</td>
+                                <td *ngIf="mydata.payment_status == 1" class="text-success" style="font-weight: 600;">
+                                    Settled</td>
+                                <td *ngIf="mydata.payment_status == null"><span class="text-primary" style="font-weight: 600;">No
+                                        invoice</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div id="page_info" class="mt-3 record-show-text-bottom" *ngIf="assessmentsData">
+                        Showing {{(config.currentPage-1) * config.itemsPerPage + 1}} - {{config.currentPage *
+                        config.itemsPerPage}}
+                        of {{ config.totalItems }} entries
+                    </div>
+
+                    <div class="pagination paging-pull-right" *ngIf="assessmentsData">
+                        <pagination-controls (pageChange)="pageChange($event)"
+                            class="my-pagination mt-2 pagination-server">
+                        </pagination-controls>
+                    </div>
+
+                </div>
+                <!-- /.card-body -->
+                <div class="card-footer">
+
+                </div>
+            </div>
+
+        </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+</div>

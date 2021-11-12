@@ -1,0 +1,94 @@
+<!-- <div class="row">
+    <div class="col-lg-8"> -->
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="row">
+                    <div class="col-md-4 col-sm-6 col-12">
+                        <div class="info-box sa-bg-blue pos-rel color-blue info-box-blue">
+                            <div class="info-box-content">
+                                <span class="info-box-text">Wallet Balance (₦)</span>
+                                <span class="info-box-number">{{ walletDetailData == null ? 0 : walletDetailData?.balance }}</span>
+
+                                <div class="progress">
+                                    <div class="progress-bar" style="width: 70%"></div>
+                                </div>
+
+                            </div>
+
+                            <!-- <div class="sa-overlay"><a class="not-allowed" [routerLink]="['/dashboard']">View More <i class="fa fa-arrow-circle-right ml-1" aria-hidden="true"></i></a> </div> -->
+                            <!-- /.info-box-content -->
+                        </div>
+                        <!-- /.info-box -->
+                    </div>
+                    <!-- /.col -->
+                    <div class="col-md-4 col-sm-6 col-12">
+                        <div class="info-box sa-bg-blue pos-rel color-blue info-box-blue">
+
+                            <div class="info-box-content">
+                                <span class="info-box-text">Total Paid (₦)</span>
+                                <span class="info-box-number">{{  walletDetailData == null ? 0 : walletDetailData?.total_amount_in }}</span>
+
+                                <div class="progress">
+                                    <div class="progress-bar" style="width: 70%"></div>
+                                </div>
+
+                            </div>
+                            <!-- <div class="sa-overlay"><a [routerLink]="['/paidinvoices']">View More <i class="fa fa-arrow-circle-right ml-1" aria-hidden="true"></i></a> </div> -->
+                            <!-- /.info-box-content -->
+                        </div>
+                        <!-- /.info-box -->
+                    </div>
+                    <!-- /.col -->
+                    <div class="col-md-4 col-sm-6 col-12">
+                        <div class="info-box sa-bg-blue pos-rel color-blue info-box-blue">
+                            <div class="info-box-content">
+                                <span class="info-box-text">Total Unpaid (₦)</span>
+                                <span class="info-box-number">{{  walletDetailData == null ? 0 : walletDetailData?.total_amount_out }}</span>
+
+                                <div class="progress">
+                                    <div class="progress-bar" style="width: 70%"></div>
+                                </div>
+
+                            </div>
+                            <!-- <div class="sa-overlay"><a [routerLink]="['/unpaidinvoices']">View More <i class="fa fa-arrow-circle-right ml-1" aria-hidden="true"></i></a> </div> -->
+                            <!-- /.info-box-content -->
+                        </div>
+                        <!-- /.info-box -->
+                    </div>
+                    <!-- /.col -->
+
+                </div>
+            </div>
+        </div>
+    <!-- </div>
+</div> -->
+
+<h6 class="text-center">WALLET LOGS</h6>
+
+<table class="table table-bordered table-condensed" *ngIf="walletLogData;" datatable
+    [dtOptions]="dtOptionsPopUp" width="100%">
+    <thead>
+        <tr>
+            <th>S/N</th>
+            <th>Date of Payment</th>
+            <th>Amount Paid</th>
+            <th>Purpose of Payment</th>
+            <th>Status</th>
+
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let walletLog of walletLogData; index as i">
+            <th>{{i + 1}}</th>
+            <td>{{ walletLog.created_at | date: "dd MMM yyyy" }}</td>
+            <td>{{ walletLog.amount | number }}</td>
+            <td>{{ walletLog.purpose }}</td>
+            <td>{{ walletLog.status }}</td>
+        </tr>
+    </tbody>
+
+    <ng-template #content>
+        <p style="color: red;"> </p>
+    </ng-template>
+
+</table>

@@ -1,0 +1,545 @@
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+
+    </div>
+    <!-- /.content-header -->
+
+    <!-- Main content -->
+    <section class="content" data-select2-id="32">
+        <div class="container-fluid" data-select2-id="31">
+            <flash-messages></flash-messages>
+            <!-- SELECT2 EXAMPLE -->
+            <div class="card card-secondary">
+                <div class="card-header custome">
+                    <h3 class="card-title">Assessments</h3>
+                </div>
+                <!-- /.card-header -->
+
+                <div class="card">
+                    <div class="card-body">
+                        <form [formGroup]="searchForm" (ngSubmit)="onSubmitSearch(searchForm.value)">
+                            <div class="form-row">
+                                <div class="col-12 col-sm-6 col-md-6 col-lg-2 mt-1">
+                                    <input type="text" formControlName="taxPayerName" class="form-control font-12"
+                                        id="taxPayerName" placeholder="Tax Payer Name"
+                                        [ngClass]="{ 'is-invalid': submitted &amp;&amp; searchForm.controls.taxPayerName.errors }" />
+                                    <div *ngIf="submitted &amp;&amp; searchForm.controls.taxPayerName.errors"
+                                        class="text-danger">
+                                    </div>
+                                </div>
+
+                                <div class="col-12 col-sm-6 col-md-6 col-lg-2 mt-1">
+                                    <input type="text" formControlName="taxYear" class="form-control font-12"
+                                        id="taxYear" maxlength="4" placeholder="Tax Year Eg: 2019"
+                                        [ngClass]="{ 'is-invalid': submitted &amp;&amp; searchForm.controls.taxYear.errors }" />
+                                    <div *ngIf="submitted &amp;&amp; searchForm.controls.taxYear.errors"
+                                        class="text-danger">
+                                        <div *ngIf="searchForm.controls.taxYear.errors.pattern">Tax Year must be a valid
+                                            year</div>
+                                        <div *ngIf="searchForm.controls.taxYear.errors.minlength">Tax Year must be at
+                                            least 4 digits</div>
+                                        <div *ngIf="searchForm.controls.taxYear.errors.maxlength">Tax Year must not
+                                            exceed 4 digits</div>
+                                    </div>
+                                </div>
+
+                                <div class="col-12 col-sm-6 col-md-6 col-lg-2 mt-1">
+                                    <input type="text" formControlName="invoiceID" class="form-control font-12"
+                                        id="invoiceID" placeholder="Invoice ID"
+                                        [ngClass]="{ 'is-invalid': submitted &amp;&amp; searchForm.controls.invoiceID.errors }" />
+                                    <div *ngIf="submitted &amp;&amp; searchForm.controls.invoiceID.errors"
+                                        class="text-danger">
+                                    </div>
+                                </div>
+
+                                <div class="col-12 col-sm-6 col-md-6 col-lg-2 mt-1">
+                                    <select type="text" name="statusId" formControlName="statusId" id="statusId"
+                                        class="form-control font-12"
+                                        [ngClass]="{ 'is-invalid': submitted &amp;&amp; searchForm.controls.statusId.errors }">
+                                        <option value="">Payment Status</option>
+                                        <option value="0">Unsettled</option>
+                                        <option value="1">Settled</option>
+                                        <option value="2">Overdue</option>
+                                        <!-- <option value="-1">No Invoice</option> -->
+                                    </select>
+                                </div>
+
+                                <div class="col-12 col-sm-6 col-md-6 col-lg-2 mt-1">
+                                    <select type="text" name="generatedFromId" formControlName="generatedFromId" id="generatedFromId"
+                                        class="form-control font-12"
+                                        [ngClass]="{ 'is-invalid': submitted &amp;&amp; searchForm.controls.generatedFromId.errors }">
+                                        <option value="">Generated From</option>
+                                        <option value="1">Self Service Portal</option>
+                                        <option value="2">Admin Portal</option>
+                                        <option value="3">Direct Assessment</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-12 col-sm-6 col-md-6 col-lg-3 mt-3">
+                                    <button type="submit" class="btn btn-primary font-12"><i class="fas fa-search"></i>
+                                        Search</button>
+                                    <button type="button" class="btn btn-primary font-12" style="margin-left: 10px;"
+                                        (click)="clearSearch()"><i class="fas fa-sync-alt"></i> Clear</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="card-body">
+                    <div class="col-auto mbm-30">
+                        <div class="row" *ngIf="assessmentsData">
+                            <div class="show-record">
+                                Show &nbsp;
+                                <select class="custom-select custom-select-sm form-control form-control-sm"
+                                    (change)="setItemsPerPage(page.value)" #page>
+                                    <option [selected]="currentPageLength==10">10</option>
+                                    <option [selected]="currentPageLength==30">30</option>
+                                    <option [selected]="currentPageLength==50">50</option>
+                                    <option [selected]="currentPageLength==100">100</option>
+                                    <option [selected]="currentPageLength==500">500</option>
+                                    <option [selected]="currentPageLength==1000">1000</option>
+                                </select>
+                                &nbsp; entries
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                    <table class="table table-bordered table-condensed table-responsive-sm table-responsive-md table-responsive-lg table-responsive-xl" *ngIf="assessmentsData; " datatable
+                        [dtOptions]="dtOptions" width="100%">
+                        <thead>
+                            <tr>
+                                <th>S/N</th>
+                                <th>Date Generated</th>
+                                <th>Assessment ID</th>
+                                <th>Assessment Type</th>
+                                <th>Tax Payer Name</th>
+                                <th>Tax Payer ID</th>
+                                
+                                <th>Generated From</th>
+                                <th>Invoice ID</th>
+
+                                <th>Tax Year</th>
+                                <th>Total Tax Due(₦)</th>
+                                <th>Amount Paid(₦)</th>
+                                <th>Balance(₦)</th>
+                                <th>Assessment Status</th>
+                                <th>Payment Status</th>
+                                <th style="width: 10%">View & Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let mydata of assessmentsData | paginate: config; index as i">
+                                <td>{{config.itemsPerPage * (config.currentPage - 1) + i + 1}}</td>
+                                <td>{{ mydata.created_at | date: "dd MMM yyyy" }}</td>
+                                <td>{{ mydata.assessment_id }}</td>
+                                <td>{{ mydata.assessment_type }}</td>
+                                <td>{{ mydata.first_name | titlecase }} {{ mydata.surname | titlecase }}</td>
+                                <td>{{ mydata.taxpayer_id }}</td>
+                                
+                                <td>{{ mydata.created_by_app_id == 1 ? "Self Service Portal" : mydata.created_by_app_id == 2 ? "Admin Portal" : "Direct Assessment" }}</td>
+                                <td>{{ mydata.invoice_number == null ? 'N/A' : mydata.invoice_number }}</td>
+                                <td>{{ getTaxYear(mydata.due_date) }}</td>
+                                <td>{{ mydata.amount_due | number }}</td>
+                                <td>{{ mydata.amount_paid == null ? '0' : mydata.amount_paid | number}}</td>
+                                <td>{{ mydata.amount_due - mydata.amount_paid | number }}</td>
+                                <td *ngIf="mydata.payment_status == null">No Invoice</td>
+                                <td><p
+                                  [ngClass]="{'text-primary': mydata.approval_status == 0, 'text-success': mydata.approval_status == 1, 'text-danger': mydata.forwarded_to == 2} ">
+                                  {{ mydata.approval_status == '0' ? "AWAITING ACTION" : mydata.approval_status == '1' ? "APPROVED" : "REASSESSED" }}</p></td>
+
+                                <td *ngIf="mydata.payment_status == 0" class="text-danger" style="font-weight: 600;">Unsettled</td>
+                                <td *ngIf="mydata.payment_status == 1" class="text-success" style="font-weight: 600;">Settled</td>
+                                <td *ngIf="mydata.payment_status == 2" style="font-weight: 600; color: #4315ff;">Overdue</td>
+
+                                <td style="width: 10%">
+                                    <button *ngIf="mydata.payment_status != 1" class="btn btn-sm btn-outline-primary"
+                                        (click)="viewAssessment(mymodal, mydata)"><i class="nav-icon fas fa-eye"></i> View
+                                    </button>
+
+                                    <button *ngIf="mydata.payment_status == 1" class="btn btn-sm btn-outline-success"
+                                        (click)="viewAssessment(mymodal, mydata)"><i class="nav-icon fas fa-eye"></i> View
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    </div>
+                    <div id="page_info" class="mt-3 record-show-text-bottom" *ngIf="assessmentsData">
+                        Showing {{(config.currentPage-1) * config.itemsPerPage + 1}} - {{config.currentPage *
+                        config.itemsPerPage}} &nbsp;
+                        of &nbsp;{{ config.totalItems }} &nbsp; entries
+                      </div>
+
+                    <div class="pagination paging-pull-right" *ngIf="assessmentsData">
+                        <pagination-controls (pageChange)="pageChange($event)"
+                            class="my-pagination mt-2 pagination-server">
+                        </pagination-controls>
+                    </div>
+
+                    <ng-template #noBalance>
+                        <td><p style="color: rgb(0, 0, 255); font-weight: 600;" class="text-center mt-3"> No Balance </p></td>
+                    </ng-template>
+
+                </div>
+                <!-- /.card-body -->
+                <div class="card-footer">
+                    <!-- <button type="submit" (click)="forwardSchedule(schedulemodal)" class="btn btn button-login">Forward
+                        Schedule</button> -->
+                </div>
+            </div>
+
+        </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+</div>
+
+<ng-template #mymodal let-modal>
+    <div class="row">
+        <div class="col-lg-12">
+            <span *ngIf="editorRole">
+                <button type="button" *ngIf="paymentStatus" (click)="showAppealModal(appealmodal)" [disabled]="assessmentStatus != 0"
+                    class="btn btn-outline-dark button-login float-right" style="margin: 10px 10px !important;"
+                    printSectionId="printAssessment">
+                    <i class="fas fa-file-invoice"></i> Objection
+                </button>
+            </span>
+
+            <span *ngIf="managerRole">
+                <a type="button" *ngIf="paymentUrl" class="btn btn-outline-dark button-login float-right"
+                    style="margin: 10px 10px;" target="_blank" href="{{apiPaymentUrl}}" (click)="modal.close('Save click')"><i
+                        class="fas fa-credit-card"></i>
+                    Pay</a>
+            </span>
+
+            <button *ngIf="managerRole && processInvoiceBtn" type="button" (click)="processInvoice()" [disabled]="!isAssessmentApproved"
+                class="btn btn-outline-dark button-login float-right" style="margin: 10px 10px;"
+                printSectionId="printAssessment">
+                <i class="fas fa-file-invoice"></i> Generate Invoice
+            </button>
+
+            <button type="button" class="btn btn-outline-dark button-login float-right" style="margin: 10px 10px;"
+                printSectionId="printAssessment" ngxPrint [useExistingCss]="true">
+                <i class="fas fa-print"></i> Print Assessment
+            </button>
+        </div>
+    </div>
+
+    <div id="printAssessment">
+        <div class="modal-header">
+            <div class="col-md-6">
+              <img src="assets/dist/img/logo-NSIRS.png" class="rounded mt-3" alt="RAS Logo">
+            </div>
+
+            <div class="col-md-6 mt-4 text-right">
+              <h5 class="modal-title font-weight-bolder" id="modal-basic-title">REVENUE AUTOMATION SYSTEM</h5>
+              <p class="modal-title " id="modal-basic-title">Lafia tax Office, Makurdi - Jos Rd, Lafia</p>
+            </div>
+
+        </div>
+
+        <div class="modal-body">
+          <div class="container">
+
+            <div class="form-row">
+              <div class="col-md-12">
+                <!-- <img src="assets/dist/img/login-user-img.png" class="rounded float-left" alt="User Image"
+                  style="height:90px; width: 130px;"> -->
+                </div>
+              </div>
+
+              <form [formGroup]="assessmentForm">
+                <div class="form-row">
+                  <div class="form-group col-md-6">
+                          <label for="taxPayerName">Tax Payer Name</label>
+                          <input type="text" formControlName="taxPayerName" class="form-control" [attr.disabled]="true"
+                          [ngClass]="{ 'is-invalid': submitted &amp;&amp; assessmentForm.controls.taxPayerName.errors }" />
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="taxPayerID">Tax Payer ID</label>
+                            <input type="text" formControlName="taxPayerID" class="form-control" [attr.disabled]="true"
+                                [ngClass]="{ 'is-invalid': submitted &amp;&amp; assessmentForm.controls.taxPayerID.errors }" />
+                        </div>
+                </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="dateGenerated">Date Generated</label>
+                            <input type="text" formControlName="dateGenerated" class="form-control"
+                                [attr.disabled]="true"
+                                [ngClass]="{ 'is-invalid': submitted &amp;&amp; assessmentForm.controls.dateGenerated.errors }" />
+                        </div>
+
+                        <div class="form-group col-md-6">
+                            <label for="balance">Amount to Pay (₦)</label>
+                            <input type="text" formControlName="balance" class="form-control" [attr.disabled]="true"
+                                [ngClass]="{ 'is-invalid': submitted &amp;&amp; assessmentForm.controls.balance.errors }" />
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                      <div class="form-group col-md-6">
+                          <label for="assessmentId">Assessment ID</label>
+                          <input type="text" formControlName="assessmentId" class="form-control" [attr.disabled]="true"
+                              [ngClass]="{ 'is-invalid': submitted &amp;&amp; assessmentForm.controls.assessmentId.errors }" />
+                      </div>
+
+                        <div class="form-group col-md-6">
+                            <label for="phoneNumber">Phone Number</label>
+                            <input type="text" formControlName="phoneNumber" class="form-control" [attr.disabled]="true"
+                                [ngClass]="{ 'is-invalid': submitted &amp;&amp; assessmentForm.controls.phoneNumber.errors }" />
+                        </div>
+                    </div>
+
+
+                </form>
+
+                <div>
+                    <p class="text-center"><b>{{ assessmentYear }} PERSONAL INCOME TAX ANALYSIS</b></p>
+                    <table class="table table-bordered table-condensed" *ngIf="assessmentEmployeesData;" width="100%">
+                        <thead>
+                            <tr>
+                                <th>S/N</th>
+                                <th>Total Income (₦)</th>
+                                <th>Tax Free Pay (₦)</th>
+                                <th>Chargeable Income (₦)</th>
+                                <th>Annual Tax (₦)</th>
+                                <th>Amount Paid (₦)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let mydata of assessmentEmployeesData; index as i">
+                                <td>{{ i + 1 }}</td>
+                                <td>{{ mydata.total_income | number }}</td>
+                                <td>{{ mydata.non_taxable_income + mydata.cra | number }}</td>
+                                <td>{{ mydata.taxable_income | number }}</td>
+                                <td>{{ mydata.amount_due | number }}</td>
+                                <td>{{ mydata.amount_paid | number }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div>
+                    <p class="text-center"><b>ASSESSMENT UPDATES</b></p>
+                    <table class="table table-bordered table-condensed" *ngIf="assessmentUpdatesData; else content" datatable [dtOptions]="dtOptions" width="100%">
+                        <thead>
+                            <tr>
+                                <th>S/N</th>
+                                <th>Tax Office</th>
+                                <th>Self Assessed Income (₦)</th>
+                                <th>Self Assessed Tax (₦)</th>
+                                <th>Revised Assessment Income (₦)</th>
+                                <th>Revised Assessment Tax (₦)</th>
+                                <th>Reassessment Date</th>
+                                <th>Comment</th>
+                                <th>View Invoice</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let mydata of assessmentUpdatesData; index as i">
+                                <td>{{ i + 1 }}</td>
+                                <td>{{ mydata.tax_office_name }}</td>
+                                <td>{{ mydata.self_assessed_income | number }}</td>
+                                <td>{{ mydata.self_assessed_tax | number }}</td>
+                                <td>{{ mydata.revised_assessment_income | number }}</td>
+                                <td>{{ mydata.revised_assessment_tax | number }}</td>
+                                <td>{{ mydata.reassessment_date | date: 'dd MMM yyyy' }}</td>
+                                <td>{{ mydata.reassessment_reason }}</td>
+                                <!-- <td><a href="#" (click)="viewInvoice(mydata, viewInvoiceModal)">View</a></td> -->
+                                <td><a target="_blank" href="{{mydata.invoice_preview_url}}">View</a></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <ng-template #content>
+                        <p style="color: red;" class="text-center"> No content Available </p>
+                      </ng-template>
+                </div>
+            </div>
+        </div>
+    </div>    
+
+    <div class="modal-footer">
+        <button *ngIf="this.roleID === '2'" type="button" class="btn btn-outline-dark button-login mr-3" [disabled]="showAssessmentApproval" (click)="issueReassessment(reassessmentDetailsModal)">
+            <i class="fas fa-id-card-alt"></i> Issue Reassessment
+        </button>
+
+        <button *ngIf="this.roleID === '2'" type="button" class="btn btn-outline-dark button-login mr-3" [disabled]="showAssessmentApproval" (click)="approveAssessment()">
+            <i class="fas fa-thumbs-up"></i> Approve
+        </button>
+
+        <button type="button" class="btn btn-outline-dark button-login" (click)="modal.close('Save click')">Ok</button>
+    </div>
+</ng-template>
+
+
+<ng-template #appealmodal let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">Generate Objection</h4>
+    </div>
+
+    <div class="modal-body">
+        <div class="container">
+            <div class="form-row">
+                <div class="col-md-12">
+                    
+                </div>
+            </div>
+
+            <form [formGroup]="appealForm" (ngSubmit)="onSubmitAppeal(appealForm.value)">
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="invoiceNumber">Invoice ID</label>
+                        <input type="text" formControlName="invoiceNumber" class="form-control" [attr.disabled] = "true"
+                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; appealForm.controls.invoiceNumber.errors }" />
+                        <div *ngIf="submitted &amp;&amp; appealForm.controls.invoiceNumber.errors" class="text-danger">
+                            <!-- <div *ngIf="appealForm.controls.invoiceNumber.errors.required">Invoice ID is required</div> -->
+                        </div>
+                    </div>
+
+                    <div class="form-group col-md-6">
+                        <label for="date">Date</label>
+                        <input type="text" formControlName="date" class="form-control" [attr.disabled] = "true"
+                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; appealForm.controls.date.errors }" />
+                        <div *ngIf="submitted &amp;&amp; appealForm.controls.date.errors" class="text-danger">
+                            <!-- <div *ngIf="appealForm.controls.date.errors.required">Date is required</div> -->
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="messageTitle">Reason for Objection</label>
+                        <input type="text" formControlName="messageTitle" class="form-control" maxlength="255"
+                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; appealForm.controls.messageTitle.errors }" />
+                        <div *ngIf="submitted &amp;&amp; appealForm.controls.messageTitle.errors" class="text-danger">
+                            <div *ngIf="appealForm.controls.messageTitle.errors.required">Reason for Objection is required</div>
+                            <div *ngIf="appealForm.controls.messageTitle.errors.minlength">Reason for Objection must not be less than 3 alphabets</div>
+                            <div *ngIf="appealForm.controls.messageTitle.errors.pattern">Reason for Objection cannot be spaces only</div>
+                        </div>
+                    </div>
+
+                    <div class="form-group col-md-6">
+                        <label for="fileInput">Select File to Upload (jpeg, jpg, png)</label>
+                        <div class="custom-file">
+                            <input formControlName="myfile" id="myfile" type="file" class="custom-file-input"
+                                (change)="onFileChange($event)" multiple
+                                [ngClass]="{ 'is-invalid': submitted && appealForm.controls.myfile.errors || fileExceededSize }" accept=".png,.jpg,.jpeg">
+                            <label class="custom-file-label" for="customFile">{{ filePath == [] ? 'Choose file (jpeg, jpg, png)' : filePath.join(", ")
+                                }}</label>
+                        </div>
+                        <div *ngIf="submitted &amp;&amp; f.myfile.touched && f.myfile.invalid || submitted &amp;&amp; f.myfile.errors || fileExceededSize" class="text-danger">
+                            <div *ngIf="appealForm.controls.myfile.errors.required">File is required.</div>
+                            <!-- <div *ngIf="fileExceededSize">File size exceeded, File size should not exceed 1MB.</div> -->
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="message">Objection Description</label>
+                        <textarea type="text" formControlName="message" class="form-control" rows="4" maxlength="255"
+                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; appealForm.controls.message.errors }"></textarea>
+                        <div *ngIf="submitted &amp;&amp; appealForm.controls.message.errors" class="text-danger">
+                            <div *ngIf="appealForm.controls.message.errors.required">Objection Description is required</div>
+                            <div *ngIf="appealForm.controls.message.errors.minlength">Objection Description must not be less than 5 alphabets</div>
+                            <div *ngIf="appealForm.controls.message.errors.pattern">Objection Description cannot be spaces only</div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                      <table class="table table-bordered table-condensed" *ngIf="filePath.length > 0;">
+                        <thead>
+                          <tr>
+                            <th>S/N</th>
+                            <th>FIle name</th>
+                            <th>Action</th>
+                          </tr>
+                        </thead>
+                        <tbody class="file-scroll">
+                          <tr *ngFor="let mydata of filePath; index as i">
+                            <td>{{ i + 1 }}</td>
+                            <td>{{ mydata }}</td>
+                            <td><a class="btn btn-sm btn-outline-danger" (click)="deleteFile(mydata)">Delete</a></td>
+                        </tbody>
+                      </table>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn button-login"><i class="far fa-share-square"></i>
+                    Generate Objection</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button type="button" class="btn btn-outline-dark button-login" (click)="modal.close('Save click')">Ok</button>
+    </div>
+  </ng-template>
+
+
+  <ng-template #reassessmentDetailsModal let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">Reassessment Details</h4>
+    </div>
+
+    <div class="modal-body">
+        <div class="container">
+
+            <div class="form-row">
+                <div class="col-md-12">
+                   
+                </div>
+            </div>
+
+            <form [formGroup]="reassessmentForm" (ngSubmit)="onSubmitReassessment(reassessmentForm.value)">
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="estimatedTotalIncome">Estimated Total Income</label>
+                        <input type="text" formControlName="estimatedTotalIncome" class="form-control" (keyup)="calculateAmountTaxDue()"
+                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; reassessmentForm.controls.estimatedTotalIncome.errors }" />
+                        <div *ngIf="submitted &amp;&amp; reassessmentForm.controls.estimatedTotalIncome.errors" class="text-danger">
+                            <div *ngIf="reassessmentForm.controls.estimatedTotalIncome.errors.required">Estimated Total Income is required</div>
+                            <div *ngIf="reassessmentForm.controls.estimatedTotalIncome.errors.pattern">Estimated Total Income must be Number with
+                                only two digits are allowed after decimal
+                              </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group col-md-6">
+                        <label for="annualTaxDue">Annual Tax Due</label>
+                        <input type="text" formControlName="annualTaxDue" class="form-control" [attr.disabled]="true"
+                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; reassessmentForm.controls.annualTaxDue.errors }" />
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="comment">Comment</label>
+                        <textarea type="text" formControlName="comment" class="form-control" rows="3"
+                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; reassessmentForm.controls.comment.errors }"></textarea>
+                        <div *ngIf="submitted &amp;&amp; reassessmentForm.controls.comment.errors"
+                            class="text-danger">
+                            <div *ngIf="reassessmentForm.controls.comment.errors.required">Comment is required
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <button type="submit" class="btn btn button-login mr-3"><i class="fas fa-save"></i> Submit</button>        
+            </form>
+
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        
+        <button type="button" class="btn btn-outline-dark button-login" (click)="modal.close('Save click')">Ok</button>
+    </div>
+</ng-template>
+
+<ng-template #viewInvoiceModal let-modal>
+
+</ng-template>

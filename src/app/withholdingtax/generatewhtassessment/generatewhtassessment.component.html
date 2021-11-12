@@ -1,0 +1,330 @@
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+
+    </div>
+    <!-- /.content-header -->
+
+    <!-- Main content -->
+    <section class="content" data-select2-id="32">
+        <div class="container-fluid" data-select2-id="31">
+            <flash-messages></flash-messages>
+            <!-- SELECT2 EXAMPLE -->
+            <div class="card card-secondary">
+                <div class="card-header custome">
+                    <h3 class="card-title">Generate Assessment</h3>
+
+                    <div>
+                        <button type="submit" class="btn btn-primary role float-right"
+                            style="font-size: 12px; padding: 5px; margin-top: -3px;"
+                            (click)="uploadBulkTransactions(bulkTransactionModal)">
+                            <i class="fas fa-file-upload"></i> Bulk Upload
+                        </button>
+                    </div>
+                </div>
+                <!-- /.card-header -->
+
+                <div class="card-body">
+                    <h4 class="modal-title" id="modal-basic-title">Add Single Transaction</h4>
+
+                    <div class="modal-body">
+                        <form [formGroup]="addTransactionForm" (ngSubmit)="onSubmit(addTransactionForm.value)">
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label for="collectorId">Collector's ID<sup style="font-weight: 800;"
+                                            class="ml-1 font-wegiht-bold text-danger">*</sup>
+                                    </label>
+                                    <input type="text" formControlName="collectorId" class="form-control"
+                                        placeholder="Collector's ID" maxlength="11" (keyup)="getBusinessesByTaxpayerId(2)"
+                                        [ngClass]="{ 'is-invalid': submitted &amp;&amp; addTransactionForm.controls.collectorId.errors }" />
+                                    <div *ngIf="submitted &amp;&amp; addTransactionForm.controls.collectorId.errors"
+                                        class="text-danger">
+                                        <div *ngIf="addTransactionForm.controls.collectorId.errors.required">
+                                            Collector's ID is required</div>
+                                        <div *ngIf="addTransactionForm.controls.collectorId.errors.pattern">Only
+                                            Alphanumeric Characters
+                                            allowed
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group col-md-6">
+                                    <label for="collectorBusinessId">Collector's Business
+                                        <!-- <sup style="font-weight: 800;"
+                                            class="ml-1 font-wegiht-bold text-danger">*</sup> -->
+                                    </label>
+                                    <select type="text" name="collectorBusinessId" formControlName="collectorBusinessId"
+                                        id="collectorBusinessId" class="form-control"
+                                        [ngClass]="{ 'is-invalid': submitted &amp;&amp; addTransactionForm.controls.collectorBusinessId.errors }">
+                                        <option value="">Select Collector's Business</option>
+                                        <option *ngFor="let business of collectorBusinessData1" [value]="business.id">
+                                            {{ business.business_name }}
+                                        </option>
+                                    </select>
+                                    <div *ngIf="submitted &amp;&amp; addTransactionForm.controls.collectorBusinessId.errors"
+                                        class="text-danger">
+                                        <!-- <div *ngIf="addTransactionForm.controls.collectorBusinessId.errors.required">
+                                            Collector's Business is required
+                                        </div> -->
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label for="contributorId">Contributor's ID<sup style="font-weight: 800;"
+                                            class="ml-1 font-wegiht-bold text-danger">*</sup>
+                                    </label>
+                                    <input type="text" formControlName="contributorId" class="form-control"
+                                        placeholder="Contributor's ID" maxlength="11" (keyup)="getBusinessesByTaxpayerId(3)"
+                                        [ngClass]="{ 'is-invalid': submitted &amp;&amp; addTransactionForm.controls.contributorId.errors }" />
+                                    <div *ngIf="submitted &amp;&amp; addTransactionForm.controls.contributorId.errors"
+                                        class="text-danger">
+                                        <div *ngIf="addTransactionForm.controls.contributorId.errors.required">
+                                            Contributor's ID is required</div>
+                                        <div *ngIf="addTransactionForm.controls.contributorId.errors.pattern">Only
+                                            Alphanumeric Characters
+                                            allowed</div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group col-md-6">
+                                    <label for="contributorBusinessId">Contributor's Business
+                                        <!-- <sup style="font-weight: 800;" class="ml-1 font-wegiht-bold text-danger">*</sup> -->
+                                    </label>
+                                    <select type="text" name="contributorBusinessId"
+                                        formControlName="contributorBusinessId" id="contributorBusinessId"
+                                        class="form-control"
+                                        [ngClass]="{ 'is-invalid': submitted &amp;&amp; addTransactionForm.controls.contributorBusinessId.errors }">
+                                        <option value="">Select Contributor's Business</option>
+                                        <option *ngFor="let business of contributorBusinessData" [value]="business.id">
+                                            {{ business.business_name }}
+                                        </option>
+                                    </select>
+                                    <div *ngIf="submitted &amp;&amp; addTransactionForm.controls.contributorBusinessId.errors"
+                                        class="text-danger">
+                                        <!-- <div *ngIf="addTransactionForm.controls.contributorBusinessId.errors.required">
+                                            Contributor's Business is required
+                                        </div> -->
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label for="paymentTypeId">Payment Type<sup style="font-weight: 800;"
+                                            class="ml-1 font-wegiht-bold text-danger">*</sup>
+                                    </label>
+                                    <select type="text" name="paymentTypeId" formControlName="paymentTypeId" #paymentType
+                                        id="paymentTypeId" class="form-control" (change)="paymentTypeSelect(paymentType.value)"
+                                        [ngClass]="{ 'is-invalid': submitted &amp;&amp; addTransactionForm.controls.paymentTypeId.errors }">
+                                        <option value="">Select Payment Type</option>
+                                        <option *ngFor="let paymentType of paymentTypesData" [value]="paymentType.id">
+                                            {{ paymentType.name + " -- " + paymentType.rate + "%"}}
+                                        </option>
+                                    </select>
+                                    <div *ngIf="submitted &amp;&amp; addTransactionForm.controls.paymentTypeId.errors"
+                                        class="text-danger">
+                                        <div *ngIf="addTransactionForm.controls.paymentTypeId.errors.required">
+                                            Payment Type is required
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group col-md-6">
+                                    <label for="paymentDate">Payment Date<sup style="font-weight: 800;"
+                                            class="ml-1 font-wegiht-bold text-danger">*</sup>
+                                    </label>
+                                    <input type="date" name="paymentDate" formControlName="paymentDate"
+                                        class="form-control" placeholder="Payment Date (e.g DD-MM-YYYY)"
+                                        style="width: 100%"
+                                        [ngClass]="{ 'is-invalid': submitted &amp;&amp; addTransactionForm.controls.paymentDate.errors }" />
+                                    <div *ngIf="submitted &amp;&amp; addTransactionForm.controls.paymentDate.errors"
+                                        class="text-danger">
+                                        <div *ngIf="addTransactionForm.controls.paymentDate.errors.required">Date is
+                                            required</div>
+                                        <div *ngIf="addTransactionForm.controls.paymentDate.errors.dateValidator">
+                                            Valid Date is required</div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label for="computationTypeId">Computation Type<sup style="font-weight: 800;"
+                                            class="ml-1 font-wegiht-bold text-danger">*</sup>
+                                    </label>
+                                    <select type="text" name="computationTypeId"
+                                        formControlName="computationTypeId" #computationType id="computationTypeId"
+                                        class="form-control" (change)="computationTypeSelect(computationType.value)"
+                                        [ngClass]="{ 'is-invalid': submitted &amp;&amp; addTransactionForm.controls.computationTypeId.errors }">
+                                        <option value="">Select Computation Type</option>
+                                        <option value="disclosed">Disclosed</option>
+                                        <option value="non-disclosed">Non Disclosed</option>
+                                    </select>
+                                    <div *ngIf="submitted &amp;&amp; addTransactionForm.controls.computationTypeId.errors"
+                                        class="text-danger">
+                                        <div *ngIf="addTransactionForm.controls.computationTypeId.errors.required">
+                                            Computation Type is required
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div *ngIf="showTaxDue" class="form-group col-md-6">
+                                    <label for="transactionAmount">Transaction Amount<sup style="font-weight: 800;"
+                                            class="ml-1 font-wegiht-bold text-danger">*</sup>
+                                    </label>
+                                    <input type="text" formControlName="transactionAmount" class="form-control"
+                                        placeholder="Transaction Amount" maxlength="19" (keyup)="calculateTaxDue()"
+                                        [ngClass]="{ 'is-invalid': submitted &amp;&amp; addTransactionForm.controls.transactionAmount.errors }" />
+                                    <div *ngIf="submitted &amp;&amp; addTransactionForm.controls.transactionAmount.errors"
+                                        class="text-danger">
+                                        <div *ngIf="addTransactionForm.controls.transactionAmount.errors.required">
+                                            Transaction Amount is required
+                                        </div>
+                                        <div *ngIf="addTransactionForm.controls.transactionAmount.errors.pattern">
+                                            Transaction Amount must be Number with
+                                            only two digits are allowed after decimal</div>
+                                    </div>
+                                </div>
+
+                                <div *ngIf="!showTaxDue" class="form-group col-md-6">
+                                    <label for="inputTaxDue">Input Tax Due<sup style="font-weight: 800;"
+                                            class="ml-1 font-wegiht-bold text-danger">*</sup>
+                                    </label>
+                                    <input type="text" formControlName="inputTaxDue" class="form-control"
+                                        placeholder="Input Tax Due" maxlength="19"
+                                        [ngClass]="{ 'is-invalid': submitted &amp;&amp; addTransactionForm.controls.inputTaxDue.errors }" />
+                                    <div *ngIf="submitted &amp;&amp; addTransactionForm.controls.inputTaxDue.errors"
+                                        class="text-danger">
+                                        <div *ngIf="addTransactionForm.controls.inputTaxDue.errors.required">
+                                            Input Tax Due is required
+                                        </div>
+                                        <div *ngIf="addTransactionForm.controls.inputTaxDue.errors.pattern">
+                                            Input Tax Due must be Number with
+                                            only two digits are allowed after decimal</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div *ngIf="showTaxDue" class="form-group col-md-6">
+                                    <label>Tax Due</label>
+                                    <label class="form-control">{{ totalTaxDue }}</label>
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn btn button-login">
+                                <i class="fas fa-plus-square"></i> Generate Assessment</button>
+
+                            <!-- <button type="button" class="btn btn button-login" (click)="onSelectedInstrumentType()">
+                                <i class="fas fa-plus-square"></i> Add Form</button> -->
+                        </form>
+                    </div>
+
+                    <!-- <div class="modal-footer">
+                    </div> -->
+
+                </div>
+                <!-- /.card-body -->
+
+                <div class="card-footer">
+
+                </div>
+            </div>
+
+        </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+</div>
+
+<ng-template #bulkTransactionModal let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">Calculate WHT for multiple transactions</h4>
+    </div>
+
+    <div class="modal-body">
+        <div class="container">
+            <div class="form-row">
+                <div class="col-md-12">
+                </div>
+            </div>
+
+            <form [formGroup]="myForm" (ngSubmit)="submit()">
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="collectorId">Collector's ID<sup style="font-weight: 800;"
+                                class="ml-1 font-wegiht-bold text-danger">*</sup>
+                        </label>
+                        <input type="text" formControlName="collectorId" class="form-control"
+                            placeholder="Collector's ID" maxlength="11" (keyup)="getBusinessesByTaxpayerId(1)"
+                            [ngClass]="{ 'is-invalid': submitted1 &amp;&amp; myForm.controls.collectorId.errors }" />
+                        <div *ngIf="submitted1 &amp;&amp; myForm.controls.collectorId.errors" class="text-danger">
+                            <div *ngIf="myForm.controls.collectorId.errors.required">Collector's is required</div>
+                            <div *ngIf="myForm.controls.collectorId.errors.pattern">Only
+                                Alphanumeric Characters
+                                allowed
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group col-md-6">
+                        <label for="collectorBusinessId">Collector's Business
+                            <!-- <sup style="font-weight: 800;"
+                                class="ml-1 font-wegiht-bold text-danger">*</sup> -->
+                        </label>
+                        <select type="text" name="collectorBusinessId" formControlName="collectorBusinessId"
+                            id="collectorBusinessId" class="form-control"
+                            [ngClass]="{ 'is-invalid': submitted1 &amp;&amp; myForm.controls.collectorBusinessId.errors }">
+                            <option value="">Select Collector's Business</option>
+                            <option *ngFor="let business of collectorBusinessData" [value]="business.id">
+                                {{ business.business_name }}
+                            </option>
+                        </select>
+                        <div *ngIf="submitted1 &amp;&amp; myForm.controls.collectorBusinessId.errors"
+                            class="text-danger">
+                            <!-- <div *ngIf="myForm.controls.collectorBusinessId.errors.required">Collector's Business is
+                                required
+                            </div> -->
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="fileInput">Select File to Upload (e.g xls, xlxs)</label>
+
+                        <div class="custom-file">
+                            <input formControlName="myfile" id="myfile" type="file" class="custom-file-input"
+                                (change)="onFileChange($event)"
+                                [ngClass]="{ 'is-invalid': submitted1 && myForm.controls.myfile.errors }"
+                                accept=".xls,.xlsx">
+                            <label class="custom-file-label" for="customFile">{{filePath == null ? 'Choose file' :
+                                filePath}}</label>
+                        </div>
+
+                        <div *ngIf="submitted1 &amp;&amp; f.myfile.touched && f.myfile.invalid" class="text-danger">
+                            <div *ngIf="f.myfile.errors.required">File is required.</div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <button type="submit" class="btn btn button-login" [disabled]="file==null">Generate Assessment</button>
+            </form>
+
+            <div class="login-remeber">
+                <a href="{{sample_file}}" target="_blank">
+                    Download with holding tax template here</a>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button type="button" class="btn btn-outline-dark button-login" (click)="modal.close('Save click')">Ok</button>
+    </div>
+</ng-template>

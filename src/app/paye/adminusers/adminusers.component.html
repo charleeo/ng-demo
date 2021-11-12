@@ -1,0 +1,95 @@
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+
+    </div>
+    <!-- /.content-header -->
+
+    <!-- Main content -->
+    <section class="content" data-select2-id="32">
+        <div class="container-fluid" data-select2-id="31">
+
+
+            <!-- SELECT2 EXAMPLE -->
+            <div class="card card-secondary">
+                <div class="card-header custome">
+                    <h3 class="card-title">Manage a User</h3>
+                </div>
+                <!-- /.card-header -->
+                <div class="card-body">
+
+                    <div class="page-header">
+                        <h3> </h3>
+                    </div>
+                    <div>
+
+                        <table class="table table-bordered table-condensed" *ngIf="usersData; else content"
+                            datatable [dtOptions]="dtOptions" width="100%">
+                            <thead>
+                                <tr>
+                                    <th>S/N</th>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Phone</th>
+                                    <th>Role Name</th>
+                                    <th>Created Date</th>
+                                    <th>Last Login Date</th>
+                                    <th *ngIf="superAdminRole || managerRole">Status</th>
+                                    <th *ngIf="superAdminRole || managerRole">Edit</th>
+                                    <th *ngIf="superAdminRole || managerRole">Delete</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let mydata of usersData; index as i">
+                                    <td>{{ i + 1 }}</td>
+                                    <td>{{ mydata.name | titlecase}}</td>
+                                    <td>
+                                        {{ mydata.email == '' || mydata.email == null ? "N/A" : mydata.email }}
+                                    </td>
+                                    <td>{{ mydata.phone }}</td>
+                                    <td>
+                                        <p> {{ getUserRole(mydata.role_id) }}
+                                        </p>
+                                    </td>
+                                    <td>{{ mydata.created_at | date }}</td>
+                                    <td>{{ mydata.last_login == null || '' ? 'N/A' : mydata.last_login | date }}</td>
+
+                                    <td *ngIf="superAdminRole || managerRole" style="width: 12%">
+                                        <button *ngIf="mydata.active == 1" (click)="changeStatus(mydata.id, mydata.active)" class="btn btn-sm btn-outline-success"
+                                            [disabled]="mydata.role_id == 1 || (mydata.role_id == 2 && mydata.email == userEmail) || (roleID == 1 && (mydata.role_id - roleID) > 1)">
+                                            <i class="fas fa-arrow-alt-circle-up"></i> Active</button>
+
+                                        <button *ngIf="mydata.active == 0" (click)="changeStatus(mydata.id, mydata.active)" class="btn btn-sm btn-outline-danger"
+                                            [disabled]="mydata.role_id == 1 || (mydata.role_id == 2 && mydata.email == userEmail) || (roleID == 1 && (mydata.role_id - roleID) > 1)">
+                                            <i class="fas fa-arrow-alt-circle-down"></i> Inactive</button>
+                                    </td>
+
+                                    <td *ngIf="(superAdminRole || managerRole)" style="width: 9%">
+                                        <button [routerLink]="['/edit', mydata.id]" class="btn btn-sm btn-outline-primary" [disabled]="mydata.role_id == 1 || (mydata.role_id == 2 && mydata.email == userEmail) || (roleID == 1 && (mydata.role_id - roleID) > 1)">
+                                            <i class="nav-icon fas fa-edit"></i> Edit</button>
+                                    </td>
+                                    <td *ngIf="superAdminRole || managerRole" style="width: 10%">
+                                        <button (click)="deleteUser(mydata.id)" class="btn btn-sm btn-danger" [disabled]="mydata.role_id == 1 || (mydata.role_id == 2 && mydata.email == userEmail) || (roleID == 1 && (mydata.role_id - roleID) > 1)">
+                                            <i class="nav-icon far fa-trash-alt"></i> Delete</button>
+                                    </td>
+
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <ng-template #content>
+                            <p style="color: red;"> </p>
+                        </ng-template>
+                    </div>
+
+                </div>
+                <!-- /.card-body -->
+                <div class="card-footer">
+
+                </div>
+            </div>
+
+        </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+</div>

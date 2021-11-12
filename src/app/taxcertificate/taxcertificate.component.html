@@ -1,0 +1,73 @@
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+
+    </div>
+    <!-- /.content-header -->
+
+    <!-- Main content -->
+    <section class="content" data-select2-id="32">
+        <div class="container-fluid" data-select2-id="31">
+            <flash-messages></flash-messages>
+            <!-- SELECT2 EXAMPLE -->
+            <div class="card card-secondary">
+                <div class="card-header custome">
+                    <h3 class="card-title">List of Corporates</h3>
+
+                </div>
+                <!-- /.card-header -->
+                <div class="card-body">
+                    <div class="page-header">
+                        <h3> </h3>
+                    </div>
+                    <div>
+                        <table class="table table-bordered table-condensed" *ngIf="corporatesData; else content"
+                            datatable [dtOptions]="dtOptions" width="100%">
+                            <thead>
+                                <tr>
+                                    <th>S/N</th>
+                                    <th>Company Name</th>
+                                    <th>Company Email</th>
+                                    <th *ngIf="showTaxOffice">Tax Office</th>
+                                    <th>Tax Payer ID</th>
+                                    <th>View & Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let mydata of corporatesData; index as i">
+                                    <td>{{ i + 1 }}</td>
+                                    <td>{{ mydata.company_name | titlecase}}</td>
+                                    <td>{{ mydata.email }}</td>
+
+                                    <td *ngIf="showTaxOffice">{{ mydata.tax_office.name | titlecase }}</td>
+                                    <td>{{ mydata.taxpayer_id }}</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-outline-primary"
+                                            printSectionId="printTaxCertificate" ngxPrint [useExistingCss]="true">
+                                            <i class="nav-icon fas fa-cog"></i>Generate Certificate
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <ng-template #content>
+                            <p style="color: red;"> </p>
+                        </ng-template>
+                    </div>
+
+                    <div id="printTaxCertificate">
+
+                    </div>
+
+                </div>
+                <!-- /.card-body -->
+                <div class="card-footer">
+
+                </div>
+            </div>
+
+        </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+</div>

@@ -1,0 +1,503 @@
+<div *ngIf="showHeader">
+    <div class="modal-header">
+        <h5 class="modal-title" id="modal-basic-title">{{ modalTitle }} uhuhj9</h5>
+    </div>
+    
+    <div class="modal-body">
+        <div class="container">
+            <form [formGroup]="landForm" (ngSubmit)="onSubmitLand(landForm.value)">
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="taxPayerRoleId" class="input-label pull-left">Taxpayer Role<sup
+                                class=" font-wegiht-bold text-danger">*</sup>
+                        </label>
+                        <select name="taxPayerRoleId" formControlName="taxPayerRoleId" id="taxPayerRoleId"
+                            class="form-control" [attr.disabled]="disableControls"
+                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; landForm.controls.taxPayerRoleId.errors }">
+                            <option value="">Select Taxpayer Role</option>
+                            <option *ngFor="let taxpayerRole of taxpayerRoles" [value]="taxpayerRole.id">
+                                {{ taxpayerRole.name }}
+                            </option>
+                        </select>
+                        <div *ngIf="submitted &amp;&amp; landForm.controls.taxPayerRoleId.errors" class="text-danger">
+                            <div *ngIf="landForm.controls.taxPayerRoleId.errors.required">Taxpayer Role is
+                                required</div>
+                        </div>
+                    </div>
+    
+                    <div class="form-group col-md-6">
+                        <label for="landOwnerShipId" class="input-label pull-left">Land Ownership<sup
+                                class=" font-wegiht-bold text-danger">*</sup>
+                        </label>
+                        <select name="landOwnerShipId" formControlName="landOwnerShipId" id="landOwnerShipId"
+                            class="form-control" [attr.disabled]="disableControls"
+                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; landForm.controls.landOwnerShipId.errors }">
+                            <option value="">Select Land Ownership</option>
+                            <option *ngFor="let landOwnerShip of landOwnerShips" [value]="landOwnerShip.id">
+                                {{ landOwnerShip.ownership }}
+                            </option>
+                        </select>
+                        <div *ngIf="submitted &amp;&amp; landForm.controls.landOwnerShipId.errors" class="text-danger">
+                            <div *ngIf="landForm.controls.landOwnerShipId.errors.required">Land Ownership is
+                                required</div>
+                        </div>
+                    </div>
+                </div>
+    
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="landName" class="input-label pull-left">Land Name<sup
+                                class=" font-wegiht-bold text-danger">*</sup>
+                        </label>
+                        <input type="text" formControlName="landName" class="form-control" id="landName"
+                            placeholder="landName" [attr.disabled]="disableControls"
+                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; landForm.controls.landName.errors }" />
+                        <div *ngIf="submitted &amp;&amp; landForm.controls.landName.errors" class="text-danger">
+                            <div *ngIf="landForm.controls.landName.errors.required">Land Name is required
+                            </div>
+                        </div>
+                    </div>
+    
+                    <div class="form-group col-md-6">
+                        <label for="landPurposeId" class="input-label pull-left">Land Purpose<sup
+                                class=" font-wegiht-bold text-danger">*</sup>
+                        </label>
+                        <select name="landPurposeId" formControlName="landPurposeId" id="landPurposeId" class="form-control" [attr.disabled]="disableControls"
+                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; landForm.controls.landPurposeId.errors }">
+                            <option value="">Select Land Purpose</option>
+                            <option *ngFor="let landPurpose of landPurposes" [value]="landPurpose.id">
+                                {{ landPurpose.purpose }}
+                            </option>
+                        </select>
+                        <div *ngIf="submitted &amp;&amp; landForm.controls.landPurposeId.errors" class="text-danger">
+                            <div *ngIf="landForm.controls.landPurposeId.errors.required">Land Purpose is
+                                required</div>
+                        </div>
+                    </div>
+                </div>
+    
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="houseNumber" class="input-label pull-left">House Number<sup
+                                class=" font-wegiht-bold text-danger">*</sup>
+                        </label>
+                        <input type="text" formControlName="houseNumber" class="form-control" id="houseNumber"
+                            placeholder="House Number" [attr.disabled]="disableControls"
+                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; landForm.controls.houseNumber.errors }" />
+                        <div *ngIf="submitted &amp;&amp; landForm.controls.houseNumber.errors" class="text-danger">
+                            <div *ngIf="landForm.controls.houseNumber.errors.required">House Number
+                                is required</div>
+                        </div>
+                    </div>
+    
+                    <div class="form-group col-md-6">
+                        <label for="landSizeLength" class="input-label pull-left">Land Size<sup
+                                class=" font-wegiht-bold text-danger">*</sup>
+                        </label>
+    
+                        <div class="row">
+                            <div class="col-md-6">
+                                <input type="text" formControlName="landSizeLength" class="form-control" id="landSizeLength"
+                                    placeholder="Length" [attr.disabled]="disableControls"
+                                    [ngClass]="{ 'is-invalid': submitted &amp;&amp; landForm.controls.landSizeLength.errors }" />
+                                <div *ngIf="submitted &amp;&amp; landForm.controls.landSizeLength.errors" class="text-danger">
+                                    <div *ngIf="landForm.controls.landSizeLength.errors.required">Land Size Length is
+                                        required</div>
+                                </div>
+                            </div>
+        
+                            <div class="col-md-6">
+                                <input type="text" formControlName="landSizeBreadth" class="form-control" id="landSizeBreadth"
+                                    placeholder="Breadth" [attr.disabled]="disableControls"
+                                    [ngClass]="{ 'is-invalid': submitted &amp;&amp; landForm.controls.landSizeBreadth.errors }" />
+                                <div *ngIf="submitted &amp;&amp; landForm.controls.landSizeBreadth.errors" class="text-danger">
+                                    <div *ngIf="landForm.controls.landSizeBreadth.errors.required">Land Size Breadth is
+                                        required</div>
+                                </div>
+                            </div>
+                        </div>
+    
+                    </div>
+                </div>
+    
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="streetName" class="input-label pull-left">Street Name<sup
+                                class=" font-wegiht-bold text-danger">*</sup>
+                        </label>
+                        <input type="text" formControlName="streetName" class="form-control" id="streetName"
+                            placeholder="Street Name" [attr.disabled]="disableControls"
+                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; landForm.controls.streetName.errors }" />
+                        <div *ngIf="submitted &amp;&amp; landForm.controls.streetName.errors" class="text-danger">
+                            <div *ngIf="landForm.controls.streetName.errors.required">Street Name is
+                                required</div>
+                        </div>
+                    </div>
+    
+                    <div class="form-group col-md-6">
+                        <label for="offStreetName" class="input-label pull-left">Off Street Name<sup
+                                class=" font-wegiht-bold text-danger">*</sup>
+                        </label>
+                        <input type="text" formControlName="offStreetName" class="form-control" id="offStreetName"
+                            placeholder="Off Street Name" [attr.disabled]="disableControls"
+                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; landForm.controls.offStreetName.errors }" />
+                        <div *ngIf="submitted &amp;&amp; landForm.controls.offStreetName.errors" class="text-danger">
+                            <div *ngIf="landForm.controls.offStreetName.errors.required">Off Street Name is required</div>
+                        </div>
+                    </div>
+                </div>
+    
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="landLocalGovtId" class="input-label pull-left">Land LGA<sup
+                                class=" font-wegiht-bold text-danger">*</sup>
+                        </label>
+                        <select name="landLocalGovtId" formControlName="landLocalGovtId" id="landLocalGovtId" #localGovtSelect
+                            class="form-control" (change)="onLocalGovtSelect(localGovtSelect.value)" [attr.disabled]="disableControls"
+                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; landForm.controls.landLocalGovtId.errors }">
+                            <option value="">Select Land LGA</option>
+                            <option *ngFor="let localGovt of localGovts" [value]="localGovt.id">
+                                {{ localGovt.name }}
+                            </option>
+                        </select>
+                        <div *ngIf="submitted &amp;&amp; landForm.controls.landLocalGovtId.errors" class="text-danger">
+                            <div *ngIf="landForm.controls.landLocalGovtId.errors.required">Land LGA is
+                                required</div>
+                        </div>
+                    </div>
+    
+                    <div class="form-group col-md-6">
+                        <label for="landTownId" class="input-label pull-left">Land Town<sup
+                                class=" font-wegiht-bold text-danger">*</sup>
+                        </label>
+                        <select name="landTownId" formControlName="landTownId" id="landTownId" class="form-control" #landTownSelect
+                            (change)="onLandTownSelect(landTownSelect.value)" [attr.disabled]="disableControls"
+                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; landForm.controls.landTownId.errors }">
+                            <option value="">Select Land Town</option>
+                            <option *ngFor="let town of towns" [value]="town.id">
+                                {{ town.name }}
+                            </option>
+                        </select>
+                        <div *ngIf="submitted &amp;&amp; landForm.controls.landTownId.errors" class="text-danger">
+                            <div *ngIf="landForm.controls.landTownId.errors.required">Land Town is
+                                required</div>
+                        </div>
+                    </div>
+    
+                </div>
+    
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="latitude" class="input-label pull-left">Latitude
+                            <sup class=" font-wegiht-bold text-danger">*</sup>
+                        </label>
+                        <input type="text" formControlName="latitude" class="form-control" id="latitude"
+                            placeholder="Latitude" [attr.disabled]="disableControls"
+                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; landForm.controls.latitude.errors }" />
+                        <div *ngIf="submitted &amp;&amp; landForm.controls.latitude.errors" class="text-danger">
+                            <div *ngIf="landForm.controls.latitude.errors.required">Latitude is required
+                            </div>
+                        </div>
+                    </div>
+    
+                    <div class="form-group col-md-6">
+                        <label for="longitude" class="input-label pull-left">Longitude
+                            <sup class=" font-wegiht-bold text-danger">*</sup>
+                        </label>
+                        <input type="text" formControlName="longitude" class="form-control" id="longitude"
+                            placeholder="Longitude" [attr.disabled]="disableControls"
+                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; landForm.controls.longitude.errors }" />
+                        <div *ngIf="submitted &amp;&amp; landForm.controls.longitude.errors" class="text-danger">
+                            <div *ngIf="landForm.controls.longitude.errors.required">Longitude is required
+                            </div>
+                        </div>
+                    </div>
+                </div>
+    
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="wardId" class="input-label pull-left">Ward<sup
+                                class=" font-wegiht-bold text-danger">*</sup>
+                        </label>
+                        <select name="wardId" formControlName="wardId" id="wardId" class="form-control" [attr.disabled]="disableControls"
+                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; landForm.controls.wardId.errors }">
+                            <option value="">Select Ward</option>
+                            <option *ngFor="let landWard of landWards" [value]="landWard.id">
+                                {{ landWard.name }}
+                            </option>
+                        </select>
+                        <div *ngIf="submitted &amp;&amp; landForm.controls.wardId.errors" class="text-danger">
+                            <div *ngIf="landForm.controls.wardId.errors.required">Ward is
+                                required</div>
+                        </div>
+                    </div>
+    
+                    <div class="form-group col-md-6">
+                        <label for="cOfRefNumber" class="input-label pull-left">C of O Ref Number
+                            <!-- <sup class=" font-wegiht-bold text-danger">*</sup> -->
+                        </label>
+                        <input type="text" formControlName="cOfRefNumber" class="form-control" id="cOfRefNumber"
+                            placeholder="C of O Ref Number" [attr.disabled]="disableControls"
+                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; landForm.controls.cOfRefNumber.errors }" />
+                        <div *ngIf="submitted &amp;&amp; landForm.controls.cOfRefNumber.errors" class="text-danger">
+                            <!-- <div *ngIf="businessForm.controls.ward.errors.required">Ward is required
+                        </div> -->
+                        </div>
+                    </div>
+                </div>
+    
+                <button *ngIf="showSaveButton" type="submit" class="btn btn button-login">
+                    <i class="far fa-save"></i> Save Asset
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div *ngIf="!showHeader">
+    <form [formGroup]="landForm" (ngSubmit)="onSubmitLand(landForm.value)">
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="taxPayerRoleId" class="input-label pull-left">Taxpayer Role<sup
+                        class=" font-wegiht-bold text-danger">*</sup>
+                </label>
+                <select name="taxPayerRoleId" formControlName="taxPayerRoleId" id="taxPayerRoleId"
+                    class="form-control" [attr.disabled]="disableControls"
+                    [ngClass]="{ 'is-invalid': submitted &amp;&amp; landForm.controls.taxPayerRoleId.errors }">
+                    <option value="">Select Taxpayer Role</option>
+                    <option *ngFor="let taxpayerRole of taxpayerRoles" [value]="taxpayerRole.id">
+                        {{ taxpayerRole.name }}
+                    </option>
+                </select>
+                <div *ngIf="submitted &amp;&amp; landForm.controls.taxPayerRoleId.errors" class="text-danger">
+                    <div *ngIf="landForm.controls.taxPayerRoleId.errors.required">Taxpayer Role is
+                        required</div>
+                </div>
+            </div>
+
+            <div class="form-group col-md-6">
+                <label for="landOwnerShipId" class="input-label pull-left">Land Ownership<sup
+                        class=" font-wegiht-bold text-danger">*</sup>
+                </label>
+                <select name="landOwnerShipId" formControlName="landOwnerShipId" id="landOwnerShipId"
+                    class="form-control" [attr.disabled]="disableControls"
+                    [ngClass]="{ 'is-invalid': submitted &amp;&amp; landForm.controls.landOwnerShipId.errors }">
+                    <option value="">Select Land Ownership</option>
+                    <option *ngFor="let landOwnerShip of landOwnerShips" [value]="landOwnerShip.id">
+                        {{ landOwnerShip.ownership }}
+                    </option>
+                </select>
+                <div *ngIf="submitted &amp;&amp; landForm.controls.landOwnerShipId.errors" class="text-danger">
+                    <div *ngIf="landForm.controls.landOwnerShipId.errors.required">Land Ownership is
+                        required</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="landName" class="input-label pull-left">Land Name<sup
+                        class=" font-wegiht-bold text-danger">*</sup>
+                </label>
+                <input type="text" formControlName="landName" class="form-control" id="landName"
+                    placeholder="landName" [attr.disabled]="disableControls"
+                    [ngClass]="{ 'is-invalid': submitted &amp;&amp; landForm.controls.landName.errors }" />
+                <div *ngIf="submitted &amp;&amp; landForm.controls.landName.errors" class="text-danger">
+                    <div *ngIf="landForm.controls.landName.errors.required">Land Name is required
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group col-md-6">
+                <label for="landPurposeId" class="input-label pull-left">Land Purpose<sup
+                        class=" font-wegiht-bold text-danger">*</sup>
+                </label>
+                <select name="landPurposeId" formControlName="landPurposeId" id="landPurposeId" class="form-control" [attr.disabled]="disableControls"
+                    [ngClass]="{ 'is-invalid': submitted &amp;&amp; landForm.controls.landPurposeId.errors }">
+                    <option value="">Select Land Purpose</option>
+                    <option *ngFor="let landPurpose of landPurposes" [value]="landPurpose.id">
+                        {{ landPurpose.purpose }}
+                    </option>
+                </select>
+                <div *ngIf="submitted &amp;&amp; landForm.controls.landPurposeId.errors" class="text-danger">
+                    <div *ngIf="landForm.controls.landPurposeId.errors.required">Land Purpose is
+                        required</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="houseNumber" class="input-label pull-left">House Number<sup
+                        class=" font-wegiht-bold text-danger">*</sup>
+                </label>
+                <input type="text" formControlName="houseNumber" class="form-control" id="houseNumber"
+                    placeholder="House Number" [attr.disabled]="disableControls"
+                    [ngClass]="{ 'is-invalid': submitted &amp;&amp; landForm.controls.houseNumber.errors }" />
+                <div *ngIf="submitted &amp;&amp; landForm.controls.houseNumber.errors" class="text-danger">
+                    <div *ngIf="landForm.controls.houseNumber.errors.required">House Number
+                        is required</div>
+                </div>
+            </div>
+
+            <div class="form-group col-md-6">
+                <label for="landSizeLength" class="input-label pull-left">Land Size<sup
+                        class=" font-wegiht-bold text-danger">*</sup>
+                </label>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <input type="text" formControlName="landSizeLength" class="form-control" id="landSizeLength"
+                            placeholder="Length" [attr.disabled]="disableControls"
+                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; landForm.controls.landSizeLength.errors }" />
+                        <div *ngIf="submitted &amp;&amp; landForm.controls.landSizeLength.errors" class="text-danger">
+                            <div *ngIf="landForm.controls.landSizeLength.errors.required">Land Size Length is
+                                required</div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <input type="text" formControlName="landSizeBreadth" class="form-control" id="landSizeBreadth"
+                            placeholder="Breadth" [attr.disabled]="disableControls"
+                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; landForm.controls.landSizeBreadth.errors }" />
+                        <div *ngIf="submitted &amp;&amp; landForm.controls.landSizeBreadth.errors" class="text-danger">
+                            <div *ngIf="landForm.controls.landSizeBreadth.errors.required">Land Size Breadth is
+                                required</div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="streetName" class="input-label pull-left">Street Name<sup
+                        class=" font-wegiht-bold text-danger">*</sup>
+                </label>
+                <input type="text" formControlName="streetName" class="form-control" id="streetName"
+                    placeholder="Street Name" [attr.disabled]="disableControls"
+                    [ngClass]="{ 'is-invalid': submitted &amp;&amp; landForm.controls.streetName.errors }" />
+                <div *ngIf="submitted &amp;&amp; landForm.controls.streetName.errors" class="text-danger">
+                    <div *ngIf="landForm.controls.streetName.errors.required">Street Name is
+                        required</div>
+                </div>
+            </div>
+
+            <div class="form-group col-md-6">
+                <label for="offStreetName" class="input-label pull-left">Off Street Name<sup
+                        class=" font-wegiht-bold text-danger">*</sup>
+                </label>
+                <input type="text" formControlName="offStreetName" class="form-control" id="offStreetName"
+                    placeholder="Off Street Name" [attr.disabled]="disableControls"
+                    [ngClass]="{ 'is-invalid': submitted &amp;&amp; landForm.controls.offStreetName.errors }" />
+                <div *ngIf="submitted &amp;&amp; landForm.controls.offStreetName.errors" class="text-danger">
+                    <div *ngIf="landForm.controls.offStreetName.errors.required">Off Street Name is required</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="landLocalGovtId" class="input-label pull-left">Land LGA<sup
+                        class=" font-wegiht-bold text-danger">*</sup>
+                </label>
+                <select name="landLocalGovtId" formControlName="landLocalGovtId" id="landLocalGovtId" #localGovtSelect
+                    class="form-control" (change)="onLocalGovtSelect(localGovtSelect.value)" [attr.disabled]="disableControls"
+                    [ngClass]="{ 'is-invalid': submitted &amp;&amp; landForm.controls.landLocalGovtId.errors }">
+                    <option value="">Select Land LGA</option>
+                    <option *ngFor="let localGovt of localGovts" [value]="localGovt.id">
+                        {{ localGovt.name }}
+                    </option>
+                </select>
+                <div *ngIf="submitted &amp;&amp; landForm.controls.landLocalGovtId.errors" class="text-danger">
+                    <div *ngIf="landForm.controls.landLocalGovtId.errors.required">Land LGA is
+                        required</div>
+                </div>
+            </div>
+
+            <div class="form-group col-md-6">
+                <label for="landTownId" class="input-label pull-left">Land Town<sup
+                        class=" font-wegiht-bold text-danger">*</sup>
+                </label>
+                <select name="landTownId" formControlName="landTownId" id="landTownId" class="form-control" #landTownSelect
+                    (change)="onLandTownSelect(landTownSelect.value)" [attr.disabled]="disableControls"
+                    [ngClass]="{ 'is-invalid': submitted &amp;&amp; landForm.controls.landTownId.errors }">
+                    <option value="">Select Land Town</option>
+                    <option *ngFor="let town of towns" [value]="town.id">
+                        {{ town.name }}
+                    </option>
+                </select>
+                <div *ngIf="submitted &amp;&amp; landForm.controls.landTownId.errors" class="text-danger">
+                    <div *ngIf="landForm.controls.landTownId.errors.required">Land Town is
+                        required</div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="latitude" class="input-label pull-left">Latitude
+                    <sup class=" font-wegiht-bold text-danger">*</sup>
+                </label>
+                <input type="text" formControlName="latitude" class="form-control" id="latitude"
+                    placeholder="Latitude" [attr.disabled]="disableControls"
+                    [ngClass]="{ 'is-invalid': submitted &amp;&amp; landForm.controls.latitude.errors }" />
+                <div *ngIf="submitted &amp;&amp; landForm.controls.latitude.errors" class="text-danger">
+                    <div *ngIf="landForm.controls.latitude.errors.required">Latitude is required
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group col-md-6">
+                <label for="longitude" class="input-label pull-left">Longitude
+                    <sup class=" font-wegiht-bold text-danger">*</sup>
+                </label>
+                <input type="text" formControlName="longitude" class="form-control" id="longitude"
+                    placeholder="Longitude" [attr.disabled]="disableControls"
+                    [ngClass]="{ 'is-invalid': submitted &amp;&amp; landForm.controls.longitude.errors }" />
+                <div *ngIf="submitted &amp;&amp; landForm.controls.longitude.errors" class="text-danger">
+                    <div *ngIf="landForm.controls.longitude.errors.required">Longitude is required
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="wardId" class="input-label pull-left">Ward<sup
+                        class=" font-wegiht-bold text-danger">*</sup>
+                </label>
+                <select name="wardId" formControlName="wardId" id="wardId" class="form-control" [attr.disabled]="disableControls"
+                    [ngClass]="{ 'is-invalid': submitted &amp;&amp; landForm.controls.wardId.errors }">
+                    <option value="">Select Ward</option>
+                    <option *ngFor="let landWard of landWards" [value]="landWard.id">
+                        {{ landWard.name }}
+                    </option>
+                </select>
+                <div *ngIf="submitted &amp;&amp; landForm.controls.wardId.errors" class="text-danger">
+                    <div *ngIf="landForm.controls.wardId.errors.required">Ward is
+                        required</div>
+                </div>
+            </div>
+
+            <div class="form-group col-md-6">
+                <label for="cOfRefNumber" class="input-label pull-left">C of O Ref Number
+                    <!-- <sup class=" font-wegiht-bold text-danger">*</sup> -->
+                </label>
+                <input type="text" formControlName="cOfRefNumber" class="form-control" id="cOfRefNumber"
+                    placeholder="C of O Ref Number" [attr.disabled]="disableControls"
+                    [ngClass]="{ 'is-invalid': submitted &amp;&amp; landForm.controls.cOfRefNumber.errors }" />
+                <div *ngIf="submitted &amp;&amp; landForm.controls.cOfRefNumber.errors" class="text-danger">
+                    <!-- <div *ngIf="businessForm.controls.ward.errors.required">Ward is required
+                </div> -->
+                </div>
+            </div>
+        </div>
+
+        <button *ngIf="showSaveButton" type="submit" class="btn btn button-login">
+            <i class="far fa-save"></i> Save Asset
+        </button>
+    </form>
+</div>

@@ -1,0 +1,704 @@
+<div *ngIf="showHeader">
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">{{ modalTitle }}</h4>
+    </div>
+    
+    <div class="modal-body">
+        <div class="container">
+            <div class="form-row">
+                <div class="col-md-12">
+                </div>
+            </div>
+    
+            <form [formGroup]="addIndividualForm" (ngSubmit)="onSubmitAddIndividual(addIndividualForm.value)"
+                class="width-100-per">
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="titleId">Title<sup style="font-weight: 800;" class="text-danger">*</sup></label>
+                        <select type="text" name="titleId" formControlName="titleId" id="titleId" class="form-control"
+                            [attr.disabled]="disableControls"
+                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; addIndividualForm.controls.titleId.errors }">
+                            <option value="">Select Title</option>
+                            <option value="Mr.">Mr.</option>
+                            <option value="Mrs.">Mrs.</option>
+                            <option value="Miss.">Miss.</option>
+                        </select>
+                        <div *ngIf="submitted &amp;&amp; addIndividualForm.controls.titleId.errors" class="text-danger">
+                            <div *ngIf="addIndividualForm.controls.titleId.errors.required">Title is required</div>
+                        </div>
+                    </div>
+    
+                    <div class="form-group col-md-6">
+                        <label for="firstName" class="input-label pull-left">First Name<sup style="font-weight: 800;"
+                                class="text-danger">*</sup>
+                        </label>
+                        <input type="text" formControlName="firstName" class="form-control" id="firstName"
+                            placeholder="First Name"
+                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; addIndividualForm.controls.firstName.errors }"
+                            [attr.disabled]="disableControls" />
+    
+                        <div *ngIf="submitted &amp;&amp; addIndividualForm.controls.firstName.errors" class="text-danger">
+                            <div *ngIf="addIndividualForm.controls.firstName.errors.required">First Name is required
+                            </div>
+                            <div *ngIf="addIndividualForm.controls.firstName.errors.pattern">Only Alphabets
+                                allowed</div>
+                            <div *ngIf="addIndividualForm.controls.firstName.errors.maxlength">First Name can not
+                                exceed
+                                60 characters</div>
+                        </div>
+                    </div>
+    
+                </div>
+    
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="surname" class="input-label pull-left">Surname<sup style="font-weight: 800;"
+                                class="text-danger">*</sup>
+                        </label>
+                        <input type="text" formControlName="surname" class="form-control" id="surname" placeholder="Surname"
+                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; addIndividualForm.controls.surname.errors }"
+                            [attr.disabled]="disableControls" />
+    
+                        <div *ngIf="submitted &amp;&amp; addIndividualForm.controls.surname.errors" class="text-danger">
+                            <div *ngIf="addIndividualForm.controls.surname.errors.required">Surname is required
+                            </div>
+                            <div *ngIf="addIndividualForm.controls.surname.errors.pattern">Only Alphabets
+                                allowed</div>
+                            <div *ngIf="addIndividualForm.controls.surname.errors.maxlength">Surname can not exceed
+                                60 characters</div>
+                        </div>
+                    </div>
+    
+                    <div class="form-group col-md-6">
+                        <label for="emailAddress" class="input-label pull-left">Email Address</label>
+                        <input type="text" formControlName="emailAddress" class="form-control" id="emailAddress"
+                            placeholder="Email Address" [attr.disabled]="disableIndividualEmail"
+                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; addIndividualForm.controls.emailAddress.errors }" />
+                        <div *ngIf="submitted &amp;&amp; addIndividualForm.controls.emailAddress.errors"
+                            class="text-danger">
+                            <!-- <div *ngIf="addIndividualForm.controls.emailAddress.errors.required">Email Address is required</div> -->
+                            <div *ngIf="addIndividualForm.controls.emailAddress.errors.pattern">Email Address must
+                                be a
+                                valid email
+                            </div>
+                        </div>
+                    </div>
+                </div>
+    
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="phoneNumber">Phone Number<sup style="font-weight: 800;" class="text-danger">*</sup>
+                        </label>
+                        <input type="text" formControlName="phoneNumber" class="form-control" placeholder="Phone Number"
+                            maxlength="11" [attr.disabled]="disableControls"
+                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; addIndividualForm.controls.phoneNumber.errors }" />
+                        <div *ngIf="submitted &amp;&amp; addIndividualForm.controls.phoneNumber.errors" class="text-danger">
+                            <div *ngIf="addIndividualForm.controls.phoneNumber.errors.required">Phone Number is
+                                required</div>
+                            <div *ngIf="addIndividualForm.controls.phoneNumber.errors.minlength">Phone Number must
+                                be at least 11 digits</div>
+                            <div *ngIf="addIndividualForm.controls.phoneNumber.errors.maxlength">Phone Number must
+                                not exceed 11 digits</div>
+                            <div *ngIf="addIndividualForm.controls.phoneNumber.errors.pattern">Phone Number be
+                                numeric value only and start with 0</div>
+                        </div>
+                    </div>
+    
+                    <div class="form-group col-md-6">
+                        <label for="individualTIN">JTB-TIN <span class="note-color">**</span>
+                        </label>
+                        <input type="text" formControlName="individualTIN" class="form-control" placeholder="JTB-TIN"
+                            maxlength="10" [attr.disabled]="disableControls"
+                            (keyup)="changeTinPhoneNinBvnStatus()"
+                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; addIndividualForm.controls.individualTIN.errors || submitted &amp;&amp; validateCacTin }" />
+                        <div *ngIf="submitted &amp;&amp; addIndividualForm.controls.individualTIN.errors"
+                            class="text-danger">
+                            <div *ngIf="addIndividualForm.controls.individualTIN.errors.minlength">JTB-TIN must be
+                                at least
+                                10 digits long.
+                            </div>
+                            <div *ngIf="addIndividualForm.controls.individualTIN.errors.maxlength">JTB-TIN must be
+                                at most
+                                10 digits long.</div>
+                            <div *ngIf="addIndividualForm.controls.individualTIN.errors.pattern">JTB-TIN must be
+                                numeric
+                                value only</div>
+                        </div>
+                        <div *ngIf="submitted &amp;&amp; validateCacTin" class="text-danger">
+                            <div>JTB-TIN or NIN or BVN Number is required</div>
+                        </div>
+                    </div>
+                </div>
+    
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="nin">NIN <span class="note-color">**</span>
+                        </label>
+                        <input type="text" formControlName="nin" class="form-control" id="nin" placeholder="Enter NIN"
+                            maxlength="11" [attr.disabled]="disableControls"
+                            (keyup)="changeTinPhoneNinBvnStatus()"
+                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; addIndividualForm.controls.nin.errors || submitted &amp;&amp; validateCacTin }" />
+                        <div *ngIf="submitted &amp;&amp; addIndividualForm.controls.nin.errors" class="text-danger">
+                            <!-- <div *ngIf="addIndividualForm.controls.nin.errors.required">BVN is required
+                                        </div> -->
+                            <div *ngIf="addIndividualForm.controls.nin.errors.minlength">NIN can not be
+                                less than 11 characters</div>
+                            <div *ngIf="addIndividualForm.controls.nin.errors.pattern">NIN must be numeric
+                                value only</div>
+                        </div>
+                        <div *ngIf="submitted &amp;&amp; validateCacTin" class="text-danger">
+                            <div>JTB-TIN or NIN or BVN Number is required</div>
+                        </div>
+                    </div>
+    
+                    <div class="col-md-6 form-group">
+                        <label for="bvn" class="input-label pull-left">BVN <span class="note-color">**</span>
+                            <!-- <sup style="font-weight: 800;"
+                                            class="text-danger">*</sup> -->
+                        </label>
+                        <input type="text" formControlName="bvn" class="form-control" id="bvn" placeholder="Enter BVN" [attr.disabled]="disableControls"
+                            maxlength="11" (keydown.space)="$event.preventDefault()" (keyup)="changeTinPhoneNinBvnStatus()"
+                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; addIndividualForm.controls.bvn.errors || submitted &amp;&amp; validateCacTin }" />
+    
+                        <div *ngIf="submitted &amp;&amp; addIndividualForm.controls.bvn.errors" class="text-danger">
+                            <!-- <div *ngIf="addIndividualForm.controls.bvn.errors.required">BVN is required
+                                        </div> -->
+                            <div *ngIf="addIndividualForm.controls.bvn.errors.minlength">BVN can not be
+                                less than 11 characters</div>
+                            <div *ngIf="addIndividualForm.controls.bvn.errors.pattern">BVN must be numeric
+                                value only</div>
+                        </div>
+                        <div *ngIf="submitted &amp;&amp; validateCacTin" class="text-danger">
+                            <div>JTB-TIN or NIN or BVN Number is required</div>
+                        </div>
+                    </div>
+                </div>
+    
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="genderId">Gender<sup style="font-weight: 800;" class="text-danger">*</sup></label>
+                        <select type="text" name="genderId" formControlName="genderId" id="genderId" class="form-control"
+                            [attr.disabled]="disableControls"
+                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; addIndividualForm.controls.genderId.errors }">
+                            <option value="">Select Gender</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+    
+                        </select>
+                        <div *ngIf="submitted &amp;&amp; addIndividualForm.controls.genderId.errors" class="text-danger">
+                            <div *ngIf="addIndividualForm.controls.genderId.errors.required">Gender is
+                                required</div>
+                        </div>
+                    </div>
+    
+                    <div class="form-group col-md-6">
+                        <label for="nationality">Nationality<sup style="font-weight: 800;"
+                                class="text-danger">*</sup></label>
+                        <input type="text" formControlName="nationality" class="form-control" placeholder="Nationality"
+                            [attr.disabled]="disableControls"
+                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; addIndividualForm.controls.nationality.errors }" />
+                        <div *ngIf="submitted &amp;&amp; addIndividualForm.controls.nationality.errors" class="text-danger">
+                            <div *ngIf="addIndividualForm.controls.nationality.errors.required">Nationality is
+                                required</div>
+                        </div>
+                    </div>
+                </div>
+    
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="dateOfBirth">Date of Birth<sup style="font-weight: 800;"
+                                class="text-danger">*</sup></label>
+                        <input type="date" name="dateOfBirth" max="2021-01-01" min="1960-01-01"
+                            formControlName="dateOfBirth" id="dateOfBirth" class="form-control"
+                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; addIndividualForm.controls.dateOfBirth.errors || dateInvalid }"
+                            [attr.disabled]="disableControls" (keyup)="checkDate($event.target.value)" />
+    
+                        <div *ngIf="submitted &amp;&amp; addIndividualForm.controls.dateOfBirth.errors" class="text-danger">
+                            <div *ngIf="addIndividualForm.controls.dateOfBirth.errors.required">Date of Birth is
+                                required</div>
+                        </div>
+                        <div *ngIf="dateInvalid" class="text-danger">Date of Birth is invalid (min date: 01/01/1960,
+                            max: 01/01/2021)</div>
+                    </div>
+    
+                    <div class="form-group col-md-6">
+                        <label for="maritalStatus">Marital Status<sup style="font-weight: 800;"
+                                class="text-danger">*</sup></label>
+                        <select type="text" name="maritalStatus" formControlName="maritalStatus" id="maritalStatus"
+                            class="form-control" [attr.disabled]="disableControls"
+                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; addIndividualForm.controls.maritalStatus.errors }">
+                            <option value="">Select Marital Status</option>
+                            <option value="Single">Single</option>
+                            <option value="Married">Married</option>
+                            <option value="Divorced">Divorced</option>
+                            <option value="Widow">Widow</option>
+                            <option value="Widower">Widower</option>
+                        </select>
+                        <div *ngIf="submitted &amp;&amp; addIndividualForm.controls.maritalStatus.errors"
+                            class="text-danger">
+                            <div *ngIf="addIndividualForm.controls.maritalStatus.errors.required">Marital Status is
+                                required
+                            </div>
+                        </div>
+                    </div>
+                </div>
+    
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="occupation">Occupation<sup style="font-weight: 800;" class="text-danger">*</sup></label>
+                        <input type="text" name="occupation" formControlName="occupation" maxlength="30"
+                            class="form-control" placeholder="Occupation" [attr.disabled]="disableControls"
+                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; addIndividualForm.controls.occupation.errors }" />
+                        <div *ngIf="submitted &amp;&amp; addIndividualForm.controls.occupation.errors" class="text-danger">
+                            <div *ngIf="addIndividualForm.controls.occupation.errors.required">Occupation is
+                                required
+                            </div>
+                            <div *ngIf="addIndividualForm.controls.occupation.errors.pattern">Occupation can only
+                                contain
+                                alphabets</div>
+                            <div *ngIf="addIndividualForm.controls.occupation.errors.maxlength">Occupation must be
+                                at
+                                most 30
+                                characters</div>
+                        </div>
+                    </div>
+    
+                    <div class="col-md-6 form-group">
+                        <label for="zipCode">Zip Code<sup style="font-weight: 800;"
+                                class="font-wegiht-bold text-danger">*</sup>
+                        </label>
+                        <select type="text" name="zipCode" formControlName="zipCode" id="zipCode" class="form-control"
+                            style="min-width:339px" [attr.disabled]="disableControls"
+                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; addIndividualForm.controls.zipCode.errors }">
+                            <option value="">Select Zip Code</option>
+                            <option *ngFor="let zipcode of zipCodes" [value]="zipcode.id">
+                                {{ zipcode.city + " - " + zipcode.postalcode}}
+                            </option>
+                        </select>
+                        <div *ngIf="submitted &amp;&amp; addIndividualForm.controls.zipCode.errors" class="text-danger">
+                            <div *ngIf="addIndividualForm.controls.zipCode.errors.required">Zip Code is required
+                            </div>
+                        </div>
+                    </div>
+                </div>
+    
+                <div class="form-row">
+                    <div class="col-md-6 form-group">
+                        <label for="taxOffice" class="input-label pull-left">Prefered Tax Office<sup
+                                class=" font-wegiht-bold text-danger">*</sup></label>
+                        <select type="text" name="taxOfficeId" formControlName="taxOfficeId" id="taxOfficeId"
+                            class="form-control" [attr.disabled]="disableControls"
+                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; addIndividualForm.controls.taxOfficeId.errors }">
+                            <option value="">Select Preferred Tax Office</option>
+                            <option *ngFor="let taxTaxOffice of taxTaxOffices" [value]="taxTaxOffice.id">
+                                {{ taxTaxOffice.name }}
+                            </option>
+                        </select>
+                        <div *ngIf="submitted &amp;&amp; addIndividualForm.controls.taxOfficeId.errors" class="text-danger">
+                            <div *ngIf="addIndividualForm.controls.taxOfficeId.errors.required">Prefered Tax Office
+                                is
+                                required</div>
+                        </div>
+                    </div>
+    
+                    <div class="form-group col-md-6">
+                        <label for="localGovernmentId" class="input-label pull-left">Local Government<sup
+                                class=" font-wegiht-bold text-danger">*</sup>
+                        </label>
+                        <select type="text" name="localGovernmentId" formControlName="localGovernmentId"
+                            id="localGovernmentId" class="form-control" [attr.disabled]="disableControls"
+                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; addIndividualForm.controls.localGovernmentId.errors }">
+                            <option value="">Select Local Government</option>
+                            <option *ngFor="let stateLocalGovt of stateLocalGovts" [value]="stateLocalGovt.lga_code">
+                                {{ stateLocalGovt.name }}
+                            </option>
+                        </select>
+                        <div *ngIf="submitted &amp;&amp; addIndividualForm.controls.localGovernmentId.errors"
+                            class="text-danger">
+                            <div *ngIf="addIndividualForm.controls.localGovernmentId.errors.required">Local
+                                Government is
+                                required</div>
+                        </div>
+                    </div>
+                </div>
+    
+                <div class="form-row">
+                    <div class="col-md-6 form-group">
+                        <label for="contactAddress" class="input-label pull-left">Home Address<sup style="font-weight: 800;"
+                                class="text-danger">*</sup></label>
+                        <textarea formControlName="contactAddress" class="form-control" id="contactAddress" rows="3"
+                            placeholder="Home Address" [attr.disabled]="disableControls"
+                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; addIndividualForm.controls.contactAddress.errors }"></textarea>
+                        <div *ngIf="submitted &amp;&amp; addIndividualForm.controls.contactAddress.errors"
+                            class="text-danger">
+                            <div *ngIf="addIndividualForm.controls.contactAddress.errors.required">Home Address is
+                                required
+                            </div>
+                            <div *ngIf="addIndividualForm.controls.contactAddress.errors.maxlength">Home Address
+                                cannot
+                                contain more than 200 characters</div>
+                            <div *ngIf="addIndividualForm.controls.contactAddress.errors.pattern">Only Alphanumeric
+                                Characters
+                                allowed</div>
+                            <div *ngIf="addIndividualForm.controls.contactAddress.errors.minlength">Home Address
+                                cannot
+                                contain less than 6 characters</div>
+                        </div>
+                    </div>
+                </div>
+    
+                <button *ngIf="showSaveButton" type="submit"
+                    class="btn btn button-login"><i class="fas fa-plus-square"></i> Create Individual</button>
+                <!-- <button *ngIf="isUpdateIndividual" type="submit"
+                    class="btn btn button-login"><i class="far fa-save"></i> Update Individual</button> -->
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<div *ngIf="!showHeader">
+    <form [formGroup]="addIndividualForm" (ngSubmit)="onSubmitAddIndividual(addIndividualForm.value)"
+            class="width-100-per">
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="titleId">Title<sup style="font-weight: 800;" class="text-danger">*</sup></label>
+                    <select type="text" name="titleId" formControlName="titleId" id="titleId" class="form-control"
+                        [attr.disabled]="disableControls"
+                        [ngClass]="{ 'is-invalid': submitted &amp;&amp; addIndividualForm.controls.titleId.errors }">
+                        <option value="">Select Title</option>
+                        <option value="Mr.">Mr.</option>
+                        <option value="Mrs.">Mrs.</option>
+                        <option value="Miss.">Miss.</option>
+                    </select>
+                    <div *ngIf="submitted &amp;&amp; addIndividualForm.controls.titleId.errors" class="text-danger">
+                        <div *ngIf="addIndividualForm.controls.titleId.errors.required">Title is required</div>
+                    </div>
+                </div>
+
+                <div class="form-group col-md-6">
+                    <label for="firstName" class="input-label pull-left">First Name<sup style="font-weight: 800;"
+                            class="text-danger">*</sup>
+                    </label>
+                    <input type="text" formControlName="firstName" class="form-control" id="firstName"
+                        placeholder="First Name"
+                        [ngClass]="{ 'is-invalid': submitted &amp;&amp; addIndividualForm.controls.firstName.errors }"
+                        [attr.disabled]="disableControls" />
+
+                    <div *ngIf="submitted &amp;&amp; addIndividualForm.controls.firstName.errors" class="text-danger">
+                        <div *ngIf="addIndividualForm.controls.firstName.errors.required">First Name is required
+                        </div>
+                        <div *ngIf="addIndividualForm.controls.firstName.errors.pattern">Only Alphabets
+                            allowed</div>
+                        <div *ngIf="addIndividualForm.controls.firstName.errors.maxlength">First Name can not
+                            exceed
+                            60 characters</div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="surname" class="input-label pull-left">Surname<sup style="font-weight: 800;"
+                            class="text-danger">*</sup>
+                    </label>
+                    <input type="text" formControlName="surname" class="form-control" id="surname" placeholder="Surname"
+                        [ngClass]="{ 'is-invalid': submitted &amp;&amp; addIndividualForm.controls.surname.errors }"
+                        [attr.disabled]="disableControls" />
+
+                    <div *ngIf="submitted &amp;&amp; addIndividualForm.controls.surname.errors" class="text-danger">
+                        <div *ngIf="addIndividualForm.controls.surname.errors.required">Surname is required
+                        </div>
+                        <div *ngIf="addIndividualForm.controls.surname.errors.pattern">Only Alphabets
+                            allowed</div>
+                        <div *ngIf="addIndividualForm.controls.surname.errors.maxlength">Surname can not exceed
+                            60 characters</div>
+                    </div>
+                </div>
+
+                <div class="form-group col-md-6">
+                    <label for="emailAddress" class="input-label pull-left">Email Address</label>
+                    <input type="text" formControlName="emailAddress" class="form-control" id="emailAddress"
+                        placeholder="Email Address" [attr.disabled]="disableIndividualEmail"
+                        [ngClass]="{ 'is-invalid': submitted &amp;&amp; addIndividualForm.controls.emailAddress.errors }" />
+                    <div *ngIf="submitted &amp;&amp; addIndividualForm.controls.emailAddress.errors"
+                        class="text-danger">
+                        <!-- <div *ngIf="addIndividualForm.controls.emailAddress.errors.required">Email Address is required</div> -->
+                        <div *ngIf="addIndividualForm.controls.emailAddress.errors.pattern">Email Address must
+                            be a
+                            valid email
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="phoneNumber">Phone Number<sup style="font-weight: 800;" class="text-danger">*</sup>
+                    </label>
+                    <input type="text" formControlName="phoneNumber" class="form-control" placeholder="Phone Number"
+                        maxlength="11" [attr.disabled]="disableControls"
+                        [ngClass]="{ 'is-invalid': submitted &amp;&amp; addIndividualForm.controls.phoneNumber.errors }" />
+                    <div *ngIf="submitted &amp;&amp; addIndividualForm.controls.phoneNumber.errors" class="text-danger">
+                        <div *ngIf="addIndividualForm.controls.phoneNumber.errors.required">Phone Number is
+                            required</div>
+                        <div *ngIf="addIndividualForm.controls.phoneNumber.errors.minlength">Phone Number must
+                            be at least 11 digits</div>
+                        <div *ngIf="addIndividualForm.controls.phoneNumber.errors.maxlength">Phone Number must
+                            not exceed 11 digits</div>
+                        <div *ngIf="addIndividualForm.controls.phoneNumber.errors.pattern">Phone Number be
+                            numeric value only and start with 0</div>
+                    </div>
+                </div>
+
+                <div class="form-group col-md-6">
+                    <label for="individualTIN">JTB-TIN <span class="note-color">**</span>
+                    </label>
+                    <input type="text" formControlName="individualTIN" class="form-control" placeholder="JTB-TIN"
+                        maxlength="10" [attr.disabled]="disableControls"
+                        (keyup)="changeTinPhoneNinBvnStatus()"
+                        [ngClass]="{ 'is-invalid': submitted &amp;&amp; addIndividualForm.controls.individualTIN.errors || submitted &amp;&amp; validateCacTin }" />
+                    <div *ngIf="submitted &amp;&amp; addIndividualForm.controls.individualTIN.errors"
+                        class="text-danger">
+                        <div *ngIf="addIndividualForm.controls.individualTIN.errors.minlength">JTB-TIN must be
+                            at least
+                            10 digits long.
+                        </div>
+                        <div *ngIf="addIndividualForm.controls.individualTIN.errors.maxlength">JTB-TIN must be
+                            at most
+                            10 digits long.</div>
+                        <div *ngIf="addIndividualForm.controls.individualTIN.errors.pattern">JTB-TIN must be
+                            numeric
+                            value only</div>
+                    </div>
+                    <div *ngIf="submitted &amp;&amp; validateCacTin" class="text-danger">
+                        <div>JTB-TIN or NIN or BVN Number is required</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="nin">NIN <span class="note-color">**</span>
+                    </label>
+                    <input type="text" formControlName="nin" class="form-control" id="nin" placeholder="Enter NIN"
+                        maxlength="11" [attr.disabled]="disableControls"
+                        (keyup)="changeTinPhoneNinBvnStatus()"
+                        [ngClass]="{ 'is-invalid': submitted &amp;&amp; addIndividualForm.controls.nin.errors || submitted &amp;&amp; validateCacTin }" />
+                    <div *ngIf="submitted &amp;&amp; addIndividualForm.controls.nin.errors" class="text-danger">
+                        <!-- <div *ngIf="addIndividualForm.controls.nin.errors.required">BVN is required
+                                    </div> -->
+                        <div *ngIf="addIndividualForm.controls.nin.errors.minlength">NIN can not be
+                            less than 11 characters</div>
+                        <div *ngIf="addIndividualForm.controls.nin.errors.pattern">NIN must be numeric
+                            value only</div>
+                    </div>
+                    <div *ngIf="submitted &amp;&amp; validateCacTin" class="text-danger">
+                        <div>JTB-TIN or NIN or BVN Number is required</div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 form-group">
+                    <label for="bvn" class="input-label pull-left">BVN <span class="note-color">**</span>
+                        <!-- <sup style="font-weight: 800;"
+                                        class="text-danger">*</sup> -->
+                    </label>
+                    <input type="text" formControlName="bvn" class="form-control" id="bvn" placeholder="Enter BVN" [attr.disabled]="disableControls"
+                        maxlength="11" (keydown.space)="$event.preventDefault()" (keyup)="changeTinPhoneNinBvnStatus()"
+                        [ngClass]="{ 'is-invalid': submitted &amp;&amp; addIndividualForm.controls.bvn.errors || submitted &amp;&amp; validateCacTin }" />
+
+                    <div *ngIf="submitted &amp;&amp; addIndividualForm.controls.bvn.errors" class="text-danger">
+                        <!-- <div *ngIf="addIndividualForm.controls.bvn.errors.required">BVN is required
+                                    </div> -->
+                        <div *ngIf="addIndividualForm.controls.bvn.errors.minlength">BVN can not be
+                            less than 11 characters</div>
+                        <div *ngIf="addIndividualForm.controls.bvn.errors.pattern">BVN must be numeric
+                            value only</div>
+                    </div>
+                    <div *ngIf="submitted &amp;&amp; validateCacTin" class="text-danger">
+                        <div>JTB-TIN or NIN or BVN Number is required</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="genderId">Gender<sup style="font-weight: 800;" class="text-danger">*</sup></label>
+                    <select type="text" name="genderId" formControlName="genderId" id="genderId" class="form-control"
+                        [attr.disabled]="disableControls"
+                        [ngClass]="{ 'is-invalid': submitted &amp;&amp; addIndividualForm.controls.genderId.errors }">
+                        <option value="">Select Gender</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+
+                    </select>
+                    <div *ngIf="submitted &amp;&amp; addIndividualForm.controls.genderId.errors" class="text-danger">
+                        <div *ngIf="addIndividualForm.controls.genderId.errors.required">Gender is
+                            required</div>
+                    </div>
+                </div>
+
+                <div class="form-group col-md-6">
+                    <label for="nationality">Nationality<sup style="font-weight: 800;"
+                            class="text-danger">*</sup></label>
+                    <input type="text" formControlName="nationality" class="form-control" placeholder="Nationality"
+                        [attr.disabled]="disableControls"
+                        [ngClass]="{ 'is-invalid': submitted &amp;&amp; addIndividualForm.controls.nationality.errors }" />
+                    <div *ngIf="submitted &amp;&amp; addIndividualForm.controls.nationality.errors" class="text-danger">
+                        <div *ngIf="addIndividualForm.controls.nationality.errors.required">Nationality is
+                            required</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="dateOfBirth">Date of Birth<sup style="font-weight: 800;"
+                            class="text-danger">*</sup></label>
+                    <input type="date" name="dateOfBirth" max="2021-01-01" min="1960-01-01"
+                        formControlName="dateOfBirth" id="dateOfBirth" class="form-control"
+                        [ngClass]="{ 'is-invalid': submitted &amp;&amp; addIndividualForm.controls.dateOfBirth.errors || dateInvalid }"
+                        [attr.disabled]="disableControls" (keyup)="checkDate($event.target.value)" />
+
+                    <div *ngIf="submitted &amp;&amp; addIndividualForm.controls.dateOfBirth.errors" class="text-danger">
+                        <div *ngIf="addIndividualForm.controls.dateOfBirth.errors.required">Date of Birth is
+                            required</div>
+                    </div>
+                    <div *ngIf="dateInvalid" class="text-danger">Date of Birth is invalid (min date: 01/01/1960,
+                        max: 01/01/2021)</div>
+                </div>
+
+                <div class="form-group col-md-6">
+                    <label for="maritalStatus">Marital Status<sup style="font-weight: 800;"
+                            class="text-danger">*</sup></label>
+                    <select type="text" name="maritalStatus" formControlName="maritalStatus" id="maritalStatus"
+                        class="form-control" [attr.disabled]="disableControls"
+                        [ngClass]="{ 'is-invalid': submitted &amp;&amp; addIndividualForm.controls.maritalStatus.errors }">
+                        <option value="">Select Marital Status</option>
+                        <option value="Single">Single</option>
+                        <option value="Married">Married</option>
+                        <option value="Divorced">Divorced</option>
+                        <option value="Widow">Widow</option>
+                        <option value="Widower">Widower</option>
+                    </select>
+                    <div *ngIf="submitted &amp;&amp; addIndividualForm.controls.maritalStatus.errors"
+                        class="text-danger">
+                        <div *ngIf="addIndividualForm.controls.maritalStatus.errors.required">Marital Status is
+                            required
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="occupation">Occupation<sup style="font-weight: 800;" class="text-danger">*</sup></label>
+                    <input type="text" name="occupation" formControlName="occupation" maxlength="30"
+                        class="form-control" placeholder="Occupation" [attr.disabled]="disableControls"
+                        [ngClass]="{ 'is-invalid': submitted &amp;&amp; addIndividualForm.controls.occupation.errors }" />
+                    <div *ngIf="submitted &amp;&amp; addIndividualForm.controls.occupation.errors" class="text-danger">
+                        <div *ngIf="addIndividualForm.controls.occupation.errors.required">Occupation is
+                            required
+                        </div>
+                        <div *ngIf="addIndividualForm.controls.occupation.errors.pattern">Occupation can only
+                            contain
+                            alphabets</div>
+                        <div *ngIf="addIndividualForm.controls.occupation.errors.maxlength">Occupation must be
+                            at
+                            most 30
+                            characters</div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 form-group">
+                    <label for="zipCode">Zip Code<sup style="font-weight: 800;"
+                            class="font-wegiht-bold text-danger">*</sup>
+                    </label>
+                    <select type="text" name="zipCode" formControlName="zipCode" id="zipCode" class="form-control"
+                        style="min-width:339px" [attr.disabled]="disableControls"
+                        [ngClass]="{ 'is-invalid': submitted &amp;&amp; addIndividualForm.controls.zipCode.errors }">
+                        <option value="">Select Zip Code</option>
+                        <option *ngFor="let zipcode of zipCodes" [value]="zipcode.id">
+                            {{ zipcode.city + " - " + zipcode.postalcode}}
+                        </option>
+                    </select>
+                    <div *ngIf="submitted &amp;&amp; addIndividualForm.controls.zipCode.errors" class="text-danger">
+                        <div *ngIf="addIndividualForm.controls.zipCode.errors.required">Zip Code is required
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="col-md-6 form-group">
+                    <label for="taxOffice" class="input-label pull-left">Prefered Tax Office<sup
+                            class=" font-wegiht-bold text-danger">*</sup></label>
+                    <select type="text" name="taxOfficeId" formControlName="taxOfficeId" id="taxOfficeId"
+                        class="form-control" [attr.disabled]="disableControls"
+                        [ngClass]="{ 'is-invalid': submitted &amp;&amp; addIndividualForm.controls.taxOfficeId.errors }">
+                        <option value="">Select Preferred Tax Office</option>
+                        <option *ngFor="let taxTaxOffice of taxTaxOffices" [value]="taxTaxOffice.id">
+                            {{ taxTaxOffice.name }}
+                        </option>
+                    </select>
+                    <div *ngIf="submitted &amp;&amp; addIndividualForm.controls.taxOfficeId.errors" class="text-danger">
+                        <div *ngIf="addIndividualForm.controls.taxOfficeId.errors.required">Prefered Tax Office
+                            is
+                            required</div>
+                    </div>
+                </div>
+
+                <div class="form-group col-md-6">
+                    <label for="localGovernmentId" class="input-label pull-left">Local Government<sup
+                            class=" font-wegiht-bold text-danger">*</sup>
+                    </label>
+                    <select type="text" name="localGovernmentId" formControlName="localGovernmentId"
+                        id="localGovernmentId" class="form-control" [attr.disabled]="disableControls"
+                        [ngClass]="{ 'is-invalid': submitted &amp;&amp; addIndividualForm.controls.localGovernmentId.errors }">
+                        <option value="">Select Local Government</option>
+                        <option *ngFor="let stateLocalGovt of stateLocalGovts" [value]="stateLocalGovt.lga_code">
+                            {{ stateLocalGovt.name }}
+                        </option>
+                    </select>
+                    <div *ngIf="submitted &amp;&amp; addIndividualForm.controls.localGovernmentId.errors"
+                        class="text-danger">
+                        <div *ngIf="addIndividualForm.controls.localGovernmentId.errors.required">Local
+                            Government is
+                            required</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="col-md-6 form-group">
+                    <label for="contactAddress" class="input-label pull-left">Home Address<sup style="font-weight: 800;"
+                            class="text-danger">*</sup></label>
+                    <textarea formControlName="contactAddress" class="form-control" id="contactAddress" rows="3"
+                        placeholder="Home Address" [attr.disabled]="disableControls"
+                        [ngClass]="{ 'is-invalid': submitted &amp;&amp; addIndividualForm.controls.contactAddress.errors }"></textarea>
+                    <div *ngIf="submitted &amp;&amp; addIndividualForm.controls.contactAddress.errors"
+                        class="text-danger">
+                        <div *ngIf="addIndividualForm.controls.contactAddress.errors.required">Home Address is
+                            required
+                        </div>
+                        <div *ngIf="addIndividualForm.controls.contactAddress.errors.maxlength">Home Address
+                            cannot
+                            contain more than 200 characters</div>
+                        <div *ngIf="addIndividualForm.controls.contactAddress.errors.pattern">Only Alphanumeric
+                            Characters
+                            allowed</div>
+                        <div *ngIf="addIndividualForm.controls.contactAddress.errors.minlength">Home Address
+                            cannot
+                            contain less than 6 characters</div>
+                    </div>
+                </div>
+            </div>
+
+            <button *ngIf="showSaveButton" type="submit"
+                class="btn btn button-login"><i class="fas fa-plus-square"></i> Create Individual</button>
+
+            <button *ngIf="isUpdateIndividual" type="submit"
+                class="btn btn button-login"><i class="far fa-save"></i> Update Individual</button>
+        </form>
+</div>

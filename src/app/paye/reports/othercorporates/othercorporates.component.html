@@ -1,0 +1,328 @@
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+
+    </div>
+    <!-- /.content-header -->
+
+    <!-- Main content -->
+    <section class="content" data-select2-id="32">
+        <div class="container-fluid" data-select2-id="31">
+
+
+            <!-- SELECT2 EXAMPLE -->
+            <div class="card card-secondary">
+                <div class="card-header custome">
+                    <h3 class="card-title">List of Corporate Tax Payers</h3>
+                </div>
+                <!-- /.card-header -->
+                <div class="card-body">
+
+                    <div class="page-header">
+                        <h3> </h3>
+                    </div>
+                    <div>
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-condensed table-responsive-sm table-responsive-md table-responsive-lg table-responsive-xl" *ngIf="corporatesData; else content"
+                            datatable [dtOptions]="dtOptions" width="100%">
+                            <thead>
+                                <tr>
+                                    <th>S/N</th>
+                                    <th>Company Name</th>
+                                    <th>Email</th>
+                                    <th>Phone</th>
+                                    <!-- <th>Contact Address</th> -->
+                                    <th>Tax Payer ID</th>
+                                    <th>Created Date</th>
+                                    <th *ngIf="showUpdateCorporate">Update</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let mydata of corporatesData; index as i">
+                                    <td>{{ i + 1 }}</td>
+                                    <td>{{ mydata.name | titlecase }}</td>
+                                    <td>{{ mydata.email }}</td>
+                                    <td>{{ mydata.phone }}</td>
+                                    <!-- <td>{{ mydata.contact_address }}</td> -->
+                                    <td>{{ mydata.taxpayer_type_id }}</td>
+                                    <td>{{ mydata.created_at | date }}</td>
+
+                                    <!-- <td style="width: 10%">
+                                        <button class="btn btn-sm btn-outline-primary"
+                                            (click)="viewCorporate(mymodal, mydata)"><i class="nav-icon fas fa-eye"></i>
+                                            View
+                                        </button>
+                                    </td> -->
+
+                                    <td *ngIf="showUpdateCorporate"><button class="btn btn-sm btn-outline-primary" (click)="updateCorporateEmail(mymodal, mydata)">
+                                        <i class="nav-icon fas fa-edit"></i> Update Email</button>
+                                    </td>
+
+                                    <!-- <td *ngIf="showDeleteCorporate"><button (click)="deleteCorporate(mydata.id)"
+                                            class="btn btn-sm btn-danger"><i class="nav-icon far fa-trash-alt"></i> Delete</button></td> -->
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                        <ng-template #content>
+                            <p style="color: red;"> </p>
+                        </ng-template>
+                    </div>
+
+                </div>
+                <!-- /.card-body -->
+                <div class="card-footer">
+
+                </div>
+            </div>
+
+        </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+</div>
+
+
+<ng-template #mymodal let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">Corporate Details</h4>
+        <!--<button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+                <span aria-hidden="true">&times;</span>
+              </button> -->
+    </div>
+
+    <div class="modal-body">
+        <div class="container">
+
+            <div class="form-row">
+                <div class="col-md-12">
+                    <!-- <img src="assets/dist/img/login-user-img.png" class="rounded float-left" alt="User Image"
+                          style="height:90px; width: 130px;"> -->
+                </div>
+            </div>
+
+            <form [formGroup]="corporateForm" (ngSubmit)="onSubmitCorporate(corporateForm.value)">
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="companyName" class="input-label pull-left">Company Name<sup
+                                class=" font-wegiht-bold text-danger">*</sup>
+                        </label>
+                        <input type="text" formControlName="companyName" class="form-control" id="companyName" placeholder="Company Name"
+                            [attr.disabled]="true" [ngClass]="{ 'is-invalid': submitted &amp;&amp; corporateForm.controls.companyName.errors }" />
+
+                        <div *ngIf="submitted &amp;&amp; corporateForm.controls.companyName.errors" class="text-danger">
+                            <div *ngIf="corporateForm.controls.companyName.errors.required">Company Name is required
+                            </div>
+                            <div *ngIf="corporateForm.controls.companyName.errors.pattern">Only Alphanumeric Characters
+                                allowed</div>
+                            <div *ngIf="corporateForm.controls.companyName.errors.maxlength">Company Name can not exceed
+                                60 characters</div>
+                        </div>
+                    </div>
+
+                    <div class="form-group col-md-6">
+                        <label for="Phone1" class="input-label pull-left">Primary Phone Number<sup
+                                class=" font-wegiht-bold text-danger">*</sup>
+                        </label>
+                        <input type="text" formControlName="phone" class="form-control" id="phone" maxlength="10"
+                            [attr.disabled]="true" placeholder="Primary Phone Number"
+                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; corporateForm.controls.phone.errors }" />
+                        <div *ngIf="submitted &amp;&amp; corporateForm.controls.phone.errors" class="text-danger">
+                            <div *ngIf="corporateForm.controls.phone.errors.required">Primary Phone Number is required
+                            </div>
+                            <div *ngIf="corporateForm.controls.phone.errors.maxlength">Primary Phone Number must be 10
+                                Digit Long.</div>
+                            <div *ngIf="corporateForm.controls.phone.errors.minlength">Primary Phone Number must be 10
+                                Digit Long.</div>
+                            <div *ngIf="corporateForm.controls.phone.errors.pattern">Primary Phone Number must be Number
+                                Only</div>
+                        </div>
+                    </div>
+
+                    <!-- <div class="form-group col-md-6">
+                        <label for="cacNumber" class="input-label pull-left">CAC Registration Number
+                            <sup class=" font-wegiht-bold text-danger">*</sup></label>
+                        <input type="text" formControlName="cacRegNumber" class="form-control" id="cacRegNumber"
+                            placeholder="Enter CAC No. Eg: EX123456" maxlength="8"
+                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; corporateForm.controls.cacRegNumber.errors }" />
+                        <div *ngIf="submitted &amp;&amp; corporateForm.controls.cacRegNumber.errors"
+                            class="text-danger">
+                            <div *ngIf="corporateForm.controls.cacRegNumber.errors.required">CAC Registration number is
+                                required</div>
+                            <div *ngIf="corporateForm.controls.cacRegNumber.errors.maxlength">CAC Registration number
+                                can not exceed 8 characters</div>
+                            <div *ngIf="corporateForm.controls.cacRegNumber.errors.pattern">Valid CAC Registration
+                                number required</div>
+                        </div>
+                    </div> -->
+                </div>
+
+                <!-- <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="companyTIN" class="input-label pull-left">Company TIN<sup
+                                class="  font-wegiht-bold text-danger">*</sup>
+                        </label>
+                        <input type="text" formControlName="companyTIN" class="form-control" id="companyTIN" placeholder="Company TIN"
+                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; corporateForm.controls.companyTIN.errors }" />
+                        <div *ngIf="submitted &amp;&amp; corporateForm.controls.companyTIN.errors" class="text-danger">
+                            <div *ngIf="corporateForm.controls.companyTIN.errors.required">Company TIN is required</div>
+                            <div *ngIf="corporateForm.controls.companyTIN.errors.maxlength">Company TIN can not exceed 14 characters
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group col-md-6">
+                        <label for="Phone1" class="input-label pull-left">Primary Phone Number<sup
+                                class=" font-wegiht-bold text-danger">*</sup>
+                        </label>
+                        <input type="text" formControlName="phone" class="form-control" id="phone" maxlength="10"
+                            placeholder="Primary Phone Number"
+                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; corporateForm.controls.phone.errors }" />
+                        <div *ngIf="submitted &amp;&amp; corporateForm.controls.phone.errors" class="text-danger">
+                            <div *ngIf="corporateForm.controls.phone.errors.required">Primary Phone Number is required
+                            </div>
+                            <div *ngIf="corporateForm.controls.phone.errors.maxlength">Primary Phone Number must be 10
+                                Digit Long.</div>
+                            <div *ngIf="corporateForm.controls.phone.errors.minlength">Primary Phone Number must be 10
+                                Digit Long.</div>
+                            <div *ngIf="corporateForm.controls.phone.errors.pattern">Primary Phone Number must be Number
+                                Only</div>
+                        </div>
+                    </div>
+                </div> -->
+
+                <div class="form-row">
+                    <!-- <div class="form-group col-md-6">
+                        <label for="phone2" class="input-label pull-left">Secondary Phone Number<sup
+                                class=" font-wegiht-bold text-danger"></sup>
+                        </label>
+                        <input type="text" formControlName="phone2" class="form-control" id="phone2" maxlength="10"
+                            placeholder="Secondary Phone Number"
+                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; corporateForm.controls.phone2.errors }" />
+                        <div *ngIf="submitted &amp;&amp; corporateForm.controls.phone2.errors" class="text-danger">
+                            <div *ngIf="corporateForm.controls.phone2.errors.maxlength">Secondary Phone Number must be
+                                10 Digit Long.</div>
+                            <div *ngIf="corporateForm.controls.phone2.errors.minlength">Secondary Phone Number must be
+                                10 Digit Long.</div>
+                            <div *ngIf="corporateForm.controls.phone2.errors.pattern">Secondary Phone Number must be
+                                Number Only</div>
+                        </div>
+                    </div> -->
+
+                    <div class="form-group col-md-6">
+                        <label for="emailAddress1" class="input-label pull-left">
+                            Primary Email Address
+                        </label>
+                        <input type="text" formControlName="emailAddress" class="form-control" id="emailAddress"
+                            placeholder="Primary Email Address"
+                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; corporateForm.controls.emailAddress.errors }" />
+                        <div *ngIf="submitted &amp;&amp; corporateForm.controls.emailAddress.errors"
+                            class="text-danger">
+                            <!-- <div *ngIf="corporateForm.controls.emailAddress.errors.required">Email is required</div> -->
+                            <div *ngIf="corporateForm.controls.emailAddress.errors.email">Provide valid Email address
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group col-md-6">
+                        <label for="emailAddress1" class="input-label pull-left">Preferred Tax Office<sup
+                                class=" font-wegiht-bold text-danger">*</sup>
+                        </label>
+                        <select type="text" name="taxOfficeId" formControlName="taxOfficeId" id="taxOfficeId"
+                            [attr.disabled]="true" class="form-control" style="min-width:339px"
+                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; corporateForm.controls.taxOfficeId.errors }">
+                            <option value="">Select Tax Office</option>
+                            <option *ngFor="let taxTaxOffice of taxTaxOffices" [value]="taxTaxOffice.id">
+                                {{ taxTaxOffice.name }}
+                            </option>
+                        </select>
+                        <div *ngIf="submitted &amp;&amp; corporateForm.controls.taxOfficeId.errors" class="text-danger">
+                            <div *ngIf="corporateForm.controls.taxOfficeId.errors.required">Preferred Tax Office is
+                                required</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="emailAddress2" class="input-label pull-left">Secondary Email Address<sup
+                                class=" font-wegiht-bold text-danger"></sup>
+                        </label>
+                        <input type="text" formControlName="emailAddress2" class="form-control" id="emailAddress2"
+                            placeholder="Secondary Email Address"
+                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; corporateForm.controls.emailAddress2.errors }" />
+                        <div *ngIf="submitted &amp;&amp; corporateForm.controls.emailAddress2.errors"
+                            class="text-danger">
+                            <div *ngIf="corporateForm.controls.emailAddress2.errors.email">Provide valid Email address
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group col-md-6">
+                        <label for="emailAddress1" class="input-label pull-left">Preferred Tax Office<sup
+                                class=" font-wegiht-bold text-danger">*</sup>
+                        </label>
+                        <select type="text" name="taxOfficeId" formControlName="taxOfficeId" id="taxOfficeId"
+                            class="form-control" style="min-width:339px"
+                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; corporateForm.controls.taxOfficeId.errors }">
+                            <option value="">Select Tax Office</option>
+                            <option *ngFor="let taxTaxOffice of taxTaxOffices" [value]="taxTaxOffice.id">
+                                {{ taxTaxOffice.name }}
+                            </option>
+                        </select>
+                        <div *ngIf="submitted &amp;&amp; corporateForm.controls.taxOfficeId.errors" class="text-danger">
+                            <div *ngIf="corporateForm.controls.taxOfficeId.errors.required">Preferred Tax Office is
+                                required</div>
+                        </div>
+                    </div>
+                </div> -->
+
+                <!-- <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="emailAddress2" class="input-label pull-left">Industry Sector<sup
+                                class=" font-wegiht-bold text-danger">*</sup>
+                        </label>
+                        <select type="text" name="industrySectorId" formControlName="industrySectorId"
+                            id="industrySectorId" class="form-control" style="min-width:339px"
+                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; corporateForm.controls.industrySectorId.errors }">
+                            <option value="">Select Industry Sector</option>
+                            <option *ngFor="let industrySector of industrySectors" [value]="industrySector.id">
+                                {{ industrySector.name }}
+                            </option>
+                        </select>
+                        <div *ngIf="submitted &amp;&amp; corporateForm.controls.industrySectorId.errors"
+                            class="text-danger">
+                            <div *ngIf="corporateForm.controls.industrySectorId.errors.required">Industry Sector is
+                                required
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group col-md-6">
+                        <label for="contactAddress" class="input-label pull-left ">Contact Address<sup
+                                class=" font-wegiht-bold text-danger">*</sup>
+                        </label>
+                        <textarea formControlName="contactAddress" class="form-control" id="contactAddress" rows="4"
+                            placeholder="Contact Address"
+                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; corporateForm.controls.contactAddress.errors }"
+                            style="margin-top: 0px; margin-bottom: 0px; height: 70px;"></textarea>
+                        <div *ngIf="submitted &amp;&amp; corporateForm.controls.contactAddress.errors"
+                            class="text-danger">
+                            <div *ngIf="corporateForm.controls.contactAddress.errors.required">Contact Address is
+                                required</div>
+                        </div>
+                    </div>
+                </div> -->
+
+                <button type="submit" class="btn btn button-login">
+                    <i class="far fa-save"></i> Update Corporate</button>
+                <!-- <button *ngIf="showUpdateCorporate" type="submit" class="btn btn button-login">
+                    <i class="far fa-save"></i> Update Corporate</button> -->
+            </form>
+
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button type="button" class="btn btn-outline-dark button-login" (click)="modal.close('Save click')">Ok</button>
+    </div>
+</ng-template>

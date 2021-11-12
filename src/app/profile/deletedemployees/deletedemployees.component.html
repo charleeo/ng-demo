@@ -1,0 +1,187 @@
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+
+    </div>
+    <!-- /.content-header -->
+
+    <!-- Main content -->
+    <section class="content" data-select2-id="32">
+        <div class="container-fluid" data-select2-id="31">
+            <flash-messages></flash-messages>
+            <!-- SELECT2 EXAMPLE -->
+            <div class="card card-secondary">
+                <div class="card-header custome">
+                    <h3 class="card-title">Deleted Employees</h3>
+
+                </div>
+                <!-- /.card-header -->
+                <div class="card-body">
+
+                    <div>
+                        <table class="table table-bordered table-condensed" *ngIf="corporatesData;" datatable
+                            [dtOptions]="dtOptions" width="100%">
+                            <thead>
+                                <tr>
+                                    <th>S/N</th>
+                                    <th>Company Name</th>
+                                    <th>Email</th>
+                                    <th>Phone</th>
+                                    <th>Contact Address</th>
+                                    <th *ngIf="showTaxOffice">Tax Office</th>
+                                    <th>Tax Payer ID</th>
+                                    <th>Created Date</th>
+                                    <th>Details</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let mydata of corporatesData; index as i">
+                                    <td>{{ i + 1 }}</td>
+                                    <td>{{ mydata.company_name | titlecase}}</td>
+                                    <td>{{ mydata.email }}</td>
+                                    <td>{{ mydata.phone }}</td>
+                                    <td>{{ mydata.contact_address }}</td>
+                                    <td *ngIf="showTaxOffice">{{ mydata.tax_office.name | titlecase }}</td>
+                                    <td>{{ mydata.taxpayer_id }}</td>
+                                    <td>{{ mydata.created_at | date }}</td>
+
+                                    <td style="width: 10%">
+                                        <button class="btn btn-sm btn-outline-primary"
+                                            (click)="viewCorporate(mymodal, mydata)"><i class="nav-icon fas fa-eye"></i>
+                                            View
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                    </div>
+
+                </div>
+                <!-- /.card-body -->
+
+            </div>
+
+        </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+</div>
+
+
+<ng-template #mymodal let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">Corporate Details</h4>
+        <!--<button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+                <span aria-hidden="true">&times;</span>
+              </button> -->
+    </div>
+
+    <div class="modal-body">
+        <div class="container">
+
+            <div class="form-row">
+                <div class="col-md-12">
+                    <!-- <img src="assets/dist/img/login-user-img.png" class="rounded float-left" alt="User Image"
+                          style="height:90px; width: 130px;"> -->
+                </div>
+            </div>
+
+            <form [formGroup]="corporateForm">
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="companyName">Company Name</label>
+                        <input type="text" formControlName="companyName" class="form-control" [attr.disabled]="true"
+                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; corporateForm.controls.companyName.errors }" />
+                    </div>
+
+                    <div class="form-group col-md-6">
+                        <label for="contactAddress">Contact Address</label>
+                        <input type="text" formControlName="contactAddress" class="form-control" [attr.disabled]="true"
+                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; corporateForm.controls.contactAddress.errors }" />
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="taxPayerID">Tax Payer ID</label>
+                        <input type="text" formControlName="taxPayerID" class="form-control" [attr.disabled]="true"
+                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; corporateForm.controls.taxPayerID.errors }" />
+                    </div>
+
+                    <div class="form-group col-md-6">
+                        <label for="email">Email</label>
+                        <input type="text" formControlName="email" class="form-control" [attr.disabled]="true"
+                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; corporateForm.controls.email.errors }" />
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="phoneNumber">Phone Number</label>
+                        <input type="text" formControlName="phoneNumber" class="form-control" [attr.disabled]="true"
+                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; corporateForm.controls.phoneNumber.errors }" />
+                    </div>
+
+                    <div class="form-group col-md-6">
+                        <label for="dateCreated">Date Created</label>
+                        <input type="text" formControlName="dateCreated" class="form-control" [attr.disabled]="true"
+                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; corporateForm.controls.dateCreated.errors }" />
+                    </div>
+                </div>
+
+            </form>
+
+            <div>
+                <h5 class="login-box-msg" style="margin: 15px 0px;">Deleted Employees for <b>{{ selectedCorporateName | titlecase }}</b></h5>
+
+                <table class="table table-bordered table-condensed" *ngIf="corporateEmployeesData;" datatable
+                    [dtOptions]="dtOptions" width="100%">
+                    <thead>
+                        <tr>
+                            <th>S/N</th>
+                            <th>Tax Payer ID</th>
+                            <th>Full Name</th>
+                            <th>Designation</th>
+                            <th>Gross Income</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Pension</th>
+                            <th>TIN</th>
+                            <th>BVN</th>
+                            <th>NHIS</th>
+                            <th>NHF</th>
+                            <th>Date Deleted</th>
+                            <!-- <th *ngIf="isEditor">Action</th> -->
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let mydata of corporateEmployeesData; index as i">
+                            <td>{{ i + 1 }}</td>
+                            <td>{{ mydata.taxpayer_id}}</td>
+                            <td>{{ mydata.first_name | titlecase}} {{ mydata.last_name | titlecase}}</td>
+
+                            <td>{{ mydata.designation }}</td>
+                            <td>{{ mydata.gross_income | number }}</td>
+                            <td>{{ mydata.email }}</td>
+                            <td>{{ mydata.phone }}</td>
+                            <td>{{ mydata.pension | number}}</td>
+                            <td>{{ mydata.tin }}</td>
+                            <td>{{ mydata.bvn }}</td>
+                            <td>{{ mydata.nhis | number }}</td>
+                            <td>{{ mydata.nhf | number }}</td>
+                            <td>{{ mydata.deleted_at | date }}</td>
+                            <!-- <td *ngIf="isEditor"><button class="btn btn-sm btn-outline-primary" (click)="restoreEmployee(mydata.id)"><i
+                                  class="nav-icon fas fa-undo"></i>
+                                Restore </button></td> -->
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button type="button" class="btn btn-outline-dark button-login" (click)="modal.close('Save click')">Ok</button>
+    </div>
+</ng-template>

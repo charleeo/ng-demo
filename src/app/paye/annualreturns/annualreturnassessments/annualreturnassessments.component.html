@@ -1,0 +1,353 @@
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+
+    </div>
+    <!-- /.content-header -->
+
+    <!-- Main content -->
+    <section class="content" data-select2-id="32">
+        <div class="container-fluid" data-select2-id="31">
+            <flash-messages></flash-messages>
+            <!-- SELECT2 EXAMPLE -->
+            <div class="card card-secondary">
+                <div class="card-header custome">
+                    <h3 class="card-title">Filed Form H1</h3>
+                </div>
+                <!-- /.card-header -->
+                <div class="card-body">
+                    <div class="col-auto mbm-30">
+                        <div class="row" *ngIf="assessmentsData">
+                            <div class="show-record">
+                                Show &nbsp;
+                                <select class="custom-select custom-select-sm form-control form-control-sm"
+                                    (change)="setItemsPerPage(page.value)" #page>
+                                    <option [selected]="currentPageLength==10">10</option>
+                                    <option [selected]="currentPageLength==30">30</option>
+                                    <option [selected]="currentPageLength==50">50</option>
+                                    <option [selected]="currentPageLength==100">100</option>
+                                    <option [selected]="currentPageLength==500">500</option>
+                                    <option [selected]="currentPageLength==1000">1000</option>
+                                </select>
+                                &nbsp; entries
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                    <table class="table table-bordered table-condensed table-responsive-sm table-responsive-md table-responsive-lg table-responsive-xl" *ngIf="assessmentsData; else content" datatable
+                        [dtOptions]="dtOptions" width="100%">
+                        <thead>
+                            <tr>
+                                <th>S/N</th>
+                                <th>Business Name</th>
+                                <th>Business ID</th>
+                                <th>Annual Return ID</th>
+                                <th>Company Name</th>
+                                <th>Tax Payer ID</th>
+                                <th>Tax Year</th>
+                                <th>Total Annual Tax Paid (₦)</th>
+
+                                <th>Revenue Approval Status</th>
+                                <th>Date Filed</th>
+                                <!-- <th>Due Date</th> -->
+                                <th>Filed From</th>
+                                <th>View & Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let mydata of assessmentsData | paginate: config; index as i">
+                                <td>{{config.itemsPerPage * (config.currentPage - 1) + i + 1}}</td>
+                                <td>{{ mydata.business_name }}</td>
+                                <td>{{ mydata.business_id }}</td>
+                                <td>{{ mydata.annual_return_id }}</td>
+                                <td>{{ mydata.company_name }}</td>
+                                <td>{{ mydata.taxpayer_id }}</td>
+                                <td>{{ mydata.year }}</td>
+                                <td>{{ mydata.annual_tax_due | number: '1.0-5'  }}</td>
+                                <td><p [ngClass]="{'text-warning': mydata.revenue_board_approval_status == 0, 'text-success': mydata.revenue_board_approval_status == 1, 'text-primary': mydata.revenue_board_approval_status == 2} " >
+                                    {{ mydata.revenue_board_approval_status == 0 ? "Pending" : mydata.revenue_board_approval_status == 1 ? "Closed" : "Reassessed" }}</p>
+                                </td>
+                                <td>{{ mydata.created_at | date }}</td>
+                                <!-- <td>{{ mydata.due_date | date }}</td> -->
+                                <td>{{ mydata.application_id == 1 ? "Self Service Portal" : "Admin Portal" }}</td>
+
+                                <td style="width: 10%">
+                                    <button class="btn btn-sm btn-outline-primary" (click)="viewAssessment(mymodal, mydata)">
+                                        <i class="nav-icon fas fa-eye"></i> View
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    </div>
+
+                    <div id="page_info" class="mt-3 record-show-text-bottom" *ngIf="assessmentsData">
+                        Showing {{(config.currentPage-1) * config.itemsPerPage + 1}} - {{config.currentPage *
+                        config.itemsPerPage}} &nbsp;
+                        of &nbsp;{{ config.totalItems }} &nbsp; entries
+                    </div>
+
+                    <div class="pagination paging-pull-right" *ngIf="assessmentsData">
+                        <pagination-controls (pageChange)="pageChange($event)"
+                            class="my-pagination mt-2 pagination-server">
+                        </pagination-controls>
+                    </div>
+                    <ng-template #content>
+                        <p style="color: red;"> </p>
+                    </ng-template>
+
+                </div>
+                <!-- /.card-body -->
+                <div class="card-footer">
+                    <!-- <button type="submit" (click)="forwardSchedule(schedulemodal)" class="btn btn button-login">Forward
+                        Schedule</button> -->
+                </div>
+            </div>
+
+        </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+</div>
+
+<ng-template #mymodal let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">Assessment Details</h4>
+        <!--<button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+              <span aria-hidden="true">&times;</span>
+            </button> -->
+    </div>
+
+    <div class="modal-body">
+        <div class="container">
+
+            <div class="form-row">
+                <div class="col-md-12">
+                    <!-- <img src="assets/dist/img/login-user-img.png" class="rounded float-left" alt="User Image"
+                        style="height:90px; width: 130px;"> -->
+                </div>
+            </div>
+
+            <form [formGroup]="assessmentForm">
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="dateGenerated">Date Generated</label>
+                        <input type="text" formControlName="dateGenerated" class="form-control" [attr.disabled]="true"
+                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; assessmentForm.controls.dateGenerated.errors }" />
+
+                    </div>
+
+                    <div class="form-group col-md-6">
+                        <label for="dueDate">Due Date</label>
+                        <input type="text" formControlName="dueDate" class="form-control" [attr.disabled]="true"
+                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; assessmentForm.controls.dueDate.errors }" />
+
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="annualReturnID">Annual Return ID</label>
+                        <input type="text" formControlName="annualReturnID" class="form-control" [attr.disabled]="true"
+                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; assessmentForm.controls.annualReturnID.errors }" />
+                    </div>
+
+                    <div class="form-group col-md-6">
+                        <label for="assessmentStatus">Assessment Status</label>
+                        <input type="text" formControlName="assessmentStatus" class="form-control"
+                            [attr.disabled]="true"
+                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; assessmentForm.controls.assessmentStatus.errors }" />
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="approvalStatus">Approval Status</label>
+                        <input type="text" formControlName="approvalStatus" class="form-control" [attr.disabled]="true"
+                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; assessmentForm.controls.approvalStatus.errors }" />
+                    </div>
+
+
+                    <div class="form-group col-md-6">
+                        <label for="annualTaxDue">Annual Tax Paid (₦)</label>
+                        <input type="text" formControlName="annualTaxDue" class="form-control" [attr.disabled]="true"
+                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; assessmentForm.controls.annualTaxDue.errors }" />
+                    </div>
+
+                </div>
+            </form>
+
+            <div>
+                <table class="table table-bordered table-condensed" *ngIf="assessmentEmployeesData;" datatable
+                    [dtOptions]="dtOptions" width="100%">
+                    <thead>
+                        <tr>
+                            <th>S/N</th>
+                            <th>Tax Payer ID</th>
+
+                            <th>First Name</th>
+                            <!-- <th>Middle Name</th> -->
+                            <th>Surname</th>
+                            <th>Designation</th>
+                            <th>Nationality</th>
+
+                            <th>Monthly Income (₦)</th>
+                            <th>Annual Gross Income (₦)</th>
+                            <th>Annual Tax Paid (₦)</th>
+                            <th>Month(s)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let mydata of assessmentEmployeesData; index as i">
+                            <td>{{ i + 1 }}</td>
+                            <td>{{ mydata.taxpayer_id }}</td>
+
+                            <td>{{ mydata.first_name | titlecase }}</td>
+                            <!-- <td>{{ mydata.middle_name | titlecase }}</td> -->
+                            <td>{{ mydata.surname | titlecase }}</td>
+                            <td>{{ mydata.designation | titlecase }}</td>
+                            <td>{{ mydata.nationality | titlecase }}</td>
+
+                            <td>{{ mydata.monthly_income | number }}</td>
+                            <td>{{ mydata.annual_gross_income | number }}</td>
+                            <td>{{ mydata.annual_tax_paid | number }}</td>
+                            <td>{{ mydata.months }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button *ngIf="showGenerateReassessment" type="submit" [disabled]="assessmentApprovalStatus == 1 || assessmentApprovalStatus == 2"
+            (click)="approveAssessment()" class="btn btn button-login">Approve Return
+        </button>
+        <button *ngIf="showGenerateReassessment" type="submit"
+            [disabled]="assessmentApprovalStatus == 1 || assessmentApprovalStatus == 2"
+            (click)="generateReassessment(reassessmentmodal)" class="btn btn button-login">Issue Reassessment
+        </button>
+        <button type="button" class="btn btn-outline-dark button-login" (click)="modal.close('Save click')">Ok</button>
+    </div>
+</ng-template>
+
+
+<ng-template #reassessmentmodal let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">Generate Reassessment</h4>
+        <!--<button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+              <span aria-hidden="true">&times;</span>
+            </button> -->
+    </div>
+
+    <div class="modal-body">
+        <div class="container">
+
+            <div class="form-row">
+                <div class="col-md-12">
+                    <!-- <img src="assets/dist/img/login-user-img.png" class="rounded float-left" alt="User Image"
+                        style="height:90px; width: 130px;"> -->
+                </div>
+            </div>
+
+            <form [formGroup]="reassessmentForm" (ngSubmit)="addToReassessments(reassessmentForm.value)">
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="description">Service Description<sup
+                                class="ml-1 font-wegiht-bold text-danger">*</sup></label>
+                        <textarea type="text" formControlName="description" class="form-control" placeholder="Description"
+                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; reassessmentForm.controls.description.errors }"></textarea>
+                        <div *ngIf="submitted &amp;&amp; reassessmentForm.controls.description.errors" class="text-danger">
+                            <div *ngIf="reassessmentForm.controls.description.errors.required">Description is required</div>
+                            <!-- <div *ngIf="reassessmentForm.controls.description.errors.pattern">Description cannot contain numeric value</div> -->
+                            <div *ngIf="reassessmentForm.controls.description.errors.maxlength">Description must be at most 60 characters</div>
+                        </div>
+                    </div>
+
+                    <div class="form-group col-md-6">
+                        <label for="amount">Amount<sup
+                                class="ml-1 font-wegiht-bold text-danger">*</sup></label>
+                        <input type="text" formControlName="amount" class="form-control" placeholder="Amount"
+                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; reassessmentForm.controls.amount.errors }" />
+                        <div *ngIf="submitted &amp;&amp; reassessmentForm.controls.amount.errors"
+                            class="text-danger">
+                            <div *ngIf="reassessmentForm.controls.amount.errors.required">Amount is
+                                required</div>
+                            <div *ngIf="reassessmentForm.controls.amount.errors.pattern">Amount must be Number with
+                                only two digits are allowed after decimal</div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="comment">Comment</label>
+                        <textarea type="text" formControlName="comment" class="form-control" rows="4"
+                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; reassessmentForm.controls.comment.errors }"></textarea>
+                        <div *ngIf="submitted &amp;&amp; reassessmentForm.controls.comment.errors" class="text-danger">
+                            <div *ngIf="reassessmentForm.controls.comment.errors.required">Comment is required
+                            </div>
+                        </div>
+                    </div>
+                </div> -->
+
+                <button type="submit" style="margin-bottom: 20px;" class="btn btn button-login">Add to List</button>
+            </form>
+
+            <div>
+                <table class="table table-bordered table-condensed" *ngIf="reassessmentItemsData;" datatable
+                    [dtOptions]="dtOptionsPopUpTest" [dtTrigger]="dtTrigger" width="100%">
+                    <thead>
+                        <tr>
+                            <th>S/N</th>
+                            <th>Service Description</th>
+                            <th>Amount</th>
+                            <th style="width: 10%;">Remove</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let mydata of reassessmentItemsData; index as i">
+                            <td>{{ i + 1 }}</td>
+
+                            <td>{{ mydata.item_description }}</td>
+                            <td>₦ {{ mydata.amount | number }}</td>
+
+                            <td style="width: 10%;">
+                                <button (click)="removeFromReassessments(mydata)"
+                                class="btn btn-sm btn-danger"><i class="nav-icon far fa-trash-alt"></i> Remove
+                            </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <form [formGroup]="reassessmentItemsTotalForm">
+                <div class="form-inline">
+                    <div class="form-group col-md-8">
+                        <label for="amount" class="mr-5">Total (₦)
+                            <!-- <sup class="ml-1 font-wegiht-bold text-danger">*</sup> -->
+                        </label>
+                        <input type="text" formControlName="total" class="form-control" placeholder="Total" [attr.disabled]="true"
+                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; reassessmentItemsTotalForm.controls.total.errors }" />
+                        <div *ngIf="submitted &amp;&amp; reassessmentItemsTotalForm.controls.total.errors"
+                            class="text-danger">
+                            <!-- <div *ngIf="reassessmentForm.controls.total.errors.required">Amount is
+                                required</div>
+                            <div *ngIf="reassessmentForm.controls.total.errors.pattern">Amount must be
+                                Number Only</div> -->
+                        </div>
+                    </div>
+
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button type="button" class="btn btn button-login" [disabled]="reassessmentItems.length == 0" (click)="onSubmitReassessment(reassessmentForm.value)">Generate Reassessment</button>
+        <button type="button" class="btn btn-outline-dark button-login" (click)="modal.close('Save click')">Ok</button>
+    </div>
+</ng-template>

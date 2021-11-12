@@ -1,0 +1,79 @@
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+  
+    </div>
+ 
+    <!-- Main content -->
+    <section class="content" data-select2-id="32">
+      <div class="container-fluid" data-select2-id="31">
+
+        
+        <!-- SELECT2 EXAMPLE -->
+        <div class="card card-secondary">
+          <div class="card-header custome">
+            <h3 class="card-title">User Activity Logs</h3>
+          </div>
+          <!-- /.card-header -->
+          <div class="card-body">
+            <div class="table-responsive">
+             
+            <table class="table table-bordered table-condensed table-responsive-sm table-responsive-md table-responsive-lg table-responsive-xl" *ngIf="apidata; else content" datatable [dtOptions]="dtOptions" width="100%">
+                <thead>
+                  <tr>
+                    <th>S/N</th>
+                    <th>Name</th>
+                    <th>User Role</th>
+                    <th>Action Taken</th>
+                    <th style="max-width: 98px !important;">URL</th>
+                    <th style="max-width: 98px !important;">Old Values</th>
+                    <th style="max-width: 98px !important;">New Values</th>
+                    <th>IP Address</th>
+                    <th style="max-width: 98px !important;">User Agent</th>
+                    <th style="max-width: 98px !important;">Audit Type</th>
+                    <th>Date Stamp</th>
+                    <!-- <th>Browser Agent</th>
+                    <th>Created Date</th> -->
+                   
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let mydata of apidata; index as i">        
+                    <td>{{ i + 1 }}</td>
+                    <td>{{ mydata.name}}</td>
+                    <td>{{ mydata.user_type }}</td>
+                    <td>{{ mydata.event }}</td>
+                    <td style="max-width: 98px !important;"><span>{{ mydata.url }}</span></td>
+                    <td style="max-width: 98px !important;">
+                      <span *ngIf="mydata.old_values != '' || mydata.old_values == null ; else notShow "> {{ mydata.old_values}} </span>
+                      <ng-template #notShow>NA</ng-template>
+                    </td>
+                    <td style="max-width: 98px !important;">
+                      <span *ngIf="mydata.new_values != '' || mydata.new_values == null ; else display "> {{ mydata.new_values}} </span>
+                      <ng-template #display>NA</ng-template>
+                    </td>
+                    <td>{{ mydata.ip_address }}</td>
+                    <td style="max-width: 98px !important;"><span>{{ mydata.user_agent }}</span></td>
+                    <td style="max-width: 98px !important;"><span>{{ mydata.auditable_type }}</span></td>
+                    <td>{{ mydata.created_at }}</td>
+                    <!-- <td>{{ mydata.browser_agent }}</td>
+                    <td>{{ mydata.created_date }}</td> -->
+                  </tr>
+                </tbody>
+              </table>
+  
+            </div>
+              <ng-template #content > <p style="color: red;" ></p></ng-template>
+            </div>
+  
+          <!-- /.card-body -->
+          <div class="card-footer">
+  
+          </div>
+        </div>
+  
+      </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+  </div>
+ 

@@ -1,0 +1,259 @@
+<div class="content-wrapper">
+  <!-- Content Header (Page header) -->
+  <div class="content-header">
+
+  </div>
+  <!-- /.content-header -->
+
+  <!-- Main content -->
+  <section class="content" data-select2-id="32">
+    <div class="container-fluid" data-select2-id="31">
+
+
+      <!-- SELECT2 EXAMPLE -->
+      <div class="card card-secondary">
+        <div class="card-header custome">
+          <h3 class="card-title">Pending Form H3</h3>
+        </div>
+        <!-- /.card-header -->
+        <div class="card-body">
+            <div class="col-auto mbm-30">
+              <div class="row" *ngIf="apisingledata">
+                <div class="show-record">
+                  Show &nbsp;
+                  <select class="custom-select custom-select-sm form-control form-control-sm"
+                    (change)="setItemsPerPage(page.value)" #page>
+                    <option [selected]="currentPageLength==10">10</option>
+                    <option [selected]="currentPageLength==30">30</option>
+                    <option [selected]="currentPageLength==50">50</option>
+                    <option [selected]="currentPageLength==100">100</option>
+                    <option [selected]="currentPageLength==500">500</option>
+                    <option [selected]="currentPageLength==1000">1000</option>
+                  </select>
+                  &nbsp; entries
+                </div>
+              </div>
+            </div>
+            <div class="table-responsive">
+            <table class="table table-bordered table-condensed" *ngIf="apisingledata; else content" datatable
+              [dtOptions]="dtOptions" width="100%">
+              <thead>
+                <tr>
+                  <th>S/N</th>
+                  <th>Business Name</th>
+                  <th>Business ID</th>
+                  <th>Annual Projection ID</th>
+                  <th>Company Name</th>
+                  <th>Projection Year</th>
+                  <th>Forwarded To</th>
+                  <th>Date Forwarded</th>
+                  <th>View</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let mydata of apisingledata | paginate: config; index as i">
+                  <td>{{config.itemsPerPage * (config.currentPage - 1) + i + 1}}</td>
+                  <td>{{ mydata.business_name }}</td>
+                  <td>{{ mydata.business_id }}</td>
+                  <td>{{ mydata.annual_projection_id }}</td>
+                  <td>{{ mydata.company_name }}</td>
+                  <td>{{ mydata.projection_year }}</td>
+                  <td><p
+                    [ngClass]="{'text-danger': mydata.forwarded_to == 0, 'text-success': mydata.forwarded_to == 2, 'text-primary': mydata.forwarded_to == 1} ">
+                    {{ mydata.forwarded_to == 2 ? 'Forwarded to Head Of Station' : mydata.forwarded_to == 1 ?
+                    'Forwarded to Tax Officer' : 'Not Forwarded' }}</p>
+                  </td>
+                  <td>{{ mydata.date_forwarded | date:'dd MMM yyyy' }}</td>
+                  <td title="View"><button class="btn btn-sm btn-outline-primary"
+                      (click)="viewProjection(mymodal, mydata)"><i class="nav-icon fas fa-eye"></i>
+                    </button></td>
+                </tr>
+              </tbody>
+            </table>
+            </div>
+            <div id="page_info" class="mt-3 record-show-text-bottom" *ngIf="apisingledata">
+              Showing {{(config.currentPage - 1) * config.itemsPerPage + 1}} - {{config.currentPage *
+              config.itemsPerPage}} &nbsp;
+              of &nbsp;{{ config.totalItems }} &nbsp; entries
+            </div>
+
+            <div class="pagination paging-pull-right" *ngIf="apisingledata">
+              <pagination-controls (pageChange)="pageChange($event)" class="my-pagination mt-2 pagination-server">
+              </pagination-controls>
+            </div>
+
+            <ng-template #content>
+              <p style="color: red;" class="text-center"> No content Available </p>
+            </ng-template>
+
+          <!-- </div> -->
+
+        </div>
+        <!-- /.card-body -->
+        <div class="card-footer" *ngIf="apidata == null">
+        </div>
+      </div>
+
+    </div><!-- /.container-fluid -->
+  </section>
+  <!-- /.content -->
+</div>
+
+<ng-template #projectionmodal let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Forward Projection</h4>
+    <!--<button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+          </button> -->
+  </div>
+
+  <div class="modal-body">
+    <div class="container">
+
+      <form [formGroup]="forwardProjectionForm" (ngSubmit)="onSubmitProjection(forwardProjectionForm.value)">
+        <div class="form-row">
+          <div class="form-group col-md-6">
+            <label for="comment">Comment</label>
+            <textarea type="text" formControlName="comment" class="form-control" rows="4" placeholder="Enter a Comment"
+              [ngClass]="{ 'is-invalid': submitted &amp;&amp; forwardProjectionForm.controls.comment.errors }"></textarea>
+            <div *ngIf="submitted &amp;&amp; forwardProjectionForm.controls.comment.errors" class="text-danger">
+              <div *ngIf="forwardProjectionForm.controls.comment.errors.required">Comment is required</div>
+            </div>
+          </div>
+          <div class="form-group col-md-6">
+            <label for="year">Projection Year</label>
+            <input type="text" formControlName="year" class="form-control "
+              [ngClass]="{ 'is-invalid': submitted &amp;&amp; forwardProjectionForm.controls.year.errors }"
+              [attr.disabled]="true" />
+            <div *ngIf="submitted &amp;&amp; forwardProjectionForm.controls.year.errors" class="text-danger">
+              <!-- <div *ngIf="forwardProjectionForm.controls.year.errors.required">Year is required</div> -->
+            </div>
+          </div>
+
+        </div>
+
+        <button type="submit" class="btn btn button-login">Forward Projection</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal-footer ">
+    <button type="button" class="btn btn-outline-dark button-login" (click)="modal.close('Save click')">Ok</button>
+  </div>
+</ng-template>
+
+<ng-template #approvemodal let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Approve Projection</h4>
+    <!--<button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+          </button> -->
+  </div>
+
+  <div class="modal-body">
+    <div class="container">
+      <h4>Are you sure you want to approve this Projection</h4>
+      <div class="modal-footer ">
+        <button type="button" (click)="postApproveProjection()" class="btn btn button-login mr-3">Approve</button>
+        <!-- <button type="button" (click)="onRevertProjection()" class="btn btn button-login mr-3">Revert</button> -->
+        <button type="button" class="btn btn-outline-dark button-login"
+          (click)="modal.close('Save click')">Cancel</button>
+      </div>
+
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #mymodal let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Projection Details</h4>
+    <!--<button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+          </button> -->
+  </div>
+  <div class="card-body">
+    <div>
+      <table class="table table-bordered table-condensed" *ngIf="apidata; else content" datatable
+        [dtOptions]="dtOptionsPopUp" width="100%">
+        <thead>
+          <tr>
+            <th>S/N</th>
+            <!-- <th>Company Name</th> -->
+            <th>Tax Payer ID</th>
+            <th>Tax Payer Name</th>
+            <th>Designation</th>
+            <th>BVN</th>
+            <th>TIN</th>
+            <th>Tax Year</th>
+            <th>Gross Income (₦)</th>
+            <th>Months</th>
+
+            <th>Date Filed</th>
+            <th>Filed From</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let mydata of apidata; index as i">
+            <td>{{ i + 1 }}</td>
+            <!-- <td>{{ mydata.company_name | titlecase }}</td> -->
+            <td>{{ mydata.taxpayer_id }}</td>
+            <td>{{ mydata.last_name | titlecase }} {{ mydata.first_name | titlecase }}</td>
+            <td>{{ mydata.designation | titlecase }}</td>
+            <td>{{ mydata.bvn }}</td>
+            <td>{{ mydata.tin }}</td>
+            <td>{{ mydata.projection_year }}</td>
+            <td>{{ mydata.gross_income | number }}</td>
+            <td>{{ mydata.month }}</td>
+
+            <!-- <td>{{ mydata.tax_due }}</td> -->
+            <td>{{ mydata.created_at | date }}</td>
+            <td>{{ mydata.app_id == 1 ? "Self Service Portal" : "Admin Portal" }}</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <ng-template #content>
+        <p style="color: red;"> No content Available </p>
+      </ng-template>
+
+    </div>
+
+    <div>
+      <h6 class="text-center mt-4" *ngIf="projectionCommentsData;">PENDING PROJECTION COMMENTS</h6>
+      <table class="table table-bordered table-condensed" *ngIf="projectionCommentsData;" datatable
+        [dtOptions]="dtOptions" width="100%">
+        <thead>
+          <tr>
+            <th>S/N</th>
+            <th>Comment</th>
+            <th>Date Created</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let mydata of comments; index as i">
+            <td>{{ i + 1 }}</td>
+            <td>{{ mydata.comment }}</td>
+            <td>{{ mydata.created_at | date }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <button *ngIf="managerRole" type="button" class="btn button-login"
+      [disabled]="selectedApplicationId != applicationId || !isForwardedToManager"
+      (click)="forwardProjection(projectionmodal)">
+      <i class="fas fa-backward"></i> Send Back To Tax Officer</button>
+    <button *ngIf="editorRole"
+      [disabled]="apidata?.length == 0 || selectedApplicationId != applicationId || isForwardedToManager" type="button"
+      class="btn button-login" (click)="forwardProjection(projectionmodal)">
+      <i class="fas fa-forward"></i> Forward To Head Of Station</button>
+    <button *ngIf="showApproveProjection" type="button" class="btn button-login"
+      [disabled]="selectedApplicationId != applicationId || !isForwardedToManager"
+      (click)="approveProjection(approvemodal)">
+      <i class="fas fa-thumbs-up"></i> File Projection</button>
+
+    <button type="button" class="btn button-login" (click)="modal.close('Save click')">Ok</button>
+  </div>
+</ng-template>

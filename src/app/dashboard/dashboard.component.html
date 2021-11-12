@@ -1,0 +1,2206 @@
+<ng-template #zero>
+  <span class="info-box-number">0</span>
+</ng-template>
+
+<div class="content-wrapper">
+  <!-- Content Header (Page header) -->
+
+  <flash-messages></flash-messages>
+
+  <!-- /.content-header -->
+
+  <!-- Main content -->
+  <section class="content mt-4">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-lg-8">
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="row">
+                <div class="col-md-3 col-sm-6 col-12">
+                  <div
+                    class="info-box sa-bg-blue pos-rel color-blue info-box-blue"
+                  >
+                    <div class="info-box-content">
+                      <span class="info-box-text"
+                        >Registered<br />Tax Payers</span
+                      >
+                      <span
+                        class="info-box-number"
+                        *ngIf="apidata?.count_taxpayers; else zero"
+                        >{{ apidata?.count_taxpayers }}</span
+                      >
+
+                      <div class="progress">
+                        <div class="progress-bar" style="width: 70%"></div>
+                      </div>
+                    </div>
+
+                    <div class="sa-overlay">
+                      <a class="not-allowed" [routerLink]="['/dashboard']"
+                        >View More
+                        <i
+                          class="fa fa-arrow-circle-right ml-1"
+                          aria-hidden="true"
+                        ></i
+                      ></a>
+                    </div>
+                    <!-- /.info-box-content -->
+                  </div>
+                  <!-- /.info-box -->
+                </div>
+                <!-- /.col -->
+                <div class="col-md-3 col-sm-6 col-12">
+                  <div
+                    class="info-box sa-bg-blue pos-rel color-blue info-box-blue"
+                  >
+                    <div class="info-box-content">
+                      <span class="info-box-text">Paid<br />Invoice</span>
+                      <span
+                        class="info-box-number"
+                        *ngIf="apidata?.count_paid_invoices; else zero"
+                        >{{ apidata?.count_paid_invoices }}</span
+                      >
+
+                      <div class="progress">
+                        <div class="progress-bar" style="width: 70%"></div>
+                      </div>
+                    </div>
+                    <div class="sa-overlay">
+                      <a [routerLink]="['/paidinvoices']"
+                        >View More
+                        <i
+                          class="fa fa-arrow-circle-right ml-1"
+                          aria-hidden="true"
+                        ></i
+                      ></a>
+                    </div>
+                    <!-- /.info-box-content -->
+                  </div>
+                  <!-- /.info-box -->
+                </div>
+                <!-- /.col -->
+                <div class="col-md-3 col-sm-6 col-12">
+                  <div
+                    class="info-box sa-bg-blue pos-rel color-blue info-box-blue"
+                  >
+                    <div class="info-box-content">
+                      <span class="info-box-text">Unpaid<br />Invoice</span>
+                      <span
+                        class="info-box-number"
+                        *ngIf="apidata?.count_unpaid_invoices; else zero"
+                        >{{ apidata?.count_unpaid_invoices }}</span
+                      >
+
+                      <div class="progress">
+                        <div class="progress-bar" style="width: 70%"></div>
+                      </div>
+                    </div>
+                    <div class="sa-overlay">
+                      <a [routerLink]="['/unpaidinvoices']"
+                        >View More
+                        <i
+                          class="fa fa-arrow-circle-right ml-1"
+                          aria-hidden="true"
+                        ></i
+                      ></a>
+                    </div>
+                    <!-- /.info-box-content -->
+                  </div>
+                  <!-- /.info-box -->
+                </div>
+                <!-- /.col -->
+                <div class="col-md-3 col-sm-6 col-12">
+                  <div
+                    class="info-box sa-bg-blue pos-rel color-blue info-box-blue"
+                  >
+                    <div class="info-box-content">
+                      <span class="info-box-text">Defaulters<br /><br /></span>
+                      <span class="info-box-number">0</span>
+
+                      <div class="progress">
+                        <div class="progress-bar" style="width: 70%"></div>
+                      </div>
+                    </div>
+                    <div class="sa-overlay">
+                      <a [routerLink]="['/dashboard']"
+                        >View More
+                        <i
+                          class="fa fa-arrow-circle-right ml-1"
+                          aria-hidden="true"
+                        ></i
+                      ></a>
+                    </div>
+                    <!-- /.info-box-content -->
+                  </div>
+                  <!-- /.info-box -->
+                </div>
+                <!-- /.col -->
+              </div>
+            </div>
+
+            <div class="col-lg-12">
+              <div class="card" *ngIf="showPaye">
+                <div
+                  class="
+                    card-header
+                    sa_theme_color
+                    white-color
+                    total-tax-paid-mobile
+                  "
+                >
+                  <h3 class="card-title card-title-mob">{{ totalTaxPaid }}</h3>
+
+                  <div class="sa-flex sa-flex-jc-end">
+                    <select
+                      class="
+                        select_input
+                        select_input-bg-white
+                        select_input-width-180
+                        mr-3
+                      "
+                      #revenue
+                      (change)="showDirectAssessmentChart(revenue.value)"
+                    >
+                      <option value="">Revenue Stream</option>
+                      <option value="paye">PAYE</option>
+                      <option value="direct_assessment">
+                        Direct Assessment
+                      </option>
+                      <option value="all">All</option>
+                    </select>
+
+                    <select
+                      class="
+                        select_input
+                        select_input-bg-white
+                        select_input-width-180
+                        selectYear
+                      "
+                      id="selectYear"
+                      #mySelect
+                      (change)="myFunction(mySelect.value)"
+                    >
+                      <option value="{{ currYear }}">Select Year</option>
+                      <option value="2021">2021</option>
+                      <option value="2020">2020</option>
+                      <option value="2019">2019</option>
+                      <option value="2018">2018</option>
+                      <option value="2017">2017</option>
+                      <option value="2016">2016</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="card-body" style="display: block">
+                  <canvas
+                    class="height-graph"
+                    baseChart
+                    [chartType]="'line'"
+                    [datasets]="chartData"
+                    [labels]="chartLabels"
+                    [options]="chartOptions"
+                    [legend]="true"
+                    [colors]="myColorsLine"
+                  >
+                  </canvas>
+                </div>
+              </div>
+              <div class="card" *ngIf="showDirectAssessment">
+                <div
+                  class="
+                    card-header
+                    sa_theme_color
+                    white-color
+                    total-tax-paid-mobile
+                  "
+                >
+                  <h3 class="card-title card-title-mob">
+                    Total Tax Paid for Direct Assessment
+                  </h3>
+
+                  <div class="sa-flex sa-flex-jc-end">
+                    <select
+                      class="
+                        select_input
+                        select_input-bg-white
+                        select_input-width-180
+                        mr-3
+                      "
+                      #revenue
+                      (change)="showDirectAssessmentChart(revenue.value)"
+                      [(ngModel)]="selectedRevenueValue"
+                    >
+                      <option value="">Revenue Stream</option>
+                      <option value="paye">PAYE</option>
+                      <option value="direct_assessment">
+                        Direct Assessment
+                      </option>
+                      <option value="all">All</option>
+                    </select>
+
+                    <select
+                      class="
+                        select_input
+                        select_input-bg-white
+                        select_input-width-180
+                        selectYear
+                      "
+                      id="selectYear"
+                      #mySelect
+                      (change)="myFunction(mySelect.value)"
+                    >
+                      <option value="{{ currYear }}">Select Year</option>
+                      <option value="2021">2021</option>
+                      <option value="2020">2020</option>
+                      <option value="2019">2019</option>
+                      <option value="2018">2018</option>
+                      <option value="2017">2017</option>
+                      <option value="2016">2016</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="card-body" style="display: block">
+                  <canvas
+                    class="height-graph"
+                    baseChart
+                    [chartType]="'line'"
+                    [datasets]="individualChartData"
+                    [labels]="individualChartLabels"
+                    [options]="chartOptions"
+                    [legend]="true"
+                    [colors]="myColorsLine"
+                  >
+                  </canvas>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-lg-12" *ngIf="!superAdmin">
+              <div class="row">
+                <div class="col-lg-6">
+                  <div class="card">
+                    <div
+                      class="
+                        card-header
+                        sa_theme_color
+                        white-color
+                        total-tax-paid-mobile
+                      "
+                    >
+                      <h3 class="card-title card-title-mob">
+                        Types of Tax Payers
+                      </h3>
+                      <!-- <div class="text-center font-13">
+                          Total Taxpayers: {{percent}}
+                        </div> -->
+                    </div>
+                    <!-- /.card-header -->
+                    <div
+                      class="card-body"
+                      style="display: block; height: 282px"
+                    >
+                      <div class="row">
+                        <!-- /.col -->
+                        <div class="col-md-12">
+                          <div class="text-center">
+                            Total Tax Payers: {{ percent }}
+                          </div>
+
+                          <!-- <div class="progress-group">
+
+
+                              <span>
+                                <span class="progress-text ">Corporate </span>
+                                <span class=" progressbar-text-format"><b> {{corporateTaxpayerType}}</b></span>
+                              </span>
+                              <span class="float-right">
+                                <span class="progress-text ">Individual </span>
+                                <span class=" progressbar-text-format"><b class=""> {{individualTaxpayerType }}</b></span>
+                              </span>
+
+                              <div class="progress progress-sm">
+                                <span class="progress-bar text-dark  progressbar-blue" [style.width]="cor+'%'">{{cor+'%'}}</span>
+                                <span class="progress-bar text-dark progressbar-purple" [style.width]="ind+'%'">{{ind+'%'}}</span>
+                              </div>
+                            </div> -->
+                          <!-- /.progress-group -->
+
+                          <!--<div class="progress-group d-none">
+                              <span class="progress-text">Individual Taxpayers</span>
+                              <span class="float-right"><b>310</b>/400</span>
+                              <div class="progress progress-sm">
+                                <div class="progress-bar  progressbar-blue" style="width: 75%"></div>
+                              </div>
+                            </div>-->
+
+                          <!-- /.progress-group -->
+                          <div class="progress-group">
+                            <span class="progress-text"
+                              >Corporate Tax Payers</span
+                            >
+                            <span class="float-right progressbar-text-format"
+                              ><b>{{
+                                corporateTaxpayerType + " (" + cor + "%)"
+                              }}</b></span
+                            >
+                            <div class="progress progress-sm">
+                              <div
+                                class="progress-bar progressbar-blue"
+                                [style.width]="cor + '%'"
+                              ></div>
+                            </div>
+                          </div>
+
+                          <!-- /.progress-group -->
+                          <div class="progress-group mt-5 mb-4">
+                            <span class="progress-text"
+                              >Individual Tax Payers</span
+                            >
+                            <span class="float-right progressbar-text-format"
+                              ><b>{{
+                                individualTaxpayerType + " (" + ind + "%)"
+                              }}</b></span
+                            >
+                            <div class="progress progress-sm">
+                              <div
+                                class="progress-bar progressbar-blue"
+                                [style.width]="ind + '%'"
+                              ></div>
+                            </div>
+                          </div>
+                          <!-- /.progress-group -->
+
+                          <!-- <div class="progress-group">
+                              <span class="progress-text font-12">Registered on Direct Assessment</span>
+                              <span class="float-right progressbar-text-format"><b>{{individualTaxpayerType + ' (' + ind + '%)'}}</b></span>
+                              <div class="progress progress-sm">
+                                <div class="progress-bar progressbar-blue" [style.width]="ind+'%'"></div>
+                              </div>
+                            </div> -->
+
+                          <div class="progress-group text-center">
+                            <span class=""
+                              ><a
+                                class="
+                                  btn btn-primary
+                                  cursor-pointer
+                                  white-color
+                                  hover-effact
+                                  font-12
+                                "
+                                [routerLink]="['/paymenthistory']"
+                                (click)="redirectToDirectAssessment()"
+                                >See All Payments</a
+                              ></span
+                            >
+                          </div>
+                        </div>
+                        <!-- /.col -->
+                      </div>
+                      <!-- /.row -->
+                    </div>
+                    <!-- ./card-body -->
+
+                    <!-- /.card-footer -->
+                  </div>
+                </div>
+
+                <div class="col-md-6">
+                  <!-- Info Boxes Style 2 -->
+                  <div class="info-box mb-3 topmost-bg">
+                    <div class="info-box-content">
+                      <span class="info-box-text box-font-color-blue"
+                        >Top 10 most active tax payers?</span
+                      >
+
+                      <div
+                        class="recent_tax_payer"
+                        *ngIf="activeTaxpayers?.length > 0; else noContent"
+                      >
+                        <span
+                          class="bg8"
+                          *ngIf="activeTaxpayers[0]?.name"
+                          title="{{ activeTaxpayers[0]?.name | titlecase }}"
+                        >
+                          {{ activeTaxpayers[0]?.name?.charAt(0) | titlecase }}
+                        </span>
+                        <span
+                          class="bg8"
+                          *ngIf="activeTaxpayers[1]?.name"
+                          title="{{ activeTaxpayers[1]?.name | titlecase }}"
+                        >
+                          {{ activeTaxpayers[1]?.name?.charAt(0) | titlecase }}
+                        </span>
+                        <span
+                          class="bg8"
+                          *ngIf="activeTaxpayers[2]?.name"
+                          title="{{ activeTaxpayers[2]?.name | titlecase }}"
+                        >
+                          {{ activeTaxpayers[2]?.name?.charAt(0) | titlecase }}
+                        </span>
+                        <span
+                          class="bg8"
+                          *ngIf="activeTaxpayers[3]?.name"
+                          title="{{ activeTaxpayers[3]?.name | titlecase }}"
+                        >
+                          {{ activeTaxpayers[3]?.name?.charAt(0) | titlecase }}
+                        </span>
+                        <span
+                          class="bg8"
+                          *ngIf="activeTaxpayers[4]?.name"
+                          title="{{ activeTaxpayers[4]?.name | titlecase }}"
+                        >
+                          {{ activeTaxpayers[4]?.name?.charAt(0) | titlecase }}
+                        </span>
+
+                        <span
+                          class="bg8"
+                          *ngIf="activeTaxpayers[5]?.name"
+                          title="{{ activeTaxpayers[5]?.name | titlecase }}"
+                        >
+                          {{ activeTaxpayers[5]?.name?.charAt(0) | titlecase }}
+                        </span>
+                        <span
+                          class="bg8"
+                          *ngIf="activeTaxpayers[6]?.name"
+                          title="{{ activeTaxpayers[6]?.name | titlecase }}"
+                        >
+                          {{ activeTaxpayers[6]?.name?.charAt(0) | titlecase }}
+                        </span>
+                        <span
+                          class="bg8"
+                          *ngIf="activeTaxpayers[7]?.name"
+                          title="{{ activeTaxpayers[7]?.name | titlecase }}"
+                        >
+                          {{ activeTaxpayers[7]?.name?.charAt(0) | titlecase }}
+                        </span>
+                        <span
+                          class="bg8"
+                          *ngIf="activeTaxpayers[8]?.name"
+                          title="{{ activeTaxpayers[8]?.name | titlecase }}"
+                        >
+                          {{ activeTaxpayers[8]?.name?.charAt(0) | titlecase }}
+                        </span>
+                        <span
+                          class="bg8"
+                          *ngIf="activeTaxpayers[9]?.name"
+                          title="{{ activeTaxpayers[9]?.name | titlecase }}"
+                        >
+                          {{ activeTaxpayers[9]?.name?.charAt(0) | titlecase }}
+                        </span>
+                      </div>
+                    </div>
+                    <ng-template #noContent>
+                      <div class="justify-content-center">
+                        <h3 class="text-danger text-center mt-3 mb-3">
+                          No content available
+                        </h3>
+                      </div>
+                    </ng-template>
+                    <!-- /.info-box-content -->
+                  </div>
+                  <!-- /.info-box -->
+                  <div class="info-box mb-3 mt-3 topmost-bg">
+                    <div class="info-box-content">
+                      <span class="info-box-text box-font-color-blue"
+                        >What devices do tax payers use the most?</span
+                      >
+                      <div class="sa-flex font-12">
+                        <span
+                          class="info-box-number box-font-color-lightblue"
+                          *ngFor="let agent of userAgentdata"
+                          >{{
+                            agent.device_type + " : " + agent.count
+                          }}
+                          &nbsp;&nbsp;&nbsp;</span
+                        >
+                      </div>
+                    </div>
+                    <!-- /.info-box-content -->
+                  </div>
+                  <!-- /.info-box -->
+                  <div class="info-box mb-3 mt-3 topmost-bg">
+                    <div class="info-box-content" *ngIf="paymentMethodsdata">
+                      <span class="info-box-text box-font-color-blue"
+                        >What Payment option do tax payers use the most?</span
+                      >
+                      <div
+                        class="sa-flex font-12"
+                        *ngFor="let paymentMethod of paymentMethodsdata"
+                      >
+                        <span
+                          class="info-box-number box-font-color-lightblue"
+                          >{{
+                            paymentMethod.channel +
+                              ":  ₦ " +
+                              paymentMethod.total.toFixed(2)
+                          }}</span
+                        >
+                        <span class="box-font-color-lightblue"
+                          >&nbsp; |
+                          <strong>{{
+                            "  Month:  " + getMonthName(paymentMethod.month)
+                          }}</strong></span
+                        >
+                      </div>
+                      <div
+                        class="justify-content-center"
+                        *ngIf="paymentMethodsdata.length == 0"
+                      >
+                        <h3 class="text-danger text-center mt-3 mb-3">
+                          No content available
+                        </h3>
+                      </div>
+                    </div>
+                    <!-- /.info-box-content -->
+                  </div>
+
+                  <!--<div class="info-box mb-3 bg-info">
+                      <div class="info-box-content">
+                        <span class="info-box-text">Top 5 most active taxpayers?</span>
+                        <div class="sa-flex font-12">
+                          <span class="info-box-number white-color">Bank Transfer: 85%</span>
+                          <span class="info-box-number white-color ml-3">POS: 55%</span>
+                        </div>
+                      </div>
+                    </div> -->
+                  <!-- /.info-box -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-4">
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="card bg-light-blue">
+                <div class="label_rtp">Recent Tax Payer</div>
+                <div class="card-body" style="display: block">
+                  <!-- <span class="bg1">S</span>
+                    <span class="bg2">H</span>
+                    <span class="bg3">R</span>
+                    <span class="bg4">J</span>
+                    <span class="bg1">S</span>
+                    <span class="bg2">H</span>
+                    <span class="bg3">R</span>
+                    <span class="bg3">R</span>
+                    <span class="bg4">J</span>
+                    <span class="bg1">S</span> -->
+                  <div
+                    class="recent_tax_payer2"
+                    *ngIf="taxpayers"
+                    style="min-height: 45px"
+                  >
+                    <span *ngFor="let tax of taxpayers">
+                      <span
+                        class="bg8"
+                        title="{{ tax.first_name | titlecase }} {{
+                          tax.score
+                        }}  "
+                      >
+                        {{ tax.first_name?.charAt(0) | titlecase }}
+                      </span>
+                    </span>
+                    <span
+                      class="bg7 cursor-pointer"
+                      title="View All"
+                      (click)="active(activetaxpayerModal)"
+                      >+</span
+                    >
+                  </div>
+                  <ng-template #noContent>
+                    <div class="justify-content-center mt-3 mb-3">
+                      <h5 class="text-danger text-center mt-3 mb-3">
+                        No content available
+                      </h5>
+                    </div>
+                  </ng-template>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-lg-12">
+              <div class="card" [ngClass]="{ 'daily-high': otherAdmin }">
+                <div
+                  class="
+                    card-header
+                    border-transparent
+                    sa_theme_color
+                    white-color
+                  "
+                >
+                  <h3 class="card-title card-title-mob">Revenue Daily</h3>
+                </div>
+                <!-- /.card-header -->
+                <div
+                  class="card-body p-0 font-12"
+                  style="height: 328px; overflow: auto"
+                >
+                  <div
+                    class="table-responsive"
+                    *ngIf="dailyRevenuedata; else content"
+                  >
+                    <table class="table m-0">
+                      <thead>
+                        <tr>
+                          <th>Industry</th>
+                          <th style="min-width: 150px">Tax office</th>
+                          <th>Amount(₦)</th>
+                          <th>Taxpayer</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let dailyRevenue of dailyRevenuedata">
+                          <td>{{ dailyRevenue.industry_sector_name }}</td>
+                          <td style="min-width: 150px">
+                            {{ dailyRevenue.tax_office_name }}
+                          </td>
+                          <td>₦ {{ dailyRevenue.amount | number }}</td>
+                          <td>
+                            <a
+                              class="font-10 text-primary cursor-pointer"
+                              (click)="viewRevenue(revenueModal)"
+                            >
+                              View</a
+                            >
+                          </td>
+                          <!-- <span class="badge badge-success">3</span> -->
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <ng-template #content>
+                    <div
+                      class="
+                        justify-content-center
+                        mt-5
+                        mb-5
+                        min-height-content
+                      "
+                    >
+                      <h5 class="text-danger text-center mt-5 mb-5">
+                        No content available
+                      </h5>
+                    </div>
+                  </ng-template>
+                  <!-- /.table-responsive -->
+                </div>
+                <!-- /.card-body -->
+                <form
+                  [formGroup]="revenueDailyForm"
+                  (ngSubmit)="dailyRevenue(revenueDailyForm.value)"
+                >
+                  <div class="card-footer clearfix d-flex">
+                    <div>
+                      <input
+                        type="text"
+                        placeholder="DD-MM-YY"
+                        data-date-format="dd/mm/yy"
+                        onfocus="(this.type='date')"
+                        class="
+                          date_input
+                          select_input select_input-bg-white
+                          width-80
+                        "
+                        formControlName="date"
+                        id="date"
+                        name="date"
+                        [ngClass]="{ 'is-invalid': submitted &amp;&amp; revenueDailyForm.controls.date.errors }"
+                      />
+
+                      <div
+                        *ngIf="submitted &amp;&amp; revenueDailyForm.controls.date.errors"
+                        class="text-danger"
+                      >
+                        <div
+                          *ngIf="revenueDailyForm.controls.date.errors.required"
+                        >
+                          Date is required
+                        </div>
+                      </div>
+                    </div>
+                    <select
+                      *ngIf="superAdmin"
+                      type="text"
+                      name="taxOffice"
+                      formControlName="taxOffice"
+                      id="taxOffice"
+                      (change)="taxOfficeChanged($event.target.value)"
+                      placeholder="Tax Office"
+                      class="
+                        select_input select_input-bg-white
+                        height-25
+                        width-80
+                      "
+                    >
+                      <option selected value="">Tax Office</option>
+                      <option
+                        *ngFor="let taxTaxOffice of taxTaxOffices"
+                        [value]="taxTaxOffice.id"
+                      >
+                        {{ taxTaxOffice.name }}
+                      </option>
+                    </select>
+                    <button type="submit" class="input_button">
+                      Apply Filter
+                    </button>
+                  </div>
+                </form>
+
+                <!-- /.card-footer -->
+              </div>
+            </div>
+
+            <div class="col-lg-12" *ngIf="managerAdmin">
+              <div class="card" style="height: 330px">
+                <div class="card-header border-0 sa_theme_color white-color">
+                  <div class="d-flex justify-content-between">
+                    <h3 class="card-title card-title-mob">
+                      Revenue Stream Monthly Performance
+                    </h3>
+                    <!-- <a href="javascript:void(0);">View Report</a> -->
+                  </div>
+                </div>
+                <div class="card-body">
+                  <div *ngIf="!show" class="position-relative mb-4">
+                    <canvas
+                      baseChart
+                      class="height-180"
+                      [datasets]="barChartData"
+                      [labels]="barChartLabels"
+                      [options]="barChartOptions"
+                      [plugins]="barChartPlugins"
+                      [legend]="barChartLegend"
+                      [colors]="myColorsBar"
+                      [chartType]="barChartType"
+                    >
+                    </canvas>
+                  </div>
+
+                  <div *ngIf="show" class="position-relative mb-4">
+                    <canvas
+                      baseChart
+                      class="height-180"
+                      [datasets]="barChartDataEmpty"
+                      [labels]="barChartLabels"
+                      [options]="barChartOptions"
+                      [plugins]="barChartPlugins"
+                      [legend]="barChartLegend"
+                      [colors]="myColorsBar"
+                      [chartType]="barChartType"
+                    >
+                    </canvas>
+                  </div>
+
+                  <form
+                    [formGroup]="revenueForm"
+                    (ngSubmit)="getRevenueStreams(revenueForm.value)"
+                    class="mb-3"
+                  >
+                    <div class="d-flex ml-2 form-group margin-top-minus-13">
+                      <div class="">
+                        <input
+                          type="text"
+                          min="2015-03"
+                          placeholder="Select Month"
+                          onfocus="(this.type='month')"
+                          class="date_input select_input select_input-bg-white"
+                          formControlName="date"
+                          id="date"
+                          name="date"
+                          [ngClass]="{ 'is-invalid': submitted &amp;&amp; revenueForm.controls.date.errors }"
+                        />
+
+                        <div
+                          *ngIf="submitted &amp;&amp; revenueForm.controls.date.errors"
+                          class="text-danger"
+                        >
+                          <div
+                            *ngIf="revenueForm.controls.date.errors.required"
+                          >
+                            Date is required
+                          </div>
+                        </div>
+                        <!--<select type="text" name="year" formControlName="year" id="year" class="select_input select_input-bg-white height-25 width-80" >
+                         <option >Select Year</option>
+                         <option>2015</option>
+                         <option>2016</option>
+                         <option>2017</option>
+                         <option>2018</option>
+                         <option>2019</option>
+                         <option>2020</option>
+                       </select>-->
+                      </div>
+                      <select
+                        *ngIf="superAdmin"
+                        type="text"
+                        name="taxOffice"
+                        formControlName="taxOffice"
+                        id="taxOffice"
+                        (change)="taxOfficeChanged($event.target.value)"
+                        placeholder="Tax Office"
+                        class="
+                          select_input select_input-bg-white
+                          height-25
+                          width-80
+                        "
+                      >
+                        <option selected value="">Tax Office</option>
+                        <option
+                          *ngFor="let taxTaxOffice of taxTaxOffices"
+                          [value]="taxTaxOffice.id"
+                        >
+                          {{ taxTaxOffice.name }}
+                        </option>
+                      </select>
+                      <button type="submit" class="input_button height-25">
+                        Apply Filter
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row" *ngIf="superAdmin">
+        <div class="col-lg-4">
+          <div class="card">
+            <div
+              class="
+                card-header
+                sa_theme_color
+                white-color
+                total-tax-paid-mobile
+              "
+            >
+              <h3 class="card-title card-title-mob">Types of Tax Payers</h3>
+              <!-- <div class="text-center font-13">
+                     RAS has a total of {{percent}} taxpayers
+                  </div> -->
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body" style="display: block; height: 282px">
+              <div class="row">
+                <!-- /.col -->
+                <div class="col-md-12">
+                  <div class="text-center">
+                    RAS has a total of {{ percent }} tax payers
+                  </div>
+
+                  <!-- <div class="progress-group">
+                    <span>
+                      <span class="progress-text font-12">Corporate </span>
+                      <span class=" progressbar-text-format"><b> {{corporateTaxpayerType }}</b></span>
+                    </span>
+                    <span class="float-right">
+                      <span class="progress-text font-12">Individual </span>
+                      <span class=" progressbar-text-format"><b class=""> {{individualTaxpayerType }}</b></span>
+                    </span>
+
+                    <div class="progress progress-sm">
+                      <span class="progress-bar text-dark  progressbar-blue" [style.width]="cor+'%'">{{cor+'%'}}</span>
+                      <span class="progress-bar text-dark progressbar-purple" [style.width]="ind+'%'">{{ind+'%'}}</span>
+                    </div>
+                  </div> -->
+                  <!-- /.progress-group -->
+
+                  <!--<div class="progress-group d-none">
+                      <span class="progress-text">Individual Taxpayers</span>
+                      <span class="float-right"><b>310</b>/400</span>
+                      <div class="progress progress-sm">
+                        <div class="progress-bar  progressbar-blue" style="width: 75%"></div>
+                      </div>
+                    </div>-->
+
+                  <!-- /.progress-group -->
+                  <div class="progress-group">
+                    <span class="progress-text">Corporate Tax Payers</span>
+                    <span class="float-right progressbar-text-format"
+                      ><b>{{
+                        corporateTaxpayerType + " (" + cor + "%)"
+                      }}</b></span
+                    >
+                    <div class="progress progress-sm">
+                      <div
+                        class="progress-bar progressbar-blue"
+                        [style.width]="cor + '%'"
+                      ></div>
+                    </div>
+                  </div>
+
+                  <!-- /.progress-group -->
+                  <div class="progress-group mt-5 mb-4">
+                    <span class="progress-text">Individual Tax Payers</span>
+                    <span class="float-right progressbar-text-format"
+                      ><b>{{
+                        individualTaxpayerType + " (" + ind + "%)"
+                      }}</b></span
+                    >
+                    <div class="progress progress-sm">
+                      <div
+                        class="progress-bar progressbar-blue"
+                        [style.width]="ind + '%'"
+                      ></div>
+                    </div>
+                  </div>
+                  <!-- /.progress-group -->
+                  <!-- <div class="progress-group">
+                        <span class="progress-text font-12">Registered on Direct Assessment</span>
+                        <span class="float-right progressbar-text-format"><b>{{individualTaxpayerType + ' (' + ind + '%)'}}</b></span>
+                        <div class="progress progress-sm">
+                          <div class="progress-bar progressbar-blue" [style.width]="ind+'%'"></div>
+                        </div>
+                      </div> -->
+
+                  <div class="progress-group text-center">
+                    <span class=""
+                      ><a
+                        class="
+                          btn btn-primary
+                          cursor-pointer
+                          white-color
+                          hover-effact
+                          font-12
+                        "
+                        [routerLink]="['/paymenthistory']"
+                        (click)="redirectToDirectAssessment()"
+                        >See all Payments</a
+                      ></span
+                    >
+                  </div>
+                </div>
+                <!-- /.col -->
+              </div>
+              <!-- /.row -->
+            </div>
+            <!-- ./card-body -->
+
+            <!-- /.card-footer -->
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <!-- Info Boxes Style 2 -->
+          <div class="info-box mb-3 topmost-bg">
+            <div class="info-box-content">
+              <span class="info-box-text box-font-color-blue"
+                >Top 10 most active tax payers ?</span
+              >
+
+              <div
+                class="recent_tax_payer"
+                *ngIf="activeTaxpayers; else noContent"
+              >
+                <span
+                  class="bg8"
+                  *ngIf="activeTaxpayers[0]?.name"
+                  title="{{ activeTaxpayers[0]?.name | titlecase }}"
+                >
+                  {{ activeTaxpayers[0]?.name?.charAt(0) | titlecase }}
+                </span>
+                <span
+                  class="bg8"
+                  *ngIf="activeTaxpayers[1]?.name"
+                  title="{{ activeTaxpayers[1]?.name | titlecase }}"
+                >
+                  {{ activeTaxpayers[1]?.name?.charAt(0) | titlecase }}
+                </span>
+                <span
+                  class="bg8"
+                  *ngIf="activeTaxpayers[2]?.name"
+                  title="{{ activeTaxpayers[2]?.name | titlecase }}"
+                >
+                  {{ activeTaxpayers[2]?.name?.charAt(0) | titlecase }}
+                </span>
+                <span
+                  class="bg8"
+                  *ngIf="activeTaxpayers[3]?.name"
+                  title="{{ activeTaxpayers[3]?.name | titlecase }}"
+                >
+                  {{ activeTaxpayers[3]?.name?.charAt(0) | titlecase }}
+                </span>
+                <span
+                  class="bg8"
+                  *ngIf="activeTaxpayers[4]?.name"
+                  title="{{ activeTaxpayers[4]?.name | titlecase }}"
+                >
+                  {{ activeTaxpayers[4]?.name?.charAt(0) | titlecase }}
+                </span>
+
+                <span
+                  class="bg8"
+                  *ngIf="activeTaxpayers[5]?.name"
+                  title="{{ activeTaxpayers[5]?.name | titlecase }}"
+                >
+                  {{ activeTaxpayers[5]?.name?.charAt(0) | titlecase }}
+                </span>
+                <span
+                  class="bg8"
+                  *ngIf="activeTaxpayers[6]?.name"
+                  title="{{ activeTaxpayers[6]?.name | titlecase }}"
+                >
+                  {{ activeTaxpayers[6]?.name?.charAt(0) | titlecase }}
+                </span>
+                <span
+                  class="bg8"
+                  *ngIf="activeTaxpayers[7]?.name"
+                  title="{{ activeTaxpayers[7]?.name | titlecase }}"
+                >
+                  {{ activeTaxpayers[7]?.name?.charAt(0) | titlecase }}
+                </span>
+                <span
+                  class="bg8"
+                  *ngIf="activeTaxpayers[8]?.name"
+                  title="{{ activeTaxpayers[8]?.name | titlecase }}"
+                >
+                  {{ activeTaxpayers[8]?.name?.charAt(0) | titlecase }}
+                </span>
+                <span
+                  class="bg8"
+                  *ngIf="activeTaxpayers[9]?.name"
+                  title="{{ activeTaxpayers[9]?.name | titlecase }}"
+                >
+                  {{ activeTaxpayers[9]?.name?.charAt(0) | titlecase }}
+                </span>
+              </div>
+            </div>
+            <ng-template #noContent>
+              <div class="justify-content-center">
+                <h3 class="text-danger text-center mt-3 mb-3">
+                  No content available
+                </h3>
+              </div>
+            </ng-template>
+            <!-- /.info-box-content -->
+          </div>
+          <!-- /.info-box -->
+          <div class="info-box mb-3 mt-3 topmost-bg">
+            <div class="info-box-content">
+              <span class="info-box-text box-font-color-blue"
+                >What devices do tax payers use the most?</span
+              >
+              <div class="sa-flex font-12">
+                <span
+                  class="info-box-number box-font-color-lightblue"
+                  *ngFor="let agent of userAgentdata"
+                  >{{
+                    agent.device_type + " : " + agent.count
+                  }}
+                  &nbsp;&nbsp;&nbsp;</span
+                >
+              </div>
+            </div>
+            <!-- /.info-box-content -->
+          </div>
+          <!-- /.info-box -->
+          <div class="info-box mb-3 mt-3 topmost-bg">
+            <div class="info-box-content">
+              <span class="info-box-text box-font-color-blue"
+                >What Payment option do tax payers use the most?</span
+              >
+              <div
+                class="sa-flex font-12"
+                *ngFor="let paymentMethod of paymentMethodsdata"
+              >
+                <span class="info-box-number box-font-color-lightblue">{{
+                  paymentMethod.channel +
+                    ":  ₦ " +
+                    paymentMethod.total.toFixed(2)
+                }}</span>
+                <span class="box-font-color-lightblue"
+                  >&nbsp; |
+                  <strong>{{
+                    "  Month:  " + getMonthName(paymentMethod.month)
+                  }}</strong></span
+                >
+              </div>
+            </div>
+            <!-- /.info-box-content -->
+          </div>
+
+          <!--<div class="info-box mb-3 bg-info">
+              <div class="info-box-content">
+                <span class="info-box-text">Top 5 most active taxpayers?</span>
+                <div class="sa-flex font-12">
+                  <span class="info-box-number white-color">Bank Transfer: 85%</span>
+                  <span class="info-box-number white-color ml-3">POS: 55%</span>
+                </div>
+              </div>
+            </div> -->
+          <!-- /.info-box -->
+        </div>
+
+        <div class="col-lg-4">
+          <div class="card" style="height: 349px" *ngIf="!superAdmin">
+            <div class="card-header border-0 sa_theme_color white-color">
+              <div class="d-flex justify-content-between">
+                <h3 class="card-title card-title-mob">
+                  Revenue Stream Monthly Performance
+                </h3>
+                <!-- <a href="javascript:void(0);">View Report</a> -->
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="position-relative mb-4">
+                <canvas
+                  baseChart
+                  class="height-180"
+                  [datasets]="barChartData"
+                  [labels]="barChartLabels"
+                  [options]="barChartOptions"
+                  [plugins]="barChartPlugins"
+                  [legend]="barChartLegend"
+                  [colors]="myColorsBar"
+                  [chartType]="barChartType"
+                >
+                </canvas>
+              </div>
+
+              <form
+                [formGroup]="revenueForm"
+                (ngSubmit)="getRevenueStreams(revenueForm.value)"
+                class="mb-3"
+              >
+                <div class="d-flex ml-2 form-group margin-top-minus-13">
+                  <div class="">
+                    <select
+                      type="date"
+                      class="date_input select_input select_input-bg-white"
+                      formControlName="date"
+                      id="date"
+                      placeholder="Year"
+                      name="date"
+                      [ngClass]="{ 'is-invalid': submitted &amp;&amp; revenueForm.controls.date.errors }"
+                    >
+                      <option disabled selected value="">Year</option>
+                      <option *ngFor="let year of years" value="{{ year }}">
+                        {{ year }}
+                      </option>
+                    </select>
+                    <div
+                      *ngIf="submitted &amp;&amp; revenueForm.controls.date.errors"
+                      class="text-danger"
+                    >
+                      <div *ngIf="revenueForm.controls.date.errors.required">
+                        Date is required
+                      </div>
+                    </div>
+                    <!--<select type="text" name="year" formControlName="year" id="year" class="select_input select_input-bg-white height-25 width-80" >
+                       <option >Select Year</option>
+                       <option>2015</option>
+                       <option>2016</option>
+                       <option>2017</option>
+                       <option>2018</option>
+                       <option>2019</option>
+                       <option>2020</option>
+                     </select>-->
+                  </div>
+                  <select
+                    *ngIf="superAdmin"
+                    type="text"
+                    name="taxOffice"
+                    formControlName="taxOffice"
+                    id="taxOffice"
+                    (change)="taxOfficeChanged($event.target.value)"
+                    placeholder="Tax Office"
+                    class="
+                      select_input select_input-bg-white
+                      height-25
+                      width-80
+                    "
+                  >
+                    <option selected value="">Tax Office</option>
+                    <option
+                      *ngFor="let taxTaxOffice of taxTaxOffices"
+                      [value]="taxTaxOffice.id"
+                    >
+                      {{ taxTaxOffice.name }}
+                    </option>
+                  </select>
+                  <button type="submit" class="input_button height-25">
+                    Apply Filter
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+          <div class="card" style="height: 330px" *ngIf="superAdmin">
+            <div class="card-header border-0 sa_theme_color white-color">
+              <!-- <div class="card-header sa_theme_color white-color"></div> -->
+              <div class="d-flex justify-content-between">
+                <h3 class="card-title card-title-mob">
+                  Revenue Stream Monthly Performance
+                </h3>
+                <div class="d-flex sa-flex-jc-end">
+                  <select
+                    class="select_input select_input-bg-white"
+                    #revenueStream
+                    (change)="revenueStreamTypeChange(revenueStream.value)"
+                  >
+                    <!-- <option>Select Month</option> -->
+                    <option value="1">Revenue</option>
+                    <option value="2">Tax Offices</option>
+                  </select>
+                </div>
+
+                <!-- <button class="btn btn-sm button-login role fr font-10" (click)="toggleBarChart()" id="bt">
+                      {{buttonName}}
+                  </button> -->
+              </div>
+            </div>
+            <div class="card-body hindi" *ngIf="show">
+              <div class="position-relative mb-4">
+                <canvas
+                  baseChart
+                  class="height-180"
+                  [datasets]="barChartDataTaxOffice"
+                  [labels]="barChartLabelTaxOffice"
+                  [options]="barChartOptions"
+                  [plugins]="barChartPlugins"
+                  [legend]="barChartLegend"
+                  [colors]="myColorsBar"
+                  [chartType]="barChartType"
+                >
+                </canvas>
+              </div>
+
+              <form
+                [formGroup]="revenueForm"
+                (ngSubmit)="getRevenueStreamsByTaxOffice(revenueForm.value)"
+                class="mb-3"
+              >
+                <div class="d-flex ml-2 form-group margin-top-minus-13">
+                  <div class="">
+                    <input
+                      type="text"
+                      min="2015-03"
+                      placeholder="Select Month"
+                      onfocus="(this.type='month')"
+                      name="datepicker"
+                      id="datepicker"
+                      class="date_input select_input select_input-bg-white"
+                      formControlName="date"
+                      id="date"
+                      name="date"
+                      [ngClass]="{ 'is-invalid': submitted &amp;&amp; revenueForm.controls.date.errors }"
+                    />
+
+                    <div
+                      *ngIf="submitted &amp;&amp; revenueForm.controls.date.errors"
+                      class="text-danger"
+                    >
+                      <div *ngIf="revenueForm.controls.date.errors.required">
+                        Date is required
+                      </div>
+                    </div>
+                    <!--<select type="text" name="year" formControlName="year" id="year" class="select_input select_input-bg-white height-25 width-80" >
+                         <option >Select Year</option>
+                         <option>2015</option>
+                         <option>2016</option>
+                         <option>2017</option>
+                         <option>2018</option>
+                         <option>2019</option>
+                         <option>2020</option>
+                       </select>-->
+                  </div>
+
+                  <button type="submit" class="input_button height-25">
+                    Apply Filter
+                  </button>
+                </div>
+              </form>
+            </div>
+
+            <div class="card-body english" *ngIf="show == false" id="here">
+              <div class="position-relative mb-4">
+                <canvas
+                  baseChart
+                  class="height-180"
+                  [datasets]="barChartData"
+                  [labels]="barChartLabels"
+                  [options]="barChartOptions"
+                  [plugins]="barChartPlugins"
+                  [legend]="barChartLegend"
+                  [colors]="myColorsBar"
+                  [chartType]="barChartType"
+                >
+                </canvas>
+              </div>
+
+              <form
+                [formGroup]="revenueForm"
+                (ngSubmit)="getRevenueStreams(revenueForm.value)"
+                class="mb-3"
+              >
+                <div class="d-flex ml-2 form-group margin-top-minus-13">
+                  <div class="">
+                    <input
+                      type="text"
+                      min="2015-03"
+                      placeholder="Select Month"
+                      onfocus="(this.type='month')"
+                      class="date_input select_input select_input-bg-white"
+                      formControlName="date"
+                      id="date"
+                      name="date"
+                      [ngClass]="{ 'is-invalid': submitted &amp;&amp; revenueForm.controls.date.errors }"
+                    />
+
+                    <div
+                      *ngIf="submitted &amp;&amp; revenueForm.controls.date.errors"
+                      class="text-danger"
+                    >
+                      <div *ngIf="revenueForm.controls.date.errors.required">
+                        Date is required
+                      </div>
+                    </div>
+                    <!--<select type="text" name="year" formControlName="year" id="year" class="select_input select_input-bg-white height-25 width-80" >
+                         <option >Select Year</option>
+                         <option>2015</option>
+                         <option>2016</option>
+                         <option>2017</option>
+                         <option>2018</option>
+                         <option>2019</option>
+                         <option>2020</option>
+                       </select>-->
+                  </div>
+                  <select
+                    *ngIf="superAdmin"
+                    type="text"
+                    name="taxOffice"
+                    formControlName="taxOffice"
+                    id="taxOffice"
+                    (change)="taxOfficeChanged($event.target.value)"
+                    placeholder="Tax Office"
+                    class="
+                      select_input select_input-bg-white
+                      height-25
+                      width-80
+                    "
+                  >
+                    <option selected value="">Tax Office</option>
+                    <option
+                      *ngFor="let taxTaxOffice of taxTaxOffices"
+                      [value]="taxTaxOffice.id"
+                    >
+                      {{ taxTaxOffice.name }}
+                    </option>
+                  </select>
+                  <button type="submit" class="input_button height-25">
+                    Apply Filter
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-lg-6">
+          <div class="card">
+            <div class="card-header sa_theme_color white-color">
+              <h3 class="card-title card-title-mob mr-5 fl to-do-mob">
+                To Do List
+              </h3>
+              <div class="to-do-list-button">
+                <button
+                  type="button"
+                  [disabled]="isUserViewer"
+                  class="btn btn-sm button-login role fr font-10"
+                  (click)="addTodo(todoModal)"
+                >
+                  Add More
+                </button>
+                <button
+                  type="button"
+                  [disabled]="isUserViewer"
+                  class="btn btn-sm button-login role fr font-10"
+                  (click)="viewAllTodo(allTodosModal)"
+                >
+                  View All
+                </button>
+              </div>
+            </div>
+            <!-- /.card-header -->
+            <div
+              class="card-body font-12 min-height-300 to-do-remove-padding"
+              *ngIf="todosdata.length > 0; else noTodo"
+            >
+              <ul
+                class="todo-list ui-sortable todo-list-li"
+                data-widget="todo-list"
+              >
+                <ng-container *ngFor="let todo of todosdata; index as i">
+                  <li *ngIf="todo.done === 0">
+                    <div class="icheck-primary d-inline ml-2">
+                      <input
+                        type="checkbox"
+                        [value]="todo.id"
+                        (change)="changed($event)"
+                        name="todo1"
+                        id="todoCheck{{ i + 1 }}"
+                      />
+                      <label for="todoCheck{{ i + 1 }}"></label>
+                      <span class="text">{{ todo.title }}</span>
+                    </div>
+
+                    <div class="mb-3 mt-3">
+                      <!-- todo text -->
+                      <span title="Delete">
+                        <a
+                          (click)="deleteTodo(todo.id)"
+                          class="
+                            badge badge-danger
+                            cursor-pointer
+                            float-right
+                            color-white
+                            delete-box
+                          "
+                        >
+                          <i class="nav-icon fas fa-trash-alt"></i
+                        ></a>
+                      </span>
+                      <!-- Emphasis label -->
+                      <span
+                        class="badge {{
+                          todo.priority == 1
+                            ? 'badge-warning'
+                            : todo.priority == 2
+                            ? 'badge-primary'
+                            : 'badge-danger'
+                        }} cursor-pointer float-right mr-2"
+                        title="{{
+                          todo.priority == 1
+                            ? 'Low'
+                            : todo.priority == 2
+                            ? 'Medium'
+                            : 'High'
+                        }}"
+                      >
+                        {{
+                          todo.priority == 1
+                            ? "Low"
+                            : todo.priority == 2
+                            ? "Medium"
+                            : "High"
+                        }}
+                      </span>
+                      <span class="font-12 badge badge-info float-left mr-2">
+                        {{ todo.due_date | date }}
+                      </span>
+                    </div>
+                  </li>
+
+                  <li *ngIf="todo.done === 1">
+                    <div class="icheck-primary d-inline ml-2">
+                      <input
+                        type="checkbox"
+                        [value]="todo.id"
+                        checked="{{ todo.done == 1 }}"
+                        (change)="changed($event)"
+                        name="todo1"
+                        id="todoCheck{{ i + 1 }}"
+                      />
+                      <label for="todoCheck{{ i + 1 }}"></label>
+                      <span class="text">{{ todo.title }}</span>
+                    </div>
+
+                    <div class="mb-3 mt-3">
+                      <span title="Delete">
+                        <a
+                          (click)="deleteTodo(todo.id)"
+                          class="
+                            badge badge-danger
+                            cursor-pointer
+                            float-right
+                            color-white
+                            delete-box
+                          "
+                        >
+                          <i class="nav-icon fas fa-trash-alt"></i
+                        ></a>
+                      </span>
+                      <!-- Emphasis label -->
+                      <span
+                        class="
+                          badge badge-secondary
+                          cursor-pointer
+                          float-right
+                          mr-2
+                        "
+                        title="{{
+                          todo.priority == 1
+                            ? 'Low'
+                            : todo.priority == 2
+                            ? 'Medium'
+                            : 'High'
+                        }}"
+                      >
+                        {{
+                          todo.priority == 1
+                            ? "Low"
+                            : todo.priority == 2
+                            ? "Medium"
+                            : "High"
+                        }}
+                      </span>
+                      <span
+                        class="badge font-12 badge-secondary float-left mr-2"
+                      >
+                        {{ todo.due_date | date }}
+                      </span>
+                    </div>
+                  </li>
+                </ng-container>
+              </ul>
+            </div>
+            <ng-template #noTodo>
+              <div class="justify-content-center min-height-298">
+                <h1 class="text-danger text-center mt-5 pt-5 mb-5">
+                  No content available
+                </h1>
+              </div>
+            </ng-template>
+            <!-- <div class="card-footer clearfix">
+            <button type="button" class="btn btn-info float-right"><i class="fas fa-plus"></i> Add item</button>
+          </div> -->
+          </div>
+        </div>
+
+        <div class="col-lg-6">
+          <div class="card">
+            <div class="card-header sa_theme_color white-color">
+              <h3 class="card-title card-title-mob">
+                Payment Method {{ "(" + selectedYear + ")" }}
+              </h3>
+              <div class="d-flex sa-flex-jc-end">
+                <select
+                  class="select_input select_input-bg-white mr-m-13"
+                  #paymentMethod
+                  (change)="paymentMethodChange(paymentMethod.value)"
+                >
+                  <option value="">Select Month</option>
+                  <option value="01">January</option>
+                  <option value="02">February</option>
+                  <option value="03">March</option>
+                  <option value="04">April</option>
+                  <option value="05">May</option>
+                  <option value="06">June</option>
+                  <option value="07">July</option>
+                  <option value="08">August</option>
+                  <option value="09">September</option>
+                  <option value="10">October</option>
+                  <option value="11">November</option>
+                  <option value="12">December</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="card-body min-height-298 m-auto">
+              <div
+                style="
+                  min-height: 220px;
+                  border: 1px solid white;
+                  margin-bottom: 10px;
+                "
+              >
+                <canvas
+                  baseChart
+                  style="
+                    margin-top: 15px;
+                    display: block;
+                    height: 166px;
+                    width: 332px;
+                  "
+                  *ngIf="paymentMethodsdata?.length > 0; else noPiechartData"
+                  [data]="pieChartData"
+                  [labels]="pieChartLabels"
+                  [chartType]="pieChartType"
+                  [options]="pieChartOptions"
+                  [plugins]="pieChartPlugins"
+                  [colors]="myColorsPi"
+                  [legend]="pieChartLegend"
+                >
+                </canvas>
+              </div>
+
+              <p style="margin: 0px !important" class="text-center mt-5">
+                <strong>Pie Chart (Amount in ₦)</strong>
+              </p>
+            </div>
+
+            <ng-template #noPiechartData>
+              <div class="justify-content-center">
+                <h1 class="text-danger text-center mt-5 pt-5 mb-5">
+                  {{ message }}
+                </h1>
+              </div>
+            </ng-template>
+
+            <!-- /.card-body -->
+          </div>
+        </div>
+
+        <div class="col-lg-6">
+          <div class="card">
+            <div class="card-header sa_theme_color white-color">
+              <h3 class="card-title card-title-mob">Asset Breakdown</h3>
+              <div class="d-flex sa-flex-jc-end"></div>
+            </div>
+
+            <div class="card-body min-height-298 m-auto">
+              <div
+                style="
+                  min-height: 230px;
+                  border: 1px solid white;
+                  margin-bottom: 10px;
+                "
+              >
+                <canvas
+                  baseChart
+                  style="
+                    margin-top: 15px;
+                    display: block;
+                    height: 166px;
+                    width: 332px;
+                  "
+                  *ngIf="assetBreakDownData?.length > 0; else noPiechartData"
+                  [data]="apiPieValue1"
+                  [labels]="apiPieLabel1"
+                  [chartType]="pieChartType"
+                  [options]="pieChartOptions"
+                  [plugins]="pieChartPlugins"
+                  [colors]="myColorsPi"
+                  [legend]="pieChartLegend"
+                >
+                </canvas>
+              </div>
+
+              <p style="margin: 0px !important" class="text-center mt-5">
+                <strong>Pie Chart (Asset Breakdown)</strong>
+              </p>
+            </div>
+
+            <ng-template #noPiechartData>
+              <div class="justify-content-center">
+                <h1 class="text-danger text-center mt-5 pt-5 mb-5">
+                  {{ message }}
+                </h1>
+              </div>
+            </ng-template>
+
+            <!-- /.card-body -->
+          </div>
+        </div>
+
+        <div class="col-lg-6" *ngIf="superAdmin || managerAdmin">
+          <div class="card">
+            <div class="card-header sa_theme_color white-color">
+              <h3 class="card-title card-title-mob">User Activities</h3>
+            </div>
+            <!-- /.card-header -->
+            <div
+              class="card-body p-0 font-12 min-height-258"
+              *ngIf="activities; else content"
+            >
+              <ul class="products-list product-list-in-card pl-2 pr-2">
+                <li class="item" *ngFor="let activity of activities">
+                  <div class="product-info">
+                    <span href="" class="product-title">{{
+                      activity.title | titlecase
+                    }}</span>
+                    <span class="float-right employee-role">{{
+                      activity.display_name.replaceAll("_", " ") | titlecase
+                    }}</span>
+                    <span class="product-description">
+                      {{ activity.created_at | date: "MMM d, y, h:mm:ss a" }}
+                    </span>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="card-footer-1 text-center view-more-2">
+              <a
+                class="footer-link cursor-pointer"
+                [routerLink]="['/activitylog']"
+                >View All Activity Logs</a
+              >
+            </div>
+            <ng-template #content>
+              <div class="justify-content-center mt-5 mb-5 min-height-content">
+                <h5 class="text-danger text-center mt-5 mb-5">
+                  No content available
+                </h5>
+              </div>
+            </ng-template>
+            <!-- <div class="card-footer text-center">
+            <a href="javascript:void(0)" class="uppercase">View All Products</a>
+          </div> -->
+          </div>
+        </div>
+
+        <div class="col-lg-6" *ngIf="!superAdmin && !managerAdmin">
+          <div class="card" style="height: 349px">
+            <div class="card-header border-0 sa_theme_color white-color">
+              <div class="d-flex justify-content-between">
+                <h3 class="card-title card-title-mob">
+                  Revenue Stream Monthly Performance
+                </h3>
+                <!-- <a href="javascript:void(0);">View Report</a> -->
+              </div>
+            </div>
+            <div class="card-body">
+              <div *ngIf="!show" class="position-relative mb-4">
+                <canvas
+                  baseChart
+                  class="height-180"
+                  [datasets]="barChartData"
+                  [labels]="barChartLabels"
+                  [options]="barChartOptions"
+                  [plugins]="barChartPlugins"
+                  [legend]="barChartLegend"
+                  [colors]="myColorsBar"
+                  [chartType]="barChartType"
+                >
+                </canvas>
+              </div>
+
+              <div *ngIf="show" class="position-relative mb-4">
+                <canvas
+                  baseChart
+                  class="height-180"
+                  [datasets]="barChartDataEmpty"
+                  [labels]="barChartLabels"
+                  [options]="barChartOptions"
+                  [plugins]="barChartPlugins"
+                  [legend]="barChartLegend"
+                  [colors]="myColorsBar"
+                  [chartType]="barChartType"
+                >
+                </canvas>
+              </div>
+
+              <form
+                [formGroup]="revenueForm"
+                (ngSubmit)="getRevenueStreams(revenueForm.value)"
+                class="mb-3"
+              >
+                <div class="d-flex ml-2 form-group margin-top-minus-13">
+                  <div class="">
+                    <input
+                      type="text"
+                      min="2015-03"
+                      placeholder="Select Month"
+                      onfocus="(this.type='month')"
+                      class="date_input select_input select_input-bg-white"
+                      formControlName="date"
+                      id="date"
+                      name="date"
+                      [ngClass]="{ 'is-invalid': submitted &amp;&amp; revenueForm.controls.date.errors }"
+                    />
+
+                    <div
+                      *ngIf="submitted &amp;&amp; revenueForm.controls.date.errors"
+                      class="text-danger"
+                    >
+                      <div *ngIf="revenueForm.controls.date.errors.required">
+                        Date is required
+                      </div>
+                    </div>
+                    <!--<select type="text" name="year" formControlName="year" id="year" class="select_input select_input-bg-white height-25 width-80" >
+                   <option >Select Year</option>
+                   <option>2015</option>
+                   <option>2016</option>
+                   <option>2017</option>
+                   <option>2018</option>
+                   <option>2019</option>
+                   <option>2020</option>
+                 </select>-->
+                  </div>
+                  <select
+                    *ngIf="superAdmin"
+                    type="text"
+                    name="taxOffice"
+                    formControlName="taxOffice"
+                    id="taxOffice"
+                    (change)="taxOfficeChanged($event.target.value)"
+                    placeholder="Tax Office"
+                    class="
+                      select_input select_input-bg-white
+                      height-25
+                      width-80
+                    "
+                  >
+                    <option selected value="">Tax Office</option>
+                    <option
+                      *ngFor="let taxTaxOffice of taxTaxOffices"
+                      [value]="taxTaxOffice.id"
+                    >
+                      {{ taxTaxOffice.name }}
+                    </option>
+                  </select>
+                  <button type="submit" class="input_button height-25">
+                    Apply Filter
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- /.row (main row) -->
+    </div>
+    <!-- /.container-fluid -->
+  </section>
+  <!-- /.content -->
+</div>
+
+<ng-template #todoModal let-modal>
+  <div style="">
+    <div class="modal-header text-white card-header custome justify-center-h4">
+      <h4 class="modal-title font-weight-bolder" id="modal-basic-title">
+        Add To Do
+      </h4>
+      <button
+        type="button"
+        class="close"
+        aria-label="Close"
+        (click)="modal.dismiss('Cross click')"
+      >
+        <span class="white-color" aria-hidden="true">&times;</span>
+      </button>
+    </div>
+
+    <div class="modal-body">
+      <div class="container">
+        <form [formGroup]="todoForm" (ngSubmit)="submitTodo(todoForm.value)">
+          <div class="form-row">
+            <div class="form-group col-md-12">
+              <label style="font-weight: 600" for="title" class="text-center"
+                >Title</label
+              >
+              <input
+                type="text"
+                formControlName="title"
+                maxlength="30"
+                class="form-control"
+                placeholder="Enter title"
+                [ngClass]="{ 'is-invalid': submitted &amp;&amp; todoForm.controls.title.errors }"
+                style="width: 100%"
+              />
+
+              <div
+                *ngIf="submitted &amp;&amp; todoForm.controls.title.errors"
+                class="text-danger"
+              >
+                <div *ngIf="todoForm.controls.title.errors.required">
+                  Title is required
+                </div>
+              </div>
+            </div>
+            <div class="form-group col-md-12">
+              <label style="font-weight: 600" for="date" class="text-center"
+                >Due Date</label
+              >
+              <input
+                type="date"
+                name="todoDate"
+                min="{{ todayDate }}"
+                formControlName="date"
+                class="form-control date_input"
+                placeholder="DD-MM-YYYY"
+                [ngClass]="{ 'is-invalid': submitted &amp;&amp; todoForm.controls.title.errors }"
+                style="width: 100%"
+              />
+
+              <div
+                *ngIf="submitted &amp;&amp; todoForm.controls.date.errors"
+                class="text-danger"
+              >
+                <div *ngIf="todoForm.controls.date.errors.required">
+                  Date is required
+                </div>
+                <div *ngIf="todoForm.controls.date.errors.dateValidator">
+                  Date is required
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group col-md-12">
+              <label
+                style="font-weight: 600"
+                for="description"
+                class="text-center"
+                >Description</label
+              >
+              <input
+                type="text"
+                formControlName="description"
+                class="form-control"
+                placeholder="Enter Description"
+                style="width: 100%"
+                maxlength="250"
+              />
+
+              <div
+                *ngIf="submitted &amp;&amp; todoForm.controls.description.errors"
+                class="text-danger"
+              >
+                <div *ngIf="todoForm.controls.description.errors.required">
+                  Description is required
+                </div>
+              </div>
+            </div>
+            <div class="form-group col-md-12">
+              <label style="font-weight: 600" for="priority" class="text-center"
+                >Priority</label
+              >
+              <select
+                type="text"
+                formControlName="priority"
+                class="form-control"
+                placeholder="Enter Priority"
+                style="width: 100%"
+              >
+                <option value="1">Low</option>
+                <option value="2">Medium</option>
+                <option value="3">High</option>
+              </select>
+              <div
+                *ngIf="submitted &amp;&amp; todoForm.controls.priority.errors"
+                class="text-danger"
+              >
+                <div *ngIf="todoForm.controls.priority.errors.required">
+                  Priority is required
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="mt-2 text-center">
+            <button type="submit" class="btn btn button-login">
+              <i class="far fa-hand-point-right"></i> Submit
+            </button>
+            <!--<button type="button" class="btn btn-outline-dark float-right button-login" (click)="modal.close('Save click')"><i class="fas fa-window-close"></i>Cancel</button>-->
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</ng-template>
+<ng-template #transactionModal let-modal>
+  <!-- SELECT2 EXAMPLE -->
+  <div class="card" style="width: 800px !important">
+    <div class="card-header">
+      <h3 class="card-title card-title-mob">Transactions</h3>
+    </div>
+    <!-- /.card-header -->
+    <div class="card-body over-flow table-responsive">
+      <table
+        class="table table-bordered table-condensed"
+        *ngIf="apiTransactions; else content"
+        datatable
+        [dtOptions]="dtOptions"
+        width="100%"
+      >
+        <thead>
+          <tr>
+            <th>S/N</th>
+            <th>Company Name</th>
+            <th>Taxpayer ID</th>
+            <th>Invoice Number</th>
+            <th>Payment Channel</th>
+            <th>Amount(₦)</th>
+            <th>Transaction Date</th>
+            <th>Preview Invoice</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let mydata of apiTransactions; index as i">
+            <td>{{ i + 1 }}</td>
+            <td>{{ mydata.name | titlecase }}</td>
+            <td>{{ mydata.taxpayer_id }}</td>
+            <td>{{ mydata.invoice_number }}</td>
+            <td>{{ mydata.channel == "" ? "N/A" : mydata.channel }}</td>
+            <td>₦ {{ mydata.amount | number }}</td>
+            <td>{{ mydata.created_at | date: "MMM d, y, h:mm:ss a" }}</td>
+            <td>
+              <a
+                class="btn btn-primary"
+                href="{{ mydata.invoice_preview_url }}"
+                target="_blank"
+                ><i class="fas fa-eye"></i
+              ></a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <ng-template #content> <p style="color: red"></p></ng-template>
+    </div>
+
+    <div class="modal-footer">
+      <button
+        type="button"
+        class="btn btn-outline-dark button-login"
+        (click)="modal.close('Save click')"
+      >
+        Ok
+      </button>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #activetaxpayerModal let-modal>
+  <!-- SELECT2 EXAMPLE -->
+  <div class="card" style="">
+    <div class="card-header sa_theme_color">
+      <h3 class="card-title card-title-mob color-white">Recent Tax Payer</h3>
+    </div>
+    <!-- /.card-header -->
+    <div class="card-body">
+      <div class="table-responsive">
+        <table
+          class="table table-bordered table-condensed"
+          *ngIf="taxpayers; else content"
+          datatable
+          [dtOptions]="dtOptions"
+        >
+          <thead>
+            <tr>
+              <th>S/N</th>
+              <th>Company Name</th>
+              <th>Date Registered</th>
+              <!-- <th>Industry</th> -->
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let mydata of taxpayers; index as i">
+              <td>{{ i + 1 }}</td>
+              <td>{{ mydata.first_name | titlecase }}</td>
+              <td>{{ mydata.created_at | date: "MMM d, y, h:mm:ss a" }}</td>
+              <!-- <td>{{ industryChanged(mydata?.industry_sector_id) }} {{industry}}</td> -->
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <ng-template #content> <p style="color: red"></p></ng-template>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button
+      type="button"
+      class="btn btn-outline-dark button-login"
+      (click)="modal.close('Save click')"
+    >
+      Ok
+    </button>
+  </div>
+</ng-template>
+
+<ng-template #allTodosModal let-modal>
+  <!-- SELECT2 EXAMPLE -->
+  <div class="card">
+    <div class="card-header sa_theme_color text-white card-header">
+      <h3 class="card-title card-title-mob color-white">To Do List</h3>
+    </div>
+    <!-- /.card-header -->
+    <div class="card-body table-responsive">
+      <div>
+        <table
+          class="table table-bordered table-condensed"
+          *ngIf="todosdata; else content"
+          datatable
+          [dtOptions]="dtOptions"
+          width="100%"
+        >
+          <thead>
+            <tr>
+              <th>S/N</th>
+              <th>Title</th>
+              <th style="max-width: 250px !important">Description</th>
+              <th>Priority</th>
+              <th>Due-date</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let mydata of todosdata; index as i">
+              <td>{{ i + 1 }}</td>
+              <td>{{ mydata.title | titlecase }}</td>
+              <td style="max-width: 250px !important">
+                {{ mydata.description }}
+              </td>
+              <td>
+                {{
+                  mydata.priority == 1
+                    ? "Low"
+                    : mydata.priority == 2
+                    ? "Medium"
+                    : "High"
+                }}
+              </td>
+              <td>{{ mydata.due_date | date: "MMM d, y, h:mm:ss a" }}</td>
+              <td>{{ mydata.done == 1 ? "Done" : "Not Done" }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <ng-template #content>
+        <p style="color: red">No Content Available</p></ng-template
+      >
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button
+      type="button"
+      class="btn btn-outline-dark button-login"
+      (click)="modal.close('Save click')"
+    >
+      Ok
+    </button>
+  </div>
+</ng-template>
+
+<ng-template #revenueModal let-modal class="mt-5">
+  <div class="modal-header sa_theme_color text-white">
+    <h4 class="modal-title" id="modal-basic-title">Daily Revenue</h4>
+  </div>
+
+  <div class="modal-body">
+    <div class="container" *ngFor="let dailyRevenue of dailyRevenuedata">
+      <dl class="row">
+        <dt class="col-sm-5">Amount Paid</dt>
+        <dd class="col-sm-7">₦ {{ dailyRevenue?.amount }}</dd>
+        <dt class="col-sm-5">Economi Activity</dt>
+        <dd class="col-sm-7">{{ dailyRevenue?.economic_activity_name }}</dd>
+        <dt class="col-sm-5">Industry</dt>
+        <dd class="col-sm-7">
+          {{ dailyRevenue?.industry_sector_name | titlecase }}
+        </dd>
+        <dt class="col-sm-5">Tax Office</dt>
+        <dd class="col-sm-7">{{ dailyRevenue?.tax_office_name }}</dd>
+      </dl>
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <button
+      type="button"
+      class="btn button-login"
+      (click)="modal.close('Save click')"
+    >
+      Ok
+    </button>
+  </div>
+</ng-template>

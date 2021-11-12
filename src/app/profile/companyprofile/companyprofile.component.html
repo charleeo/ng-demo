@@ -1,0 +1,180 @@
+<div class="content-wrapper">
+  <div class="content-header">
+
+  </div>
+    <!-- Content Header (Page header) -->
+
+    <!-- /.content-header -->
+
+    <!-- Main content -->
+    <section class="content" data-select2-id="32">
+      <div class="container-fluid" data-select2-id="31">
+
+          <div class="card card-secondary ">
+            <div class="card-header custome">
+              <h3 class="card-title">Company Profile</h3>
+
+            </div>
+            <!-- /.card-header -->
+            <div class="row card-body d-flex">
+
+            <div class="col-md-4 col-12">
+
+              <div class="card-body box-profile">
+                <h3 class="profile-username text-center mb-3">Employee Count: {{"  " + employeesCount}}</h3>
+                <div class="text-center mb-2">
+                  <img class="profile-user-img img-fluid img-circle" [src]="corporateLogo" *ngIf="corporateLogo ; else imageIcon" alt="User profile picture" style="float: inherit; margin:0; height:100px !important;">
+
+                  <ng-template #imageIcon>
+                    <img class="profile-user-img img-fluid img-circle"  src="assets/dist/img/login-user-img.png" alt="User profile picture" style="float: inherit; margin:0; height:100px !important;">
+                  </ng-template>
+                </div>
+                <p class="text-muted text-center mt-3">RAS Taxpayer ID</p>
+                <p class="text-muted text-center">{{apidata.taxpayer_id}}</p>
+              </div>
+
+
+            </div>
+
+
+            <div class="col-md-8 col-12">
+              <form [formGroup]="companyProfileForm" (ngSubmit)="onUpdate(companyProfileForm.value)">
+                <div class="form-row">
+                  <div class="form-group col-md-6">
+                    <label for="inputEmail4">Company Name<sup
+                      class="ml-1 font-wegiht-bold text-danger">*</sup></label>
+
+                    <input type="text" formControlName="companyName" class="form-control" [(ngModel)]="apidata.company_name"
+                      [ngClass]="{ 'is-invalid': submitted &amp;&amp; companyProfileForm.controls.companyName.errors }" readonly />
+
+
+                    <div *ngIf="submitted &amp;&amp; companyProfileForm.controls.companyName.errors" class="text-danger">
+                      <div *ngIf="companyProfileForm.controls.companyName.errors.required">Company Name is required</div>
+                    </div>
+
+                  </div>
+                  <div class="form-group col-md-6">
+                    <label for="inputPassword4">RC Number<sup
+                      class="ml-1 font-wegiht-bold text-danger">*</sup></label>
+                    <input type="text" formControlName="rcNumber" class="form-control" [(ngModel)]="apidata.cac_number"
+                      [ngClass]="{ 'is-invalid': submitted &amp;&amp; companyProfileForm.controls.rcNumber.errors }" readonly/>
+                    <div *ngIf="submitted &amp;&amp; companyProfileForm.controls.rcNumber.errors" class="text-danger">
+                      <div *ngIf="companyProfileForm.controls.rcNumber.errors.required">rcNumber is required</div>
+                    </div>
+
+                  </div>
+                </div>
+
+                <div class="form-row">
+                  <div class="form-group col-md-6">
+                    <label for="inputPassword4">TIN<sup
+                      class="ml-1 font-wegiht-bold text-danger">*</sup></label>
+                    <input type="text" formControlName="tin" class="form-control" [(ngModel)]="apidata.tin"
+                      [ngClass]="{ 'is-invalid': submitted &amp;&amp; companyProfileForm.controls.tin.errors }"readonly />
+                    <div *ngIf="submitted &amp;&amp; companyProfileForm.controls.tin.errors" class="text-danger">
+                      <div *ngIf="companyProfileForm.controls.tin.errors.required">TIN is required</div>
+                    </div>
+
+                  </div>
+                  <div class="form-group col-md-6">
+                    <label for="inputPassword4">Phone Number<sup
+                      class="ml-1 font-wegiht-bold text-danger">*</sup></label>
+                    <input type="text" formControlName="phone" class="form-control" [(ngModel)]="apidata.phone"
+                      [ngClass]="{ 'is-invalid': submitted &amp;&amp; companyProfileForm.controls.phone.errors }"readonly />
+                    <div *ngIf="submitted &amp;&amp; companyProfileForm.controls.phone.errors" class="text-danger">
+                      <div *ngIf="companyProfileForm.controls.phone.errors.required">Phone is required</div>
+                      <div *ngIf="companyProfileForm.controls.phone.errors.minlength">Phone must be 11 characters long</div>
+                      <div *ngIf="companyProfileForm.controls.phone.errors.maxlength">Phone must be 11 characters long</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group col-md-6">
+                    <label for="inputPassword4">Email Address<sup
+                      class="ml-1 font-wegiht-bold text-danger">*</sup></label>
+                      <input type="text" formControlName="email" class="form-control" [(ngModel)]="apidata.email"
+                      [ngClass]="{ 'is-invalid': submitted &amp;&amp; companyProfileForm.controls.email.errors }"readonly/>
+                      <div *ngIf="submitted &amp;&amp; companyProfileForm.controls.email.errors" class="text-danger">
+                        <div *ngIf="companyProfileForm.controls.email.errors.required">Email is required</div>
+                        <div *ngIf="companyProfileForm.controls.email.errors.email">Email must be a valid email address</div>
+                      </div>
+
+                    </div>
+
+                  <div class="form-group col-md-6">
+                    <label for="inputEmail4">Industry Sector <sup
+                      class="ml-1 font-wegiht-bold text-danger">*</sup></label>
+                    <select class="form-control" id="industry" formControlName="industry" [(ngModel)]="apidata.industry_sector_id"
+                      [ngClass]="{ 'is-invalid': submitted &amp;&amp; companyProfileForm.controls.industry.errors }">
+                      <option value="">--Select industry--</option>
+                      <option *ngFor="let rol of industrySectors" value="{{rol.id}}" >
+                        {{rol.name}}
+                      </option>
+                    </select>
+                    <div *ngIf="submitted &amp;&amp; companyProfileForm.controls.industry.errors" class="text-danger">
+                      <div *ngIf="companyProfileForm.controls.industry.errors.required">Industry Sector is required</div>
+                    </div>
+                  </div>
+
+
+                </div>
+                <div class="form-row">
+                  <div class=" col-md-6">
+                  <div class="form-group">
+                    <label for="inputEmail4">Preferred Tax office <sup
+                      class="ml-1 font-wegiht-bold text-danger">*</sup></label>
+                    <select class="form-control" id="taxOffice" formControlName="taxOffice" [(ngModel)]="apidata.tax_office_id"
+                      [ngClass]="{ 'is-invalid': submitted &amp;&amp; companyProfileForm.controls.taxOffice.errors }">
+                      <option value="">--Select Tax Office--</option>
+                      <option *ngFor="let rol of taxTaxOffices" value="{{rol.id}}" >
+                        {{rol.name}}
+                      </option>
+                    </select>
+                    <div *ngIf="submitted &amp;&amp; companyProfileForm.controls.taxOffice.errors" class="text-danger">
+                      <div *ngIf="companyProfileForm.controls.taxOffice.errors.required">Tax Office is required</div>
+                    </div>
+                  </div>
+
+                  </div>
+                  <div class="form-group col-md-6">
+                    <label for="inputPassword4">Company Logo<sup
+                      class="ml-1 font-wegiht-bold text-danger"></sup></label>
+                      <div class="custom-file">
+                        <input formControlName="myfile" id="myfile" type="file" accept="image/*"
+                        class="custom-file-input" (change)="onFileChange($event)" >
+                        <label class="custom-file-label" for="customFile">Choose file</label>
+                    </div>
+
+                  </div>
+                </div>
+                <div class="form-row">
+
+                  <div class="col-md-12 ">
+                    <label for="contactAddress" class="input-label pull-left ">Contact Address<sup
+                        class="ml-1 font-wegiht-bold text-danger">*</sup></label>
+                    <div class="inputWithIcon">
+                      <!-- <textarea type="text" placeholder="" rows="4" cols="50"></textarea> -->
+                      <textarea formControlName="contactAddress" class="form-control" id="contactAddress" rows="4" [(ngModel)]="apidata.contact_address"
+                        [ngClass]="{ 'is-invalid': submitted &amp;&amp; companyProfileForm.controls.contactAddress.errors }"></textarea>
+                        <div *ngIf="submitted &amp;&amp; companyProfileForm.controls.contactAddress.errors" class="text-danger">
+                          <div *ngIf="companyProfileForm.controls.contactAddress.errors.required">Contact Address is required</div>
+                        </div>
+                      </div>
+                  </div>
+
+                </div>
+
+                <button type="submit" class="btn button-login m-4" >Update Record</button>
+              </form>
+              </div>
+
+
+            </div>
+            <!-- /.card-body -->
+
+          </div>
+
+      </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+  </div>

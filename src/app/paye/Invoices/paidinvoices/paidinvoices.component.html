@@ -1,0 +1,108 @@
+<div class="content-wrapper">
+  <!-- Content Header (Page header) -->
+  <div class="content-header">
+
+  </div>
+
+  <!-- Main content -->
+  <section class="content" data-select2-id="32">
+    <div class="container-fluid" data-select2-id="31">
+
+
+      <!-- SELECT2 EXAMPLE -->
+      <div class="card card-secondary">
+        <div class="card-header custome">
+          <h3 class="card-title">Paid Invoices</h3>
+          <a [routerLink]="['/dashboard']" class="btn btn-sm role float-right">
+            <i class="fas fa-reply-all"></i> Back
+          </a>
+        </div>
+        <!-- /.card-header -->
+        <div class="card-body">
+
+          <div class="col-auto mbm-30">
+            <div *ngIf="apidata">
+                <div class="show-record">
+                    Show &nbsp;
+                    <select class="custom-select custom-select-sm form-control form-control-sm"
+                        (change)="setItemsPerPage(page.value)" #page>
+                        <option [selected]="currentPageLength==10">10</option>
+                        <option [selected]="currentPageLength==30">30</option>
+                        <option [selected]="currentPageLength==50">50</option>
+                        <option [selected]="currentPageLength==100">100</option>
+                        <option [selected]="currentPageLength==500">500</option>
+                        <option [selected]="currentPageLength==1000">1000</option>
+                    </select>
+                    &nbsp; entries
+                </div>
+            </div>
+        </div>
+
+
+          <div class="over-auto">
+
+          <table class="table table-bordered table-condensed" *ngIf="apidata; else content" datatable [dtOptions]="dtOptions"  width="100%">
+              <thead>
+                <tr>
+                  <th>S/N</th>
+                  <th>Invoice Number</th>
+                  <th>Amount Due(₦)</th>
+                  <th>Amount Paid(₦)</th>
+                  <th>Description</th>
+                  <th>Company Name</th>
+                  <th>Email</th>
+                  <th>TIN</th>
+                  <th>Date Created</th>
+                  <th>Preview</th>
+                  <!-- <th>Browser Agent</th>
+                  <th>Created Date</th> -->
+
+                </tr>
+              </thead>
+              <tbody>
+
+                <tr *ngFor="let mydata of apidata | paginate: config; index as i">
+
+                  <td>{{config.itemsPerPage * (config.currentPage - 1) + i + 1}}</td>
+                  <td>{{ mydata.invoice_number}}</td>
+                  <td>{{ mydata.amount_due| number }}</td>
+                  <td>{{ mydata.amount_paid | number }}</td>
+                  <td>{{ mydata.description }}</td>
+                  <td>{{ mydata.recipient }}</td>
+                  <td>{{ mydata.email }}</td>
+                  <td>{{ mydata.tin }}</td>
+                  <td>{{ mydata.created_at | date:'MMM d, y, h:mm:ss a' }}</td>
+                  <td><a target="_blank" class="btn btn-primary" href="{{ mydata.invoice_preview_url }}"><i class="fas fa-eye"></i></a></td>
+
+                  <!-- <td>{{ mydata.browser_agent }}</td>-->
+
+                </tr>
+              </tbody>
+            </table>
+
+            <div id="page_info" class="mt-3 record-show-text-bottom" *ngIf="apidata">
+              Showing {{(config.currentPage-1) * config.itemsPerPage + 1}} - {{config.currentPage *
+              config.itemsPerPage}} &nbsp;
+              of &nbsp;{{ config.totalItems }} &nbsp; entries
+            </div>
+
+            <div class="pagination paging-pull-right" *ngIf="apidata">
+                <pagination-controls (pageChange)="pageChange($event)"
+                    class="my-pagination mt-2 pagination-server">
+                </pagination-controls>
+            </div>
+
+          </div>
+            <ng-template #content > <p style="color: red;" ></p></ng-template>
+          </div>
+
+        <!-- /.card-body -->
+        <div class="card-footer">
+
+        </div>
+      </div>
+
+    </div><!-- /.container-fluid -->
+  </section>
+  <!-- /.content -->
+</div>

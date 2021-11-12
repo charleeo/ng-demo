@@ -1,0 +1,194 @@
+<div class="content-wrapper">
+  <!-- Content Header (Page header) -->
+  <div class="content-header">
+
+  </div>
+  <!-- /.content-header -->
+
+  <!-- Main content -->
+  <section class="content" data-select2-id="32">
+    <div class="container-fluid" data-select2-id="31">
+      <div class="card card-secondary">
+
+      <div class="card-header custome">
+        <h4 class="card-title" id="modal-basic-title">List of Email Notification</h4>
+
+      </div>
+
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-bordered table-condensed table-responsive-sm table-responsive-md table-responsive-lg table-responsive-xl" *ngIf="reminderData; else noContent" datatable [dtOptions]="dtOptions"
+            width="100%">
+            <thead>
+              <tr>
+                <th>S/N</th>
+                <th>Taxpayer Type</th>
+                <th>Taxpayer Name</th>
+                <th>Taxpayer ID</th>
+                <th>Reminder Type</th>
+                <th  style="max-width: 15%">Recipient Email</th>
+                <th  >Revenue stream</th>
+                <th>No. of times sent</th>
+                <th>Delivery Status</th>
+                <th >Date Sent</th>
+                <th *ngIf="showEditor">View</th>
+                <th *ngIf="showEditor">Resend</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let mydata of reminderData; index as i">
+                <td>{{ i + 1 }}</td>
+                <td>{{ mydata.corporate_id == 0 || mydata.corporate_id == null ? "Individual" : "Corporate"}}</td>
+                <td>{{ mydata.taxpayer_name }}</td>
+                <td>{{ (mydata.taxpayer_id === null || mydata.taxpayer_id === '') ? "N/A": mydata.taxpayer_id}}</td>
+                <td>{{ mydata.reminder_type}}</td>
+                <td style="max-width: 30px; text-overflow: ellipsis;">{{ mydata.reciepient_email}}</td>
+                <td>{{ mydata.revenue_stream == 3 ? "Direct Assesssment" : "PAYE"}}</td>
+                <td>{{ mydata.no_of_times_sent}}</td>
+                <td>
+                  <p *ngIf="mydata.delivery_status == 1, else nodelivery" class="text-success">Successful </p>
+                  <ng-template #nodelivery>
+                    <p class="text-danger">Failed </p>
+                  </ng-template>
+                </td>
+                <td>{{ mydata.created_at | date:'MMM d, y, h:mm:ss a'}}</td>
+
+                <td *ngIf="showEditor">
+                  <button class="btn btn-sm btn-outline-primary" (click)="viewReminder(emailContent, mydata)"><i class="nav-icon fas fa-eye"></i>
+                    View</button>
+                </td>
+
+                <td *ngIf="showEditor">
+                  <button [disabled]="mydata.reminder_type === 'NSIRS OTP'" (click)="onSubmit(mydata)" class="btn btn-sm btn-outline-primary">
+                    <i class="nav-icon fas fa-forward"></i>Resend</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          </div>
+        </div>
+        <ng-template #noContent>
+          <div class="">
+            <p class="text-danger text-center"> No content available</p>
+          </div>
+        </ng-template>
+      </div>
+
+    </div>
+  </section>
+</div>
+
+<ng-template #emailContent let-modal>
+  <div class="mt-4">
+    <div class="container-fluid" data-select2-id="31">
+    <div class="modal-header custome">
+      <h3 class="card-title">Reminder Details</h3>
+    </div>
+    <!-- /.card-header -->
+    <div class="card-body">
+      <div class="card-body">
+        <form [formGroup]="reminderForm" class="" (ngSubmit)="onSubmit(reminderForm.value)">
+          <div class="form-row">
+            <div class="form-group col-md-4">
+              <label for="taxpayerName">Taxpayer Name</label>
+              <input type="text" [attr.disabled]="true" formControlName="taxpayerName" class="form-control" placeholder="Taxpayer Name"
+
+                [ngClass]="{ 'is-invalid': submitted &amp;&amp; reminderForm.controls.taxpayerName.errors }" />
+              <div *ngIf="submitted &amp;&amp; reminderForm.controls.taxpayerName.errors" class="text-danger">
+                <div *ngIf="reminderForm.controls.taxpayerName.errors.required">Taxpayer Name is
+                  required</div>
+              </div>
+            </div>
+            <div class="form-group col-md-4">
+              <label for="taxpayerId">Taxpayer ID</label>
+              <input type="text" [attr.disabled]="true" formControlName="taxpayerId" class="form-control" placeholder="Taxpayer ID"
+                [ngClass]="{ 'is-invalid': submitted &amp;&amp; reminderForm.controls.taxpayerId.errors }" />
+              <div *ngIf="submitted &amp;&amp; reminderForm.controls.taxpayerId.errors" class="text-danger">
+                <div *ngIf="reminderForm.controls.taxpayerId.errors.required">Taxpayer ID is required
+                </div>
+              </div>
+            </div>
+            <div class="form-group col-md-4">
+              <label for="reminderType">Reminder Type</label>
+              <input type="text" [attr.disabled]="true" formControlName="reminderType" class="form-control"
+                placeholder="Reminder Type"
+                [ngClass]="{ 'is-invalid': submitted &amp;&amp; reminderForm.controls.reminderType.errors }" />
+              <div *ngIf="submitted &amp;&amp; reminderForm.controls.reminderType.errors" class="text-danger">
+                <div *ngIf="reminderForm.controls.reminderType.errors.required">Reminder Type
+                  is required</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group col-md-4">
+              <label for="dateSent">Date Sent</label>
+              <input type="text" [attr.disabled]="true" formControlName="dateSent" class="form-control" placeholder="Date Sent"
+                [ngClass]="{ 'is-invalid': submitted &amp;&amp; reminderForm.controls.dateSent.errors }" />
+              <div *ngIf="submitted &amp;&amp; reminderForm.controls.dateSent.errors" class="text-danger">
+                <div *ngIf="reminderForm.controls.dateSent.errors.required">Date Sent is required</div>
+
+              </div>
+            </div>
+            <div class="form-group col-md-4">
+              <label for="recipientEmail">Recipient Email</label>
+              <input type="text" [attr.disabled]="true" formControlName="recipientEmail" class="form-control" placeholder="Recipient Email"
+                [ngClass]="{ 'is-invalid': submitted &amp;&amp; reminderForm.controls.recipientEmail.errors }" />
+              <div *ngIf="submitted &amp;&amp; reminderForm.controls.recipientEmail.errors" class="text-danger">
+                <div *ngIf="reminderForm.controls.recipientEmail.errors.required">Recipient Email is required</div>
+
+              </div>
+            </div>
+            <div class="form-group col-md-4">
+              <label for="revenueStream">Revenue Stream</label>
+              <input type="text" [attr.disabled]="true" formControlName="revenueStream" class="form-control" placeholder="Revenue Stream"
+                [ngClass]="{ 'is-invalid': submitted &amp;&amp; reminderForm.controls.revenueStream.errors }" />
+              <div *ngIf="submitted &amp;&amp; reminderForm.controls.revenueStream.errors" class="text-danger">
+                <div *ngIf="reminderForm.controls.revenueStream.errors.required">Revenue Stream is required</div>
+
+              </div>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group col-md-4">
+              <label for="numberOfTimeSent">Number of times sent</label>
+              <input type="text" [attr.disabled]="true" formControlName="numberOfTimeSent" class="form-control" placeholder="Number of times sent"
+                [ngClass]="{ 'is-invalid': submitted &amp;&amp; reminderForm.controls.numberOfTimeSent.errors }" />
+              <div *ngIf="submitted &amp;&amp; reminderForm.controls.numberOfTimeSent.errors" class="text-danger">
+                <div *ngIf="reminderForm.controls.numberOfTimeSent.errors.required">Number of times sent is required</div>
+
+              </div>
+            </div>
+            <div class="form-group col-md-4">
+              <label for="deliveryStatus">Delivery Status
+                <!-- <sup class="ml-1 font-wegiht-bold text-danger">*</sup> -->
+              </label>
+              <input type="text" [attr.disabled]="true" formControlName="deliveryStatus" class="form-control" placeholder="Commision"
+                [ngClass]="{ 'is-invalid': submitted &amp;&amp; reminderForm.controls.deliveryStatus.errors }" />
+              <div *ngIf="submitted &amp;&amp; reminderForm.controls.deliveryStatus.errors" class="text-danger">
+                <div *ngIf="reminderForm.controls.deliveryStatus.errors.required">Commission is required</div>
+
+              </div>
+            </div>
+          </div>
+
+          <hr>
+          <h4>Email Content</h4>
+          <div class="form-group">
+            <!-- <textarea id="email_content" [innerHTML]="emailHtml" type="text" rows="15" cols="20" [attr.disabled]="true"   formControlName="emailContent" class="form-control" placeholder="Email Content"
+              [ngClass]="{ 'is-invalid': submitted &amp;&amp; reminderForm.controls.emailContent.errors }" ></textarea> -->
+
+            <div contenteditable="false" class="mailer-reminder" id="email_content" [innerHTML]="emailHtml"></div>
+          </div>
+          <div class="modal-footer">
+           <button type="submit" [disabled]="detailReminderType === 'NSIRS OTP'" class="btn text-center button-login float-left mr-5"><i class="nav-icon fas fa-forward"></i> Resend</button>
+            <button type="button" class="btn btn-outline-dark button-login float-right" (click)="modal.close('Save click')">Ok</button>
+          </div>
+
+          </form>
+      </div>
+    </div>
+  </div>
+</div>
+</ng-template>

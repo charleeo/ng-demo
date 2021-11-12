@@ -1,0 +1,438 @@
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+
+    </div>
+    <!-- /.content-header -->
+
+    <!-- Main content -->
+    <section class="content" data-select2-id="32">
+        <div class="container-fluid" data-select2-id="31">
+
+
+            <!-- SELECT2 EXAMPLE -->
+            <div class="card card-secondary">
+                <div class="card-header custome">
+                    <h3 class="card-title">List of Businesses</h3>
+                    <!-- <a [routerLink]="['/dashboard']" class="btn btn-primary role float-right" style="font-size: 12px; padding: 5px; margin-top: -3px;"><i class="fas fa-reply-all"></i> Back</a> -->
+
+                    <div *ngIf="editorRole">
+                        <button type="submit" class="btn btn-primary role float-right"
+                            style="font-size: 12px; padding: 5px; margin-top: -3px;"
+                            (click)="addLand(addlandmodal)">
+                            <i class="fas fa-plus-square"></i> Add a Land
+                        </button>
+                    </div>
+
+                </div>
+                <!-- /.card-header -->
+
+                <div class="card">
+                    <div class="card-body">
+                        <form [formGroup]="searchForm" (ngSubmit)="onSubmitSearch(searchForm.value)">
+                            <div class="form-row">
+                                <div class="col-12 col-sm-6 col-md-6 col-lg-2 mt-1">
+                                    <input type="text" formControlName="landName" class="form-control font-12"
+                                        id="landName" placeholder="Land Name"
+                                        [ngClass]="{ 'is-invalid': submitted &amp;&amp; searchForm.controls.landName.errors }" />
+                                    <div *ngIf="submitted &amp;&amp; searchForm.controls.landName.errors"
+                                        class="text-danger">
+                                    </div>
+                                </div>
+
+                                <div class="col-12 col-sm-6 col-md-6 col-lg-3 mt-1">
+                                    <button type="submit" class="btn btn-primary font-12"><i class="fas fa-search"></i>
+                                        Search</button>
+                                    <button type="button" class="btn btn-primary font-12" style="margin-left: 10px;"
+                                        (click)="clearSearch()"><i class="fas fa-sync-alt"></i> Clear</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="card-body">
+                    <div class="col-auto mbm-30">
+                        <div class="row" *ngIf="landsData">
+                            <div class="show-record">
+                                Show &nbsp;
+                                <select class="custom-select custom-select-sm form-control form-control-sm"
+                                    (change)="setItemsPerPage(page.value)" #page>
+                                    <option [selected]="currentPageLength==10">10</option>
+                                    <option [selected]="currentPageLength==30">30</option>
+                                    <option [selected]="currentPageLength==50">50</option>
+                                    <option [selected]="currentPageLength==100">100</option>
+                                    <option [selected]="currentPageLength==500">500</option>
+                                    <option [selected]="currentPageLength==1000">1000</option>
+                                </select>
+                                &nbsp; entries
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                    <table class="table table-bordered table-condensed table-responsive-sm table-responsive-md table-responsive-lg table-responsive-xl" 
+                    *ngIf="landsData; else content" datatable [dtOptions]="dtOptions">
+                        <thead>
+                            <tr>
+                                <th>S/N</th>
+                                <th>Land ID</th>
+                                <th>Land Name</th>
+
+                                <th>Land LGA</th>
+                                <th>Link Status</th>
+                                <th>View</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let mydata of landsData | paginate: config; index as i">
+                                <td>{{config.itemsPerPage * (config.currentPage - 1) + i + 1}}</td>
+                                <td>{{ mydata.land_id }}</td>
+                                <td>{{ mydata.land_name | titlecase }}</td>
+                                
+                                <td>{{ mydata.lga }}
+                                </td>
+                                <td>{{ mydata.link_status }}</td>
+
+                                <td>
+                                    <button class="btn btn-sm btn-outline-primary"
+                                        (click)="viewLand(viewlandmodal, mydata)"><i
+                                            class="nav-icon fas fa-eye"></i>
+                                        View
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                    <div id="page_info" class="mt-3 record-show-text-bottom" *ngIf="landsData">
+                        Showing {{(config.currentPage-1) * config.itemsPerPage + 1}} - {{config.currentPage * config.itemsPerPage}}
+                        of {{ config.totalItems }} entries
+                    </div>
+
+                    <div class="pagination paging-pull-right" *ngIf="landsData">
+                        <pagination-controls (pageChange)="pageChange($event)"
+                            class="my-pagination mt-2 pagination-server">
+                        </pagination-controls>
+                    </div>
+
+                    <ng-template #content>
+                        <p style="color: red;"> </p>
+                    </ng-template>
+
+                </div>
+                <!-- /.card-body -->
+                <div class="card-footer">
+
+                </div>
+            </div>
+
+        </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+</div>
+
+<ng-template #addlandmodal let-modal>
+    <app-addland [modalRef]="addLandModalRef" [showHeader]="true" [landId]="null" [corporateId]="null"
+      (reloadAssetList)="getUpdatedLinkedAssets($event)" [showSaveButton]="true"></app-addland>
+
+    <div class="modal-footer">
+        <button type="button" class="btn btn-outline-dark button-login" (click)="modal.close('Save click')">Ok</button>
+    </div>
+</ng-template>
+
+<ng-template #viewlandmodal let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">View Land Details</h4>
+
+        <div *ngIf="showLinkTaxpayerButton">
+            <button type="button" class="btn btn button-login float-right" style="margin: 10px 0px;"
+                (click)="showLinkTaxpayerModal(linktaxpayermodal)">Link Taxpayer</button>
+        </div>    
+    </div>
+
+    <div class="modal-body">
+        <div class="container">
+            <div class="container">
+                <div class="row">
+                    <ul class="nav nav-tabs tabbing">
+                        <li (click)="toggleLinkTaxpayerButton(false)"><a data-toggle="tab" href="#landdetails" class="active">Land Details</a></li>
+                        <li (click)="toggleLinkTaxpayerButton(true)"><a data-toggle="tab" href="#linkedtaxpayers">Linked Taxpayers</a></li>
+                        <li (click)="toggleLinkTaxpayerButton(false)"><a data-toggle="tab" href="#assessments">Assessments</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="tab-content">
+                <div id="landdetails" class="tab-pane fade in active mt-3">
+                    <div class="container-fluid">
+                        <div class="">
+                            <app-addland [modalRef]="viewLandModalRef" [landId]="selectedLandId" [corporateId]="null"
+                                [showSaveButton]="false" [showHeader]="false"></app-addland>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="linkedtaxpayers" class="tab-pane fade mt-3" style="min-height: 500px;">
+                    <div class="container-fluid">
+                        <div class="">
+                            <table class="table table-bordered table-condensed" *ngIf="linkedTaxpayerData; else content"
+                                datatable [dtOptions]="dtOptionsPopUp" width="100%">
+                                <thead>
+                                    <tr>
+                                        <th>S/N</th>
+                                        <th>Taxpayer ID</th>
+                                        <th>Taxpayer Name</th>
+                                        <th>Taxpayer Type</th>
+                                        <th>Taxpayer Role</th>
+                                        <th>View Taxpayer</th>
+                                        <th>Unlink Taxpayer</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let linkedTaxpayer of linkedTaxpayerData; index as i">
+                                        <th>{{i + 1}}</th>
+                                        <td>{{ linkedTaxpayer.taxpayer_id }}</td>
+                                        <td>{{ linkedTaxpayer.taxpayer_name }}</td>
+                                        <td>{{ linkedTaxpayer.taxpayer_type }}</td>
+                                        <td>{{ linkedTaxpayer.role_name }}</td>
+                                        <td>
+                                            <button class="btn btn-sm btn-outline-primary" (click)="viewTaxpayer(linkedTaxpayer, viewtaxpayermodal)">
+                                            <i class="nav-icon fas fa-eye"></i> View Taxpayer</button>
+                                        </td>
+                                        <td>
+                                            <button class="btn btn-sm btn-outline-primary" (click)="unlinkTaxpayer(linkedTaxpayer)">
+                                                <i class="nav-icon fas fa-unlink"></i> Unlink Taxpayer</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="modal-footer">
+
+                        </div>
+                    </div>
+                </div>
+
+                <div id="assessments" class="tab-pane fade mt-3" style="min-height: 500px;">
+                    <div class="container-fluid">
+                        <!-- <div>
+                            <div class="modal-header">
+                                <h4 class="modal-title" id="modal-basic-title">Direct Assessment</h4>
+
+                                <div *ngIf="managerRole || editorRole">
+                                    <button type="button" class="btn btn button-login float-right" style="margin: 10px 10px;"
+                                        (click)="addLand(addlandmodal)">Generate Assessment</button>
+                                </div>
+                            </div>
+
+                            <div class="modal-body">
+                                <table class="table table-bordered font-12" *ngIf="assessmentData; else content" datatable
+                                    [dtOptions]="dtOptionsPopUp" width="100%">
+                                    <thead>
+                                        <tr>
+                                            <th>S/N</th>
+                                            <th>Date Generated</th>
+                                            <th>Generated From</th>
+                                            <th>Invoice ID</th>
+                                            <th>Tax Year</th>
+                                            <th>Tax Month</th>
+                                            <th>Employees Count</th>
+                                            <th>Total Monthly Tax</th>
+                                            <th>Amount Paid</th>
+                                            <th>Balance</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor="let assessment of assessmentData; index as i">
+                                            <th>{{i + 1}}</th>
+                                            <td>{{ assessment.company_name == null ? 'N/A' : assessment.company_name }}</td>
+                                            <td>{{ assessment.employee_count == null ? 'N/A' : assessment.employee_count }}
+                                            </td>
+                                            <td>{{ assessment.industry_sector == null ? 'N/A' : assessment.industry_sector }}
+                                            </td>
+                                            <td>{{ assessment.taxpayer_id == null ? 'N/A' : assessment.taxpayer_id }}</td>
+                                            <td>{{ assessment.created_at == null ? 'N/A' : assessment.created_at | date: "dd MMM yyyy" }}
+                                            </td>
+                                            <td>{{ assessment.company_name == null ? 'N/A' : assessment.company_name }}</td>
+                                            <td>{{ assessment.employee_count == null ? 'N/A' : assessment.employee_count }}
+                                            </td>
+                                            <td>{{ assessment.industry_sector == null ? 'N/A' : assessment.industry_sector }}
+                                            </td>
+                                            <td>{{ assessment.taxpayer_id == null ? 'N/A' : assessment.taxpayer_id }}</td>
+                                            <td>{{ assessment.taxpayer_id == null ? 'N/A' : assessment.taxpayer_id }}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div> -->
+
+                        <div>
+                            <div class="modal-header">
+                                <h4 class="modal-title" id="modal-basic-title">With Holding Assessment</h4>
+
+                                <div *ngIf="managerRole || editorRole">
+                                    <button type="button" class="btn btn button-login float-right" style="margin: 10px 10px;">
+                                        Generate Assessment</button>
+                                </div>
+                            </div>
+
+                            <div class="modal-body">
+                                <table class="table table-bordered font-12" *ngIf="assessmentData; else content" datatable
+                                    [dtOptions]="dtOptionsPopUp" width="100%">
+                                    <thead>
+                                        <tr>
+                                            <th>S/N</th>
+                                            <th>Date Generated</th>
+                                            <th>Generated From</th>
+                                            <th>Invoice ID</th>
+                                            <th>Tax Year</th>
+                                            <th>Tax Month</th>
+                                            <th>Employees Count</th>
+                                            <th>Total Monthly Tax</th>
+                                            <th>Amount Paid</th>
+                                            <th>Balance</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor="let assessment of assessmentData; index as i">
+                                            <th>{{i + 1}}</th>
+                                            <td>{{ assessment.company_name == null ? 'N/A' : assessment.company_name }}</td>
+                                            <td>{{ assessment.employee_count == null ? 'N/A' : assessment.employee_count }}
+                                            </td>
+                                            <td>{{ assessment.industry_sector == null ? 'N/A' : assessment.industry_sector }}
+                                            </td>
+                                            <td>{{ assessment.taxpayer_id == null ? 'N/A' : assessment.taxpayer_id }}</td>
+                                            <td>{{ assessment.created_at == null ? 'N/A' : assessment.created_at | date: "dd MMM yyyy" }}
+                                            </td>
+                                            <td>{{ assessment.company_name == null ? 'N/A' : assessment.company_name }}</td>
+                                            <td>{{ assessment.employee_count == null ? 'N/A' : assessment.employee_count }}
+                                            </td>
+                                            <td>{{ assessment.industry_sector == null ? 'N/A' : assessment.industry_sector }}
+                                            </td>
+                                            <td>{{ assessment.taxpayer_id == null ? 'N/A' : assessment.taxpayer_id }}</td>
+                                            <td>{{ assessment.taxpayer_id == null ? 'N/A' : assessment.taxpayer_id }}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div>
+                            <div class="modal-header">
+                                <h4 class="modal-title" id="modal-basic-title">Business Premise Assessment</h4>
+
+                                <div *ngIf="managerRole || editorRole">
+                                    <button type="button" class="btn btn button-login float-right" style="margin: 10px 10px;">
+                                        Generate Assessment</button>
+                                </div>
+                            </div>
+
+                            <div class="modal-body">
+                                <table class="table table-bordered font-12" *ngIf="assessmentData; else content" datatable
+                                    [dtOptions]="dtOptionsPopUp" width="100%">
+                                    <thead>
+                                        <tr>
+                                            <th>S/N</th>
+                                            <th>Date Generated</th>
+                                            <th>Generated From</th>
+                                            <th>Invoice ID</th>
+                                            <th>Tax Year</th>
+                                            <th>Tax Month</th>
+                                            <th>Employees Count</th>
+                                            <th>Total Monthly Tax</th>
+                                            <th>Amount Paid</th>
+                                            <th>Balance</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor="let assessment of assessmentData; index as i">
+                                            <th>{{i + 1}}</th>
+                                            <td>{{ assessment.company_name == null ? 'N/A' : assessment.company_name }}</td>
+                                            <td>{{ assessment.employee_count == null ? 'N/A' : assessment.employee_count }}
+                                            </td>
+                                            <td>{{ assessment.industry_sector == null ? 'N/A' : assessment.industry_sector }}
+                                            </td>
+                                            <td>{{ assessment.taxpayer_id == null ? 'N/A' : assessment.taxpayer_id }}</td>
+                                            <td>{{ assessment.created_at == null ? 'N/A' : assessment.created_at | date: "dd MMM yyyy" }}
+                                            </td>
+                                            <td>{{ assessment.company_name == null ? 'N/A' : assessment.company_name }}</td>
+                                            <td>{{ assessment.employee_count == null ? 'N/A' : assessment.employee_count }}
+                                            </td>
+                                            <td>{{ assessment.industry_sector == null ? 'N/A' : assessment.industry_sector }}
+                                            </td>
+                                            <td>{{ assessment.taxpayer_id == null ? 'N/A' : assessment.taxpayer_id }}</td>
+                                            <td>{{ assessment.taxpayer_id == null ? 'N/A' : assessment.taxpayer_id }}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="form-row">
+                <div class="col-md-12">
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button type="button" class="btn btn-outline-dark button-login" (click)="modal.close('Save click')">Ok</button>
+    </div>
+</ng-template>
+
+<ng-template #viewtaxpayermodal let-modal>
+    <div *ngIf="corporateTaxpayer">
+        <app-addcorporate [modalRef]="viewTaxpayerModalRef" [corporateId]="selectedCorporateId" [showSaveButton]="false">
+        </app-addcorporate>
+    
+        <div class="modal-footer-1">
+            <div class="note-1 float-left"><strong>** Note:</strong> This field is required as either CAC Number or TIN
+                Number
+                or you can provide both to proceed further.</div>
+    
+            <button type="button" class="btn btn-outline-dark button-login float-right"
+                (click)="modal.close('Save click')">Ok</button>
+        </div>
+    </div>
+
+    <div *ngIf="individualTaxpayer">
+        <app-addindividual [modalRef]="viewTaxpayerModalRef" [individualId]="selectedIndividualId" [showSaveButton]="false">
+        </app-addindividual>
+    
+        <div class="modal-footer-1">
+            <div class="note-1 float-left">
+                <span>
+                    <strong>** Note:</strong> This field is required as either Phone Number or JBT-TIN Number or NIN Number or BVN Number
+                    or you can provide all to proceed further.
+                </span>
+            </div>
+    
+            <button type="button" class="btn btn-outline-dark button-login" (click)="modal.close('Save click')">Ok</button>
+        </div>
+    </div>
+   
+</ng-template>
+
+<ng-template #linktaxpayermodal let-modal>
+    <app-linktaxpayer [modalRef]="linkTaxpayerModalRef" [corporateId]="selectedCorporateId" [individualId]="selectedIndividualId"
+    [landId]="selectedLandId" [assetTypeId]="assetTypeId" (reloadLinkedTaxpayers)="getUpdatedLinkedTaxpayers($event)"></app-linktaxpayer>
+
+    <div class="modal-footer-1">
+        <div class="note-1 float-left">
+            <span>
+                <strong>** Note:</strong> Select 'Taxpayer Type' and 'Taxpayer Role' to search for Taxpayers.
+            </span>
+        </div>
+
+        <button type="button" class="btn btn-outline-dark button-login" (click)="modal.close('Save click')">Ok</button>
+    </div>
+</ng-template>

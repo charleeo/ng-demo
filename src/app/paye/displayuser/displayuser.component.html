@@ -1,0 +1,209 @@
+<div class="content-wrapper">
+  <!-- Content Header (Page header) -->
+  <div class="content-header">
+
+  </div>
+  <!-- /.content-header -->
+
+  <!-- Main content -->
+  <section class="content" data-select2-id="32">
+    <div class="container-fluid" data-select2-id="31">
+
+
+      <!-- SELECT2 EXAMPLE -->
+      <div class="card card-secondary">
+        <div class="card-header custome">
+          <h3 class="card-title">List of Corporate Tax Payers</h3>
+        </div>
+        <!-- /.card-header -->
+        <div class="card-body">
+
+          <div class="page-header">
+            <h3> </h3>
+          </div>
+          <div>
+            <div class="table-responsive">
+            <table class="table table-bordered table-condensed table-responsive-sm table-responsive-md table-responsive-lg table-responsive-xl " *ngIf="corporatesData; else content" datatable
+              [dtOptions]="dtOptions" width="100%">
+              <thead>
+                <tr>
+                  <th>S/N</th>
+                  <th>Company Name</th>
+                  <!-- <th>Name</th> -->
+                  <th>Email</th>
+                  <th>Phone</th>
+                  <th>Contact Address</th>
+                  <th *ngIf="showTaxOffice">Tax Office</th>
+                  <th>Tax Payer ID</th>
+                  <!-- <th>Role Name</th> -->
+                  <th>Created Date</th>
+                  <th>Details</th>
+                  <!-- <th *ngIf="managerRole">Status</th>
+                    <th *ngIf="managerRole">Action</th>
+                    <th *ngIf="managerRole">Delete</th> -->
+
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let mydata of corporatesData; index as i">
+                  <td>{{ i + 1 }}</td>
+                  <td>{{ mydata.company_name | titlecase}}</td>
+                  <td>{{ mydata.email }}</td>
+                  <td>{{ mydata.phone }}</td>
+                  <td>{{ mydata.contact_address }}</td>
+                  <td *ngIf="showTaxOffice">{{ mydata.tax_office.name | titlecase }}</td>
+                  <td>{{ mydata.taxpayer_id }}</td>
+                  <td>{{ mydata.created_at | date }}</td>
+
+                  <td style="width: 10%">
+                    <button class="btn btn-sm btn-outline-primary" (click)="viewCorporate(mymodal, mydata)"><i
+                        class="nav-icon fas fa-eye"></i> View
+                    </button>
+                  </td>
+                  <!-- <td>
+                      <p *ngIf="mydata.email != '' || mydata.email == null ; else notShow "> {{ mydata.email}} </p>
+                      <ng-template #notShow>NA</ng-template>
+                    </td> -->
+
+                  <!-- <td>
+                      <p *ngIf="mydata.role_id == 5">Manager</p>
+                      <p *ngIf="mydata.role_id == 6">Editor</p>
+                      <p *ngIf="mydata.role_id == 7">Viewer</p>
+                    </td> -->
+
+                  <!-- <td *ngIf="managerRole">
+                      <p *ngIf="mydata.active == 1"><button class="btn btn-outline-success" (click)="changeStatus(mydata.id, mydata.active)" >Active</button></p>
+                      <p *ngIf="mydata.active == 0"><button class="btn btn-outline-danger" (click)="changeStatus(mydata.id, mydata.active)">Inactive</button></p>                   
+                    </td> -->
+                  <!-- <td *ngIf="managerRole"><button [routerLink]="['/edit', mydata.id]" class="btn btn-outline-primary">Edit</button></td>
+                    <td *ngIf="managerRole"><button (click)="deleteUser(mydata.id)" class="btn btn-danger">Delete</button></td> -->
+
+                </tr>
+              </tbody>
+            </table>
+            </div>
+            <ng-template #content>
+              <p style="color: red;"> </p>
+            </ng-template>
+          </div>
+
+        </div>
+        <!-- /.card-body -->
+        <div class="card-footer">
+
+        </div>
+      </div>
+
+    </div><!-- /.container-fluid -->
+  </section>
+  <!-- /.content -->
+</div>
+
+<ng-template #mymodal let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Corporate Details</h4>
+    <!--<button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+              <span aria-hidden="true">&times;</span>
+            </button> -->
+  </div>
+
+  <div class="modal-body">
+    <div class="container">
+
+      <div class="form-row">
+        <div class="col-md-12">
+          <!-- <img src="assets/dist/img/login-user-img.png" class="rounded float-left" alt="User Image"
+                        style="height:90px; width: 130px;"> -->
+        </div>
+      </div>
+
+      <form [formGroup]="corporateForm">
+        <div class="form-row">
+          <div class="form-group col-md-6">
+            <label for="companyName">Company Name</label>
+            <input type="text" formControlName="companyName" class="form-control" [attr.disabled]="true"
+              [ngClass]="{ 'is-invalid': submitted &amp;&amp; corporateForm.controls.companyName.errors }" />
+          </div>
+
+          <div class="form-group col-md-6">
+            <label for="contactAddress">Contact Address</label>
+            <input type="text" formControlName="contactAddress" class="form-control" [attr.disabled]="true"
+              [ngClass]="{ 'is-invalid': submitted &amp;&amp; corporateForm.controls.contactAddress.errors }" />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group col-md-6">
+            <label for="taxPayerID">Tax Payer ID</label>
+            <input type="text" formControlName="taxPayerID" class="form-control" [attr.disabled]="true"
+              [ngClass]="{ 'is-invalid': submitted &amp;&amp; corporateForm.controls.taxPayerID.errors }" />
+          </div>
+
+          <div class="form-group col-md-6">
+            <label for="email">Email</label>
+            <input type="text" formControlName="email" class="form-control" [attr.disabled]="true"
+              [ngClass]="{ 'is-invalid': submitted &amp;&amp; corporateForm.controls.email.errors }" />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group col-md-6">
+            <label for="phoneNumber">Phone Number</label>
+            <input type="text" formControlName="phoneNumber" class="form-control" [attr.disabled]="true"
+              [ngClass]="{ 'is-invalid': submitted &amp;&amp; corporateForm.controls.phoneNumber.errors }" />
+          </div>
+
+          <div class="form-group col-md-6">
+            <label for="dateCreated">Date Created</label>
+            <input type="text" formControlName="dateCreated" class="form-control" [attr.disabled]="true"
+              [ngClass]="{ 'is-invalid': submitted &amp;&amp; corporateForm.controls.dateCreated.errors }" />
+          </div>
+        </div>
+
+      </form>
+
+      <div>
+        <table class="table table-bordered table-condensed" *ngIf="corporateUsersData; else content" datatable
+          [dtOptions]="dtOptions" width="100%">
+          <thead>
+            <tr>
+              <th>S/N</th>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Phone</th>
+              <th>Role Name</th>
+              <th>Created Date</th>
+              <!-- <th *ngIf="managerRole">Status</th>
+                      <th *ngIf="managerRole">Action</th>
+                      <th *ngIf="managerRole">Delete</th> -->
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let mydata of corporateUsersData ; index as i">
+              <td>{{ i + 1 }}</td>
+              <td>{{ mydata.name | titlecase}}</td>
+              <td>
+                {{ mydata.email != '' || mydata.email == null ? mydata.email :  "N/A" }}
+              </td>
+              <td>{{ mydata.phone }}</td>
+              <td>
+                <p> {{ getUserRole(mydata.role_id) }} </p>
+              </td>
+              <td>{{ mydata.created_at | date }}</td>
+
+              <!-- <td *ngIf="managerRole">
+                        <p *ngIf="mydata.active == 1"><button class="btn btn-outline-success" (click)="changeStatus(mydata.id, mydata.active)" >Active</button></p>
+                        <p *ngIf="mydata.active == 0"><button class="btn btn-outline-danger" (click)="changeStatus(mydata.id, mydata.active)">Inactive</button></p>
+                      </td> -->
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-dark button-login" (click)="modal.close('Save click')">Ok</button>
+  </div>
+</ng-template>

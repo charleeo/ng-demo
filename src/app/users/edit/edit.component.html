@@ -1,0 +1,113 @@
+<div class="content-wrapper">
+  <!-- Content Header (Page header) -->
+  <div class="content-header">
+
+  </div>
+  <!-- /.content-header -->
+
+  <!-- Main content -->
+  <section class="content" data-select2-id="32">
+    <div class="container-fluid" data-select2-id="31">
+      <flash-messages></flash-messages>
+      <!-- SELECT2 EXAMPLE -->
+      <div class="card card-secondary">
+        <div class="card-header custome">
+          <h3 class="card-title">Update User Record</h3>
+          <a [routerLink]="['/adminusers']" class="btn btn-sm role float-right">
+            <i class="fas fa-reply-all"></i> Back
+          </a>
+        </div>
+        <!-- /.card-header -->
+        <div class="card-body">
+          <form [formGroup]="editForm" (ngSubmit)="onSubmit(editForm.value)">
+            <div class="form-row">
+              <div class="form-group col-md-6">
+                <label for="Name">Name <sup
+                  class="ml-1 font-wegiht-bold text-danger">*</sup></label>
+
+                <input type="text" formControlName="name" class="form-control" [(ngModel)]="userRecord.name"
+                  [ngClass]="{ 'is-invalid': submitted &amp;&amp; editForm.controls.name.errors }" />
+                <div *ngIf="submitted &amp;&amp; editForm.controls.name.errors" class="text-danger">
+                  <div *ngIf="editForm.controls.name.errors.required">Name is required</div>
+                  <div *ngIf="editForm.controls.name.errors.pattern">Only Alphabets are accepted</div>
+                  <div *ngIf="editForm.controls.name.errors.maxlength">Name cannot be more than 45 characters long.
+                  </div>
+                </div>
+
+              </div>
+              <div class="form-group col-md-6">
+                <label for="inputPassword4">Email Address <sup
+                  class="ml-1 font-wegiht-bold text-danger">*</sup></label>
+                <input type="text" formControlName="email" class="form-control" [(ngModel)]="userRecord.email"
+                  [ngClass]="{ 'is-invalid': submitted &amp;&amp; editForm.controls.email.errors }" readonly />
+                <div *ngIf="submitted &amp;&amp; editForm.controls.email.errors" class="text-danger">
+                  <div *ngIf="editForm.controls.email.errors.required">Email is required</div>
+                  <div *ngIf="editForm.controls.email.errors.pattern">Email Address must be a valid email</div>
+                </div>
+
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group col-md-6">
+                <label for="role">Role <sup
+                  class="ml-1 font-wegiht-bold text-danger">*</sup></label>
+                <select class="form-control" id="role" formControlName="role" [(ngModel)]="userRecord.role_id"
+                  [ngClass]="{ 'is-invalid': submitted &amp;&amp; editForm.controls.role.errors }">
+                  <option value="">Select Role</option>
+                  <option *ngFor="let role of applicationRolesData" value="{{role.id}}">
+                    {{ role.display_name.replace('_', ' ') | titlecase }}
+                  </option>
+                </select>
+                <div *ngIf="submitted &amp;&amp; editForm.controls.role.errors" class="text-danger">
+                  <div *ngIf="editForm.controls.role.errors.required">Role is required</div>
+                </div>
+              </div>
+              <div class="form-group col-md-6">
+                <label for="phone">Phone Number <sup
+                  class="ml-1 font-wegiht-bold text-danger">*</sup></label>
+                <input type="text" formControlName="phone" class="form-control" [(ngModel)]="userRecord.phone"
+                  [ngClass]="{ 'is-invalid': submitted &amp;&amp; editForm.controls.phone.errors }" maxlength="11"/>
+                <div *ngIf="submitted &amp;&amp; editForm.controls.phone.errors" class="text-danger">
+                  <div *ngIf="editForm.controls.phone.errors.required">Phone Number is required</div>
+                  <div *ngIf="editForm.controls.phone.errors.pattern"> Only Valid Phone numbers are required</div>
+                  <div *ngIf="editForm.controls.phone.errors.minlength">Phone Number must be at least 11 characters long.</div>
+                  <div *ngIf="editForm.controls.phone.errors.maxlength">Phone Number must not exceed 11 characters long.</div>
+                </div>
+              </div>
+            </div>
+
+            <div *ngIf="showTaxOffice" class="form-row">
+              <div class="form-group col-md-6">
+                <label for="emailAddress1" class="input-label pull-left">Preferred Tax Office<sup
+                    class=" font-wegiht-bold text-danger">*</sup>
+                </label>
+                <select type="text" name="taxOfficeId" formControlName="taxOfficeId" id="taxOfficeId" class="form-control"
+                  [(ngModel)]="userRecord.tax_office_id"
+                  [ngClass]="{ 'is-invalid': submitted &amp;&amp; editForm.controls.taxOfficeId.errors }">
+                  <option value="">Select Tax Office</option>
+                  <option *ngFor="let taxTaxOffice of taxTaxOffices" [value]="taxTaxOffice.id">
+                    {{ taxTaxOffice.name }}
+                  </option>
+                </select>
+                <div *ngIf="submitted &amp;&amp; editForm.controls.taxOfficeId.errors" class="text-danger">
+                  <div *ngIf="editForm.controls.taxOfficeId.errors.required">Preferred Tax Office is
+                    required</div>
+                </div>
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn button-login ">Update Records</button>
+          </form>
+
+        </div>
+        <!-- /.card-body -->
+        <div class="card-footer">
+
+        </div>
+      </div>
+
+    </div><!-- /.container-fluid -->
+  </section>
+  <!-- /.content -->
+</div>

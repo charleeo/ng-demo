@@ -1,0 +1,189 @@
+<div class="content-wrapper">
+  <!-- Content Header (Page header) -->
+
+  <flash-messages></flash-messages>
+
+
+  <!-- /.content-header -->
+
+  <!-- Main content -->
+  <section class="content mt-4">
+    <div class="container-fluid">
+      <!-- Small boxes (Stat box) -->
+      <h4 class="font-weight-bolder mb-3">PAYE</h4>
+      <div class="row">
+        <div class="col-12 col-sm-6 col-md-4 col-lg-4">
+          <div class="info-box">
+            <span class="info-box-icon bg-info elevation-1 report-bg"><i class="fa fa-list-alt"></i></span>
+
+            <div class="info-box-content">
+              <span class="info-box-text color-dark-blue font-18">Monthly Assessments</span>
+              <a [routerLink]="['/assessmentreports']"><span class="info-box-number color-blue">More info</span></a>
+              <!-- <span class="info-box-number">{{apidata.assessmentCount}}</span> -->
+            </div>
+
+            <!-- /.info-box-content -->
+          </div>
+          <!-- /.info-box -->
+        </div>
+        <!-- /.col -->
+        <div class="col-12 col-sm-6 col-md-4 col-lg-4">
+          <div class="info-box mb-3">
+            <span class="info-box-icon bg-danger elevation-1 report-bg"><i class="nav-icon fab fa-red-river"></i></span>
+
+            <div class="info-box-content">
+              <span class="info-box-text color-dark-blue font-18">Reassessments</span>
+              <a [routerLink]="['/reassessmentreports']"><span class="info-box-number color-blue">More info</span></a>
+            </div>
+            <!-- /.info-box-content -->
+          </div>
+          <!-- /.info-box -->
+        </div>
+        <!-- /.col -->
+
+        <!-- fix for small devices only -->
+        <!--<div class="clearfix hidden-md-up"></div>-->
+
+        <div class="col-12 col-sm-6 col-md-4 col-lg-4">
+          <div class="info-box mb-3">
+            <span class="info-box-icon bg-success elevation-1 report-bg"><i class="nav-icon fas fa-columns"></i></span>
+
+            <div class="info-box-content">
+              <span class="info-box-text color-dark-blue font-18">Annual Assessments</span>
+              <a [routerLink]="['/annualassessmentreports']"><span class="info-box-number color-blue">More
+                  info</span></a>
+            </div>
+            <!-- /.info-box-content -->
+          </div>
+          <!-- /.info-box -->
+        </div>
+        <!-- /.col -->
+        <div class="col-12 col-sm-6 col-md-4 col-lg-4">
+          <div class="info-box mb-3">
+            <span class="info-box-icon bg-warning elevation-1 report-bg"><i class="fas fa-money-check"
+                style="color: #fff;"></i></span>
+
+            <div class="info-box-content">
+              <span class="info-box-text color-dark-blue font-18">Payment History</span>
+              <a [routerLink]="['/paymenthistory']" (click)="redirectToDirectAssessment()"><span
+                  class="info-box-number color-blue">More info</span></a>
+              <!-- <span class="info-box-number">{{employeesCount}}</span> -->
+            </div>
+            <!-- /.info-box-content -->
+          </div>
+          <!-- /.info-box -->
+        </div>
+
+        <div class="col-12 col-sm-6 col-md-4 col-lg-4">
+          <div class="info-box">
+            <span class="info-box-icon bg-info elevation-1 report-bg"><i class="pr-2 far fa-chart-bar"></i></span>
+
+            <div class="info-box-content">
+              <span class="info-box-text color-dark-blue font-18">Projections</span>
+              <a [routerLink]="['/projectionreports']"><span class="info-box-number color-blue">More info</span></a>
+              <!-- <span class="info-box-number">{{apidata.assessmentCount}}</span> -->
+            </div>
+
+            <!-- /.info-box-content -->
+          </div>
+          <!-- /.info-box -->
+        </div>
+
+        <div class="col-12 col-sm-6 col-md-4 col-lg-4">
+          <div class="info-box">
+            <span class="info-box-icon bg-info elevation-1 report-bg"><i class="pr-2 far fa-chart-bar"></i></span>
+
+            <div class="info-box-content">
+              <span class="info-box-text color-dark-blue font-18">Corporate Tax Payers</span>
+              <a [routerLink]="['/corporatereport']"><span class="info-box-number color-blue">More info</span></a>
+              <!-- <span class="info-box-number">{{apidata.assessmentCount}}</span> -->
+            </div>
+
+            <!-- /.info-box-content -->
+          </div>
+          <!-- /.info-box -->
+        </div>
+
+        <!-- /.col -->
+      </div>
+
+      <h4 class="font-weight-bolder mt-4 mb-3">DIRECT ASSESSMENT</h4>
+
+      <div class="row">
+        <div class="col-12 col-sm-6 col-md-4 col-lg-4">
+          <div class="info-box">
+            <span class="info-box-icon bg-info elevation-1 report-bg"><i class="pr-2 far fa-user"></i></span>
+
+            <div class="info-box-content">
+              <span class="info-box-text color-dark-blue font-18">Individual Tax Payers</span>
+              <a [routerLink]="['/individualtaxpayers']"><span class="info-box-number color-blue">More info</span></a>
+              <!-- <span class="info-box-number">{{apidata.assessmentCount}}</span> -->
+            </div>
+
+            <!-- /.info-box-content -->
+          </div>
+          <!-- /.info-box -->
+        </div>
+
+        <div class="col-12 col-sm-6 col-md-4 col-lg-4">
+          <div class="info-box">
+            <span class="info-box-icon bg-info elevation-1 report-bg"><i class="pr-2 far fa-chart-bar"></i></span>
+
+            <div class="info-box-content">
+              <span class="info-box-text color-dark-blue font-18">Annual Assessments</span>
+              <a [routerLink]="['/annualassessment']"><span class="info-box-number color-blue">More info</span></a>
+              <!-- <span class="info-box-number">{{apidata.assessmentCount}}</span> -->
+            </div>
+
+            <!-- /.info-box-content -->
+          </div>
+          <!-- /.info-box -->
+        </div>
+
+        <div class="col-12 col-sm-6 col-md-4 col-lg-4">
+          <div class="info-box">
+            <span class="info-box-icon bg-info elevation-1 report-bg"><i class="pr-2 fas fa-money-check"></i></span>
+
+            <div class="info-box-content">
+              <span class="info-box-text color-dark-blue font-18">Payment History</span>
+              <a [routerLink]="['/da-paymenthistory']"><span class="info-box-number color-blue">More info</span></a>
+              <!-- <span class="info-box-number">{{apidata.assessmentCount}}</span> -->
+            </div>
+
+            <!-- /.info-box-content -->
+          </div>
+          <!-- /.info-box -->
+        </div>
+      </div>
+
+      <h4 class="font-weight-bolder mt-4 mb-3">WITHHOLDING TAX</h4>
+
+      <div class="row">
+        <div class="col-12 col-sm-6 col-md-4 col-lg-4">
+          <div class="info-box">
+            <span class="info-box-icon bg-info elevation-1 report-bg"><i class="pr-2 far fa-chart-bar"></i></span>
+
+            <div class="info-box-content">
+              <span class="info-box-text color-dark-blue font-18">Generated Assessments</span>
+              <a [routerLink]="['/whtassessmentsreport']"><span class="info-box-number color-blue">More info</span></a>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-12 col-sm-6 col-md-4 col-lg-4">
+          <div class="info-box">
+            <span class="info-box-icon bg-info elevation-1 report-bg"><i class="pr-2 fas fa-money-check"></i></span>
+
+            <div class="info-box-content">
+              <span class="info-box-text color-dark-blue font-18">Payment History</span>
+              <a [routerLink]="['/whtpaymenthistory']"><span class="info-box-number color-blue">More info</span></a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- /.row (main row) -->
+    </div><!-- /.container-fluid -->
+  </section>
+  <!-- /.content -->
+</div>

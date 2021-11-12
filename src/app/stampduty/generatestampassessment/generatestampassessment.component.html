@@ -1,0 +1,286 @@
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+
+    </div>
+    <!-- /.content-header -->
+
+    <!-- Main content -->
+    <section class="content" data-select2-id="32">
+        <div class="container-fluid" data-select2-id="31">
+            <flash-messages></flash-messages>
+            <!-- SELECT2 EXAMPLE -->
+            <div class="card card-secondary">
+                <div class="card-header custome">
+                    <h3 class="card-title">Generate Assessment</h3>
+                </div>
+                <!-- /.card-header -->
+
+                <div class="card-body">
+                    <h4 class="modal-title" id="modal-basic-title">Generate Stamp Duty Assessment</h4>
+
+                    <div class="modal-body">
+                        <form [formGroup]="computeAssesmentForm">
+                            <div class="form-row">
+                                <div class="form-group col-md-4">
+                                    <label for="taxpayerId">Taxpayer ID <sup style="font-weight: 800;"
+                                            class="font-wegiht-bold text-danger">*</sup>
+                                    </label>
+                                    <input type="text" formControlName="taxpayerId" class="form-control"
+                                        placeholder="Taxpayer ID" maxlength="11"
+                                        [ngClass]="{ 'is-invalid': submitted &amp;&amp; computeAssesmentForm.controls.taxpayerId.errors }" />
+                                    <div *ngIf="submitted &amp;&amp; computeAssesmentForm.controls.taxpayerId.errors"
+                                        class="text-danger">
+                                        <div *ngIf="computeAssesmentForm.controls.taxpayerId.errors.required">
+                                            Taxpayer ID is required</div>
+                                        <div *ngIf="computeAssesmentForm.controls.taxpayerId.errors.pattern">Only
+                                            Alphanumeric Characters
+                                            allowed
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group col-md-4">
+                                    <label for="taxpayerType">Taxpayer Type
+                                        <sup style="font-weight: 800;" class="font-wegiht-bold text-danger">*</sup>
+                                    </label>
+                                    <select type="text" name="taxpayerType" formControlName="taxpayerType"
+                                        id="taxpayerType" class="form-control" (change)="taxpayerTypeChanged($event.target.value)"
+                                        [ngClass]="{ 'is-invalid': submitted &amp;&amp; computeAssesmentForm.controls.taxpayerType.errors }">
+                                        <option value="">Select Taxpayer Type</option>
+                                        <option *ngFor="let taxpayer of taxpayerTypesData" [value]="taxpayer">
+                                            {{ taxpayer }}
+                                        </option>
+                                    </select>
+                                    <div *ngIf="submitted &amp;&amp; computeAssesmentForm.controls.taxpayerType.errors"
+                                        class="text-danger">
+                                        <div *ngIf="computeAssesmentForm.controls.taxpayerType.errors.required">
+                                            Taxpayer Type is required
+                                        </div>
+                                    </div>
+                                    <div *ngIf="taxpayerMismatch" class="text-danger">
+                                        Taxpayer ID & Type must match
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </form>
+                    </div>
+
+                    <div class="modal-body">
+                        <table class="table table-bordered table-condensed" *ngIf="instrumentTypesData; else content"
+                            datatable [dtOptions]="dtOptions" width="100%">
+                            <thead>
+                                <tr>
+                                    <th>S/N</th>
+                                    <th>Instrument Type</th>
+                                    <th>Rate Type</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let mydata of instrumentTypesData; index as i">
+                                    <td>{{ i + 1 }}</td>
+                                    <td>{{ mydata.instrument_type }}</td>
+                                    <td>{{ mydata.rate_type }}</td>
+                                    <td>
+                                        <input type="checkbox" id="{{'instrumentTypeCheck' + mydata.id}}"
+                                            (click)="onSelectedInstrumentType(mydata)" value="{{mydata.id}}">
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <ng-template #content>
+                            <p style="color: red;" class="text-center"> No content Available </p>
+                        </ng-template>
+                    </div>
+
+                </div>
+                <!-- /.card-body -->
+
+                <div class="card-footer">
+                    <button type="button" class="btn btn button-login" (click)="onSubmitComputeAssessment(generateAssessmentModal)" [disabled]="!isInstrumentTypeSelected">
+                        <i class="fas fa-plus-square"></i> Compute Assessment</button>
+                </div>
+            </div>
+
+        </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+</div>
+
+<ng-template #generateAssessmentModal let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">Generate Assessment for {{ taxpayerData?.company_name }}</h4>
+    </div>
+
+    <div class="modal-body">
+        <div class="container">
+            <div class="form-row">
+                <div class="col-md-12">
+                </div>
+            </div>
+
+            <form [formGroup]="generateAssesmentForm"
+                (ngSubmit)="onSubmitGenerateAssessment(generateAssesmentForm.value)">
+                <div formArrayName="instrumentTypes"
+                    *ngFor="let instrumentTypeForm of generateAssesmentForm.get('instrumentTypes')['controls']; let i = index;">
+                    <div [formGroupName]="i"
+                        style="border-bottom: 1px solid #ced4da; margin-bottom: 15px; padding-top: 5px;">
+                        <div class="form-row">
+                            <div class="form-group col-md-3">
+                                <label [attr.for]="'instrumentType' + i">Instrument Type
+                                    <!-- <sup style="font-weight: 800;"
+                                        class="ml-1 font-wegiht-bold text-danger">*</sup> -->
+                                </label>
+                                <input type="text" formControlName="instrumentType" class="form-control"
+                                    placeholder="Instrument Type" [id]="'instrumentType' + i" [attr.disabled]="true"
+                                    [ngClass]="{ 'is-invalid': submitted &amp;&amp; instrumentTypeForm.controls.instrumentType.errors }" />
+                                <div *ngIf="submitted &amp;&amp; instrumentTypeForm.controls.instrumentType.errors"
+                                    class="text-danger">
+                                    <!-- <div *ngIf="addTransactionForm.controls.instrumentType.errors.required">
+                                        Collector's ID is required
+                                    </div>
+                                    <div *ngIf="addTransactionForm.controls.instrumentType.errors.pattern">Only
+                                        Alphanumeric Characters
+                                        allowed
+                                    </div> -->
+                                </div>
+                            </div>
+
+                            <div class="form-group col-md-3">
+                                <label [attr.for]="'rateType' + i">Rate Type
+                                    <!-- <sup style="font-weight: 800;"
+                                        class="ml-1 font-wegiht-bold text-danger">*</sup> -->
+                                </label>
+                                <input type="text" formControlName="rateType" class="form-control"
+                                    placeholder="Rate Type" [id]="'rateType' + i" [attr.disabled]="true"
+                                    [ngClass]="{ 'is-invalid': submitted &amp;&amp; instrumentTypeForm.controls.rateType.errors }" />
+                                <div *ngIf="submitted &amp;&amp; instrumentTypeForm.controls.rateType.errors"
+                                    class="text-danger">
+                                    <!-- <div *ngIf="addTransactionForm.controls.collectorId.errors.required">
+                                        Collector's ID is required
+                                    </div>
+                                    <div *ngIf="addTransactionForm.controls.collectorId.errors.pattern">Only
+                                        Alphanumeric Characters
+                                        allowed
+                                    </div> -->
+                                </div>
+                            </div>
+
+                            <div class="form-group col-md-3">
+                                <label [attr.for]="'rate' + i">Rate
+                                    <!-- <sup style="font-weight: 800;"
+                                        class="ml-1 font-wegiht-bold text-danger">*</sup> -->
+                                </label>
+                                <input type="text" formControlName="rate" class="form-control" placeholder="Rate Type"
+                                    [id]="'rate' + i" [attr.disabled]="true"
+                                    [ngClass]="{ 'is-invalid': submitted &amp;&amp; instrumentTypeForm.controls.rate.errors }" />
+                                <div *ngIf="submitted &amp;&amp; instrumentTypeForm.controls.rate.errors"
+                                    class="text-danger">
+                                    <!-- <div *ngIf="instrumentTypeForm.controls.rate.errors.required">
+                                        Rate is required
+                                    </div> -->
+                                </div>
+                            </div>
+
+                            <div class="form-group col-md-3">
+                                <label [attr.for]="'extraStampingCopies' + i">Extra Stamping Copies<sup style="font-weight: 800;" 
+                                    class="font-wegiht-bold text-danger">*</sup>
+                                </label>
+                                <input type="text" formControlName="extraStampingCopies" class="form-control" placeholder="Extra Stamping Copies"
+                                    [id]="'extraStampingCopies' + i" maxlength="3"
+                                    (keyup)="calculateAmountAssessed(i, instrumentTypeForm.get('instrumentTypeDbId').value)"
+                                    [ngClass]="{ 'is-invalid': submitted &amp;&amp; instrumentTypeForm.controls.extraStampingCopies.errors }" />
+                                <div *ngIf="submitted &amp;&amp; instrumentTypeForm.controls.extraStampingCopies.errors" class="text-danger">
+                                    <div *ngIf="instrumentTypeForm.controls.extraStampingCopies.errors.required">
+                                        Extra copy rate is required, but can be 0.
+                                    </div>
+                                    <div *ngIf="instrumentTypeForm.controls.extraStampingCopies.errors.pattern">
+                                        Extra copy rate can only be numbers.
+                                    </div>
+                                </div>
+                                <div class="text-danger">
+                                    <span><i>Extra copy rate is ₦{{ instrumentTypeForm.get('extraCopyRate').value }}</i></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div *ngIf="instrumentTypeForm.get('rateType').value !== 'Fixed'"
+                                class="form-group col-md-3">
+                                <label [attr.for]="'taxBaseAmount' + i">Tax Base Amount<sup style="font-weight: 800;"
+                                        class="font-wegiht-bold text-danger">*</sup>
+                                </label>
+                                <input type="text" formControlName="taxBaseAmount" class="form-control"
+                                    placeholder="Tax Base Amount" [id]="'taxBaseAmount' + i"
+                                    (keyup)="calculateAmountAssessed(i, instrumentTypeForm.get('instrumentTypeDbId').value)"
+                                    [ngClass]="{ 'is-invalid': submitted &amp;&amp; instrumentTypeForm.controls.taxBaseAmount.errors }" />
+                                <div *ngIf="submitted &amp;&amp; instrumentTypeForm.controls.taxBaseAmount.errors" class="text-danger">
+                                    <div *ngIf="instrumentTypeForm.controls.taxBaseAmount.errors.required">
+                                        Tax Base Amount is required
+                                    </div>
+                                    <div *ngIf="instrumentTypeForm.controls.taxBaseAmount.errors.pattern">
+                                        Tax Base Amount can only be numbers with 2 decimal place.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group col-md-3">
+                                <label [attr.for]="'amountAssessed' + i">Amount Assessed
+                                    <!-- <sup style="font-weight: 800;"
+                                        class="ml-1 font-wegiht-bold text-danger">*</sup> -->
+                                </label>
+                                <input type="text" formControlName="amountAssessed" class="form-control"
+                                    placeholder="Amount Assessed" [id]="'amountAssessed' + i" [attr.disabled]="true"
+                                    [ngClass]="{ 'is-invalid': submitted &amp;&amp; instrumentTypeForm.controls.amountAssessed.errors }" />
+                                <div *ngIf="submitted &amp;&amp; instrumentTypeForm.controls.amountAssessed.errors"
+                                    class="text-danger">
+                                    <!-- <div *ngIf="instrumentTypeForm.controls.amountAssessed.errors.required">
+                                        Amount Assessed Copies is required
+                                    </div> -->
+                                </div>
+                            </div>
+
+                            <div hidden class="form-group col-md-3">
+                                <label [attr.for]="'extraCopyRate' + i">Extra Copy Rate
+                                    <!-- <sup style="font-weight: 800;"
+                                        class="ml-1 font-wegiht-bold text-danger">*</sup> -->
+                                </label>
+                                <input type="text" formControlName="extraCopyRate" class="form-control"
+                                    placeholder="Extra Copy Rate" [id]="'extraCopyRate' + i" [attr.disabled]="true"
+                                    [ngClass]="{ 'is-invalid': submitted &amp;&amp; instrumentTypeForm.controls.extraCopyRate.errors }" />
+
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div>
+                    <!-- <div class="form-row"> -->
+                    <div class="form-group row" style="margin-top: 40px;">
+                        <label for="totalAmountAssessed" class="col-sm-3 col-form-label">
+                            <b>Total Amount Assessed</b>
+                        </label>
+                        <div class="col-sm-3">
+                            <input type="text" formControlName="totalAmountAssessed" class="form-control"
+                                placeholder="Total Amount Assessed" id="totalAmountAssessed" [attr.disabled]="true"
+                                [ngClass]="{ 'is-invalid': submitted &amp;&amp; generateAssesmentForm.controls.totalAmountAssessed.errors }" />
+                        </div>
+                    </div>
+                    <!-- </div> -->
+                </div>
+
+                <button type="submit" class="btn btn button-login">
+                    <i class="fas fa-plus-square"></i> Generate Assessment</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button type="button" class="btn btn-outline-dark button-login" (click)="modal.close('Save click')">Ok</button>
+    </div>
+</ng-template>

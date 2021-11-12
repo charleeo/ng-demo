@@ -1,0 +1,68 @@
+<div class="login-page">
+    <div class="login-box">
+        <div class="login-logo">
+          <img src="assets/dist/img/login-logo.png" alt="myimage"> 
+        </div>
+        <!-- /.login-logo -->
+        <div class="card">
+          <div class="card-body login-card-body">
+            <img src="assets/dist/img/login-user-img.png" alt="myimage"> 
+            
+            <!--<div class="alert alert-danger" role="alert" *ngIf="iserror==1" >
+                {{errormsg}}
+                
+            </div> -->
+            <flash-messages></flash-messages>
+    
+            
+            
+            <p class="login-box-msg">Welcome Administrator</p>
+            <form [formGroup]="loginForm" (ngSubmit)="onSubmit(loginForm.value)">
+              <div class="input-group mb-3">
+                <input type="text" class="form-control" placeholder="Please Enter 4 Digit OTP" formControlName="otp" [ngClass]="{ 'is-invalid': submitted &amp;&amp; loginForm.controls.otp.errors }">
+                <div class="input-group-append">
+                  <div class="input-group-text">
+                    <span class="fas fa-envelope"></span>
+                  </div>
+                </div>
+              </div>
+              <div *ngIf="submitted &amp;&amp; loginForm.controls.otp.errors" class="text-danger validation-error">
+                <div *ngIf="loginForm.controls.otp.errors.required">OTP is required</div>
+                <div *ngIf="loginForm.controls.otp.errors.minlength">OTP must be 4 digit long.</div>
+                <div *ngIf="loginForm.controls.otp.errors.maxlength">OTP must be 4 digit long.</div>
+                <div *ngIf="loginForm.controls.otp.errors.pattern">OTP must be numaric.</div>
+              </div>  
+    
+              <div class="input-group mb-3">
+                
+                <re-captcha  (resolved)="resolved($event)" siteKey="6Lfctt0SAAAAAPTLFH7OidYUERHNVhniLohMPL0J"></re-captcha>
+                
+              </div>
+              <div *ngIf="submitted" class="text-danger validation-error" id="captchaError">
+                  
+              </div> 
+    
+              
+    
+    
+              <div class="social-auth-links text-center mb-3">
+                <button class="btn btn-block btn button-login" id='mycaptcha'>
+                  Verify OTP
+                </button>
+               
+              </div>
+            </form>
+    
+            <div class="login-remeber">
+                  <a [routerLink]="['/login']" style="margin-left: 90px">Back To Login</a>
+            </div>
+        
+          </div>
+          
+          <!-- /.login-card-body -->
+        </div>
+      </div>
+     
+      </div>
+    
+    

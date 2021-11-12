@@ -1,0 +1,351 @@
+<nav class="main-header navbar navbar-expand navbar-white navbar-light" style="margin-left:0px;padding: 0px 0px 0px 18px;">
+  <a [routerLink]="['/home']"><img src="assets/dist/img/logo-header.png" height="50px"></a>
+  <div class="ml-auto color-white">
+
+    <a [routerLink]="['/home']" >
+      <i class="fas fa-home"></i> Home
+    </a>
+
+    <a [routerLink]="['/login']" >
+      <i class="fas fa-sign-in-alt"></i> Sign In
+    </a>
+
+    <a [routerLink]="['/faq']">
+      <i class="far fa-comments"></i> FAQ's
+    </a>
+  </div>
+</nav>
+
+
+<div class="row  m-0">
+
+  <div class="col-sm-4 left-side p-0 side-center">
+
+    <div class="mx-auto">
+      <img src="assets/dist/img/1.jpg" class="mx-auto img-fluid" alt="" height="250px" *ngIf="showValidateCacForm">
+      <img src="assets/dist/img/2.jpg" class="mx-auto img-fluid" alt="" height="250px" *ngIf="showRegisterForm">
+    </div>
+
+</div>
+
+
+
+  <div class="col-sm-8">
+
+
+
+
+
+<div class="login-page">
+  <div class="login-box"  [style.max-width]="showValidateCacForm ? '344px' : 'none'">
+
+     <div class="login-logo">
+      <!--<img src="assets/dist/img/login-logo.png" alt="myimage"> -->
+    </div>
+
+    <!-- /.login-logo -->
+
+    <div class="card" [style.margin-top]="showValidateCacForm ? '85px' : '80px'" >
+      <div class="card-body">
+        <div class="d-flex justify-content-center">
+
+          <img src="assets/dist/img/login-user-img.png" alt="myimage">
+        </div>
+
+        <!--<div class="alert alert-danger" role="alert" *ngIf="iserror==1" >
+              {{errormsg}}
+
+          </div> -->
+        <flash-messages></flash-messages>
+
+        <!-- validate form -->
+        <div class="validate-form" *ngIf="showValidateCacForm">
+          <p class="login-box-msg bold-black">Create an account</p>
+
+          <form [formGroup]="validateCacForm" (ngSubmit)="onvalidateCacSubmit(validateCacForm.value)"
+            class="text-center pl-2 pr-2">
+            <div class="">
+              <div class="taxpayer row pb-3">
+                <label for="tax-type" class="input-label pull-left">Taxpayer Type</label>
+                <div class="inputWithIcon input-group">
+                  <select type="text" name="taxTypeId" formControlName="taxTypeId" id="taxTypeId" placeholder="Tax Type"
+                    (change)="taxTypeChanged($event.target.value)" class="form-control"
+                    [ngClass]="{ 'is-invalid': submitted &amp;&amp; validateCacForm.controls.taxTypeId.errors }">
+                    <option value="">Select Taxpayer Type</option>
+                    <option *ngFor="let taxPayerType of taxPayerTypes" [value]="taxPayerType.id">
+                      {{ taxPayerType.name }}
+                    </option>
+                  </select>
+                </div>
+              </div>
+              <div *ngIf="submitted &amp;&amp; validateCacForm.controls.taxTypeId.errors" class="text-danger">
+                <div *ngIf="validateCacForm.controls.taxTypeId.errors.required">Taxpayer type is required</div>
+              </div>
+              <div class=" row">
+                <label for="cacNumber" class="input-label pull-left">CAC Registration Number </label>
+                <div class="input-group inputWithIcon mb-2">
+                  <!-- <input type="text" placeholder=""> -->
+                  <input type="text" formControlName="cacRegNumber" class="form-control" id="cacRegNumber" placeholder="Enter CAC No. Ex: EX123456"
+                   maxlength="8" [ngClass]="{ 'is-invalid': submitted &amp;&amp; validateCacForm.controls.cacRegNumber.errors }" />
+                  <div class="input-group-append">
+                    <div class="input-group-text">
+                      <span class="fa fa-list fa-lg fa-fw"></span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div *ngIf="submitted &amp;&amp; validateCacForm.controls.cacRegNumber.errors" class="text-danger">
+                <div *ngIf="validateCacForm.controls.cacRegNumber.errors.required">CAC number is required</div>
+                <div *ngIf="validateCacForm.controls.cacRegNumber.errors.maxlength">CAC number can not exceed 8 characters</div>
+                <div *ngIf="validateCacForm.controls.cacRegNumber.errors.pattern">Valid CAC number required</div>
+              </div>
+
+            </div>
+
+            <!-- Sign up button -->
+            <div class="social-auth-links text-center mb-2">
+              <button class="btn btn-block btn button-login">
+                Proceed
+              </button>
+            </div>
+
+
+          </form>
+
+          <div class="login-remeber text-center">
+            <a [routerLink]="['/login']" style="color: #0D47A1;">Already Registered ?  Sign In</a>
+          </div>
+
+
+        </div>
+        <!-- End of validate form-->
+
+        <!-- sign-up form-->
+        <div class="signupForm" *ngIf="showRegisterForm">
+          <p class="login-box-msg bold-black pull-left">Please fill the form given below</p>
+          <form [formGroup]="registerForm" (ngSubmit)="onRegisterSubmit(registerForm.value)"
+            class=" pl-4 pr-4 pt-2 pb-3">
+            <div class=" ">
+              <div class="row mb-2  ">
+                <div class="col-md-6 pr-3">
+                    <label for="companyName" class="input-label pull-left">Company Name<sup
+                        class=" font-wegiht-bold text-danger">*</sup></label>
+                    <div class=" inputWithIcon">
+                      <!-- <input type="text" placeholder=""> -->
+                      <input type="text" formControlName="companyName" class="form-control" id="companyName"
+                        [ngClass]="{ 'is-invalid': submitted &amp;&amp; registerForm.controls.companyName.errors }" />
+
+                        <div *ngIf="submitted &amp;&amp; registerForm.controls.companyName.errors" class="text-danger">
+                          <div *ngIf="registerForm.controls.companyName.errors.required">Company name is required</div>
+                          <div *ngIf="registerForm.controls.companyName.errors.pattern">Only Alphanumeric Characters allowed</div>
+                          <div *ngIf="registerForm.controls.companyName.errors.maxlength">Company name can not exceed 60 characters</div>
+                        </div>
+                    </div>
+                  </div>
+
+                <div class="col-md-6">
+                    <label for="tin" class="input-label pull-left">TIN<sup
+                        class="  font-wegiht-bold text-danger">*</sup></label>
+                    <div class=" inputWithIcon">
+                      <!-- <input type="text" placeholder=""> -->
+                      <input type="text" formControlName="tin" class="form-control" id="tin"
+                        [ngClass]="{ 'is-invalid': submitted &amp;&amp; registerForm.controls.tin.errors }" />
+                        <div *ngIf="submitted &amp;&amp; registerForm.controls.tin.errors" class="text-danger">
+                          <div *ngIf="registerForm.controls.tin.errors.required">TIN is required</div>
+                          <div *ngIf="registerForm.controls.tin.errors.maxlength">TIN can not exceed 14 characters</div>
+                        </div>
+                    </div>
+                  </div>
+
+
+              </div>
+
+              <div class="row mb-2 ">
+                <div class="col-md-6 pr-3">
+                    <label for="Phone1" class="input-label pull-left">Phone 1<sup
+                        class=" font-wegiht-bold text-danger">*</sup></label>
+                    <div class="inputWithIcon">
+                      <!-- <input type="text" placeholder=""> -->
+                      <input type="text" formControlName="phone" class="form-control" id="phone" maxlength="11"
+                        [ngClass]="{ 'is-invalid': submitted &amp;&amp; registerForm.controls.phone.errors }" />
+                        <div *ngIf="submitted &amp;&amp; registerForm.controls.phone.errors" class="text-danger">
+                          <div *ngIf="registerForm.controls.phone.errors.required">Phone No is required</div>
+                          <div *ngIf="registerForm.controls.phone.errors.maxlength">Phone No must be 11 Digit Long.</div>
+                          <div *ngIf="registerForm.controls.phone.errors.minlength">Phone No must be 11 Digit Long.</div>
+                          <div *ngIf="registerForm.controls.phone.errors.pattern">Phone must be Number Only</div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="col-md-6  ">
+                    <label for="phone2" class="input-label pull-left">Phone 2<sup
+                        class=" font-wegiht-bold text-danger"></sup></label>
+                    <div class=" inputWithIcon">
+                      <!-- <input type="text" placeholder=""> -->
+                      <input type="text" formControlName="phone2" class="form-control" id="phone2" maxlength="11"
+                        [ngClass]="{ 'is-invalid': submitted &amp;&amp; registerForm.controls.phone2.errors }" />
+                        <div *ngIf="submitted &amp;&amp; registerForm.controls.phone2.errors" class="text-danger">
+                          <div *ngIf="registerForm.controls.phone2.errors.maxlength">Phone No must be 10 Digit Long.</div>
+                          <div *ngIf="registerForm.controls.phone2.errors.minlength">Phone No must be 10 Digit Long.</div>
+                          <div *ngIf="registerForm.controls.phone2.errors.pattern">Phone must be Number Only</div>
+                        </div>
+                    </div>
+
+                </div>
+              </div>
+
+              <div class="row mb-2 ">
+                <div class="col-md-6 pr-3">
+                    <label for="emailAddress1" class="input-label pull-left">Email Address 1<sup
+                        class=" font-wegiht-bold text-danger">*</sup></label>
+                    <div class=" inputWithIcon">
+                      <!-- <input type="text" placeholder=""> -->
+                      <input type="text" formControlName="emailAddress" class="form-control" id="emailAddress"
+                        [ngClass]="{ 'is-invalid': submitted &amp;&amp; registerForm.controls.emailAddress.errors }" />
+                        <div *ngIf="submitted &amp;&amp; registerForm.controls.emailAddress.errors" class="text-danger">
+                        <div *ngIf="registerForm.controls.emailAddress.errors.required">Email is required</div>
+                        <div *ngIf="registerForm.controls.emailAddress.errors.email">Provide valid Email address</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 ">
+                    <label for="emailAddress2" class="input-label pull-left">Email Address 2<sup
+                        class=" font-wegiht-bold text-danger"></sup></label>
+                    <div class=" inputWithIcon">
+                      <!-- <input type="text" placeholder=""> -->
+                      <input type="text" formControlName="emailAddress2" class="form-control" id="emailAddress2"
+                        [ngClass]="{ 'is-invalid': submitted &amp;&amp; registerForm.controls.emailAddress2.errors }" />
+                        <div *ngIf="submitted &amp;&amp; registerForm.controls.emailAddress2.errors" class="text-danger">
+                          <div *ngIf="registerForm.controls.emailAddress2.errors.email">Provide valid Email address</div>
+                        </div>
+                    </div>
+                  </div>
+
+              </div>
+
+               <div class="row mb-2 ">
+                <div class="col-md-6 pr-3">
+                    <label for="emailAddress1" class="input-label pull-left">Preferred Tax Office<sup
+                        class=" font-wegiht-bold text-danger">*</sup></label>
+                    <div class=" inputWithIcon">
+                      <!-- <input type="text" placeholder=""> -->
+                      <select type="text" name="taxOfficeId" formControlName="taxOfficeId" id="taxOfficeId"
+                        class="form-control" style="min-width:339px"
+                        [ngClass]="{ 'is-invalid': submitted &amp;&amp; registerForm.controls.taxOfficeId.errors }">
+                        <option value="">Select Tax Office</option>
+                        <option *ngFor="let taxTaxOffice of taxTaxOffices" [value]="taxTaxOffice.id">
+                          {{ taxTaxOffice.name }}
+                        </option>
+                      </select>
+                        <div *ngIf="submitted &amp;&amp; registerForm.controls.taxOfficeId.errors" class="text-danger">
+                        <div *ngIf="registerForm.controls.taxOfficeId.errors.required">Tax Office is required</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 ">
+                    <label for="emailAddress2" class="input-label pull-left">Industry Sector<sup
+                        class=" font-wegiht-bold text-danger">*</sup></label>
+                    <div class=" inputWithIcon">
+                      <!-- <input type="text" placeholder=""> -->
+                      <select type="text" name="industrySectorId" formControlName="industrySectorId"
+                        id="industrySectorId" class="form-control" style="min-width:339px"
+                        [ngClass]="{ 'is-invalid': submitted &amp;&amp; registerForm.controls.industrySectorId.errors }">
+                        <option value="">Select Industry Sector</option>
+                        <option *ngFor="let industrySector of industrySectors" [value]="industrySector.id">
+                          {{ industrySector.name }}
+                        </option>
+                      </select>
+                        <div *ngIf="submitted &amp;&amp; registerForm.controls.industrySectorId.errors" class="text-danger">
+                          <div *ngIf="registerForm.controls.industrySectorId.errors.required">Industry Sector is required
+                        </div>
+                        </div>
+                    </div>
+                  </div>
+
+              </div>
+
+               <div class="row mb-2 ">
+                    <div class="col-md-12">
+                      <label for="contactAddress" class="input-label pull-left ">Contact Address<sup
+                          class=" font-wegiht-bold text-danger">*</sup></label>
+                      <div class="inputWithIcon">
+                        <!-- <textarea type="text" placeholder="" rows="4" cols="50"></textarea> -->
+                        <textarea formControlName="contactAddress" class="form-control" id="contactAddress" rows="4"
+                          [ngClass]="{ 'is-invalid': submitted &amp;&amp; registerForm.controls.contactAddress.errors }" style="margin-top: 0px; margin-bottom: 0px; height: 70px;"></textarea>
+                          <div *ngIf="submitted &amp;&amp; registerForm.controls.contactAddress.errors" class="text-danger">
+                            <div *ngIf="registerForm.controls.contactAddress.errors.required">Contact Address is required</div>
+                          </div>
+                      </div>
+                    </div>
+                </div>
+
+
+              <!-- Sign in button -->
+              <div class="social-auth-links text-center mt-3 pt-3">
+                <button class="btn btn-block btn button-login">
+                  Create Account
+                </button>
+              </div>
+            </div>
+
+          </form>
+
+          <div class="login-remeber text-center">
+            <a [routerLink]="['/login']" style="color: #0D47A1;" >Already Registered ?  Sign In</a>
+          </div>
+
+
+        </div>
+        <!-- End of sign-up form -->
+
+        <!-- confirm-account-->
+        <div class="confirmAccount" *ngIf="showOtpForm">
+          <p class="login-box-msg bold-black">Enter 4 digit code to login</p>
+          <form [formGroup]="otpForm" (ngSubmit)="onOtpSubmit(otpForm.value)" class="text-center p-5">
+
+            <div class="pl-2 pr-2">
+              <div class=" ">
+                <label for="otp" class="input-label pull-left">Enter Otp</label>
+                <div class="input-group inputWithIcon">
+                  <!-- <input type="text" placeholder=""> -->
+                  <input type="password" formControlName="enterOtp" class="form-control" id="enterOtp"
+                    [ngClass]="{ 'is-invalid': submitted &amp;&amp; otpForm.controls.enterOtp.errors }" />
+                  <div class="input-group-append">
+                    <div class="input-group-text">
+                      <span class="fa fa-lock fa-lg fa-fw"></span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="newOtp text-left ml-2">
+                <u><a class="font-weight-bold" href="#" style="color: #03851e; font-size:10px;">Request new OTP</a></u>
+              </div>
+
+              <div>
+                <button class="btn get-otp mt-5 hvr-shutter-out-horizontal" type="submit">Confirm Account</button>
+              </div>
+            </div>
+          </form>
+        </div>
+
+
+
+      </div>
+
+      <!-- /.login-card-body -->
+    </div>
+  </div>
+
+</div>
+
+
+
+
+
+
+
+
+</div>

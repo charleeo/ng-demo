@@ -1,0 +1,1237 @@
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+
+    </div>
+    <!-- /.content-header -->
+
+    <!-- Main content -->
+    <section class="content" data-select2-id="32">
+        <div class="container-fluid" data-select2-id="31">
+
+
+            <!-- SELECT2 EXAMPLE -->
+            <div class="card card-secondary">
+                <div class="card-header custome">
+                    <h3 class="card-title">List of Individual Tax Payers</h3>
+                    <!-- <a [routerLink]="['/dashboard']" class="btn btn-primary role float-right" style="font-size: 12px; padding: 5px; margin-top: -3px;"><i class="fas fa-reply-all"></i> Back</a> -->
+
+                    <div *ngIf="editorRole">
+                        <button type="submit" class="btn btn-primary role float-right"
+                            style="font-size: 12px; padding: 5px; margin-top: -3px;"
+                            (click)="retrieveIndividual(existingUserModal)">
+                            <i class="fas fa-file-upload"></i> Retrieve Existing User
+                        </button>
+
+                        <button type="submit" class="btn btn-primary role float-right"
+                            style="font-size: 12px; padding: 5px; margin-top: -3px;"
+                            (click)="uploadBulkIndividuals(bulkIndividualModal)">
+                            <i class="fas fa-file-upload"></i> Bulk Upload
+                        </button>
+
+                        <button type="submit" class="btn btn-primary role float-right"
+                            style="font-size: 12px; padding: 5px; margin-top: -3px;"
+                            (click)="addIndividual(addIndividualModal, true)">
+                            <i class="fas fa-plus-square"></i> Single Registration
+                        </button>
+
+                    </div>
+
+                </div>
+                <!-- /.card-header -->
+
+                <div class="card">
+                    <div class="card-body">
+                        <form [formGroup]="searchForm" (ngSubmit)="onSubmitSearch(searchForm.value)">
+                            <div class="form-row">
+                                <div class="col-12 col-sm-6 col-md-6 col-lg-2 mt-1">
+                                    <input type="text" formControlName="taxPayerName" class="form-control font-12"
+                                        id="taxPayerName" placeholder="Tax Payer Name"
+                                        [ngClass]="{ 'is-invalid': submitted &amp;&amp; searchForm.controls.taxPayerName.errors }" />
+                                    <div *ngIf="submitted &amp;&amp; searchForm.controls.taxPayerName.errors"
+                                        class="text-danger">
+                                    </div>
+                                </div>
+
+                                <div class="col-12 col-sm-6 col-md-6 col-lg-2 mt-1">
+                                    <input type="text" formControlName="individualTIN" class="form-control font-12" placeholder="JTB-TIN E.g 9012340999" maxlength="10"
+                                        [ngClass]="{ 'is-invalid': submitted &amp;&amp; searchForm.controls.individualTIN.errors }" />
+                                    <div *ngIf="submitted &amp;&amp; searchForm.controls.individualTIN.errors" class="text-danger">
+                                        <div *ngIf="searchForm.controls.individualTIN.errors.minlength">JTB-TIN must be at least
+                                            10 digits long.
+                                        </div>
+                                        <div *ngIf="searchForm.controls.individualTIN.errors.maxlength">JTB-TIN must be at most
+                                            10 digits long.</div>
+                                        <div *ngIf="searchForm.controls.individualTIN.errors.pattern">JTB-TIN must be numeric
+                                            value only.</div>
+                                    </div>
+                                </div>
+
+                                <div class="col-12 col-sm-6 col-md-6 col-lg-2 mt-1">
+                                    <select type="text" name="registeredFromId" formControlName="registeredFromId" id="registeredFromId"
+                                        class="form-control font-12"
+                                        [ngClass]="{ 'is-invalid': submitted &amp;&amp; searchForm.controls.registeredFromId.errors }">
+                                        <option value="">Registered From</option>
+                                        <option value="1">Self Service Portal</option>
+                                        <option value="2">Admin Portal</option>
+                                    </select>
+                                </div>
+
+                                <div *ngIf="roleID == 1" class="col-12 col-sm-6 col-md-6 col-lg-2 mt-1">
+                                    <select type="text" name="taxOfficeId" formControlName="taxOfficeId" id="taxOfficeId"
+                                        class="form-control font-12" [ngClass]="{ 'is-invalid': submitted &amp;&amp; searchForm.controls.taxOfficeId.errors }">
+                                        <option value="">Select Tax Office</option>
+                                        <option *ngFor="let taxOffice of taxTaxOffices" [value]="taxOffice.id">
+                                            {{ taxOffice.name }}
+                                        </option>
+                                    </select>
+                                </div>
+
+                                <div class="col-12 col-sm-6 col-md-6 col-lg-3 mt-1">
+                                    <button type="submit" class="btn btn-primary font-12"><i class="fas fa-search"></i>
+                                        Search</button>
+                                    <button type="button" class="btn btn-primary font-12" style="margin-left: 10px;"
+                                        (click)="clearSearch()"><i class="fas fa-sync-alt"></i> Clear</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="card-body">
+                    <div class="col-auto mbm-30">
+                        <div class="row" *ngIf="individualsData">
+                            <div class="show-record">
+                                Show &nbsp;
+                                <select class="custom-select custom-select-sm form-control form-control-sm"
+                                    (change)="setItemsPerPage(page.value)" #page>
+                                    <option [selected]="currentPageLength==10">10</option>
+                                    <option [selected]="currentPageLength==30">30</option>
+                                    <option [selected]="currentPageLength==50">50</option>
+                                    <option [selected]="currentPageLength==100">100</option>
+                                    <option [selected]="currentPageLength==500">500</option>
+                                    <option [selected]="currentPageLength==1000">1000</option>
+                                </select>
+                                &nbsp; entries
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                    <table class="table table-bordered table-condensed table-responsive-sm table-responsive-md table-responsive-lg table-responsive-xl" *ngIf="individualsData; else content" datatable
+                    [dtOptions]="dtOptions" width="100%">
+                        <thead>
+                            <tr>
+                                <th>S/N</th>
+                                <th>Tax Payer Name</th>
+                                <!-- <th>Surname</th> -->
+
+                                <th>Tax Payer ID</th>
+                                <th>TIN</th>
+                                <th>Phone Number</th>
+                                <th *ngIf="showTaxOffice">Tax Office</th>
+
+                                <th>Email Provided?</th>
+                                <th>Registered Date</th>
+                                <th>Registered From</th>
+                                <th>Employee &nbsp;<i class="fas fa-info-circle" data-toggle="tooltip" data-placement="top" title="Registered with any employer? Yes/No"></i></th>
+                                <th>View</th>
+                                <th *ngIf="showEditIndividual">Edit</th>
+                                <th *ngIf="showEditIndividual">Verify Email</th>
+                                <th *ngIf="showEditIndividual">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let mydata of individualsData | paginate: config; index as i">
+                                <td>{{config.itemsPerPage * (config.currentPage - 1) + i + 1}}</td>
+                                <td>{{ mydata.first_name | titlecase }} {{ mydata.surname | titlecase }}</td>
+
+                                <td>{{ mydata.taxpayer_id }}</td>
+                                <td>{{ mydata.tin == null ? "N/A" : mydata.tin }}</td>
+                                <td>{{ mydata.phone }}</td>
+
+                                <td *ngIf="showTaxOffice">{{ mydata.tax_office_name | titlecase }}</td>
+
+                                <td>
+                                    <p *ngIf="mydata.has_valid_email, else noEmail" class="">Yes </p>
+                                    <ng-template #noEmail>
+                                        <p class="text-danger">No </p>
+                                    </ng-template>
+                                </td>
+
+                                <td>{{ mydata.created_at | date:'dd MMM yyyy' }}</td>
+                                <td>{{ mydata.created_by_app_id == 2 ? "Admin Portal" : "Self Service Portal" }}
+                                </td>
+                                <!-- <td><p *ngClass="{'test-danger': mydata.is_company_employee == 0, 'test-success': mydata.is_company_employee == 1}">
+                                  {{ mydata.is_company_employee == 0 ? "No" : "Yes" }}</p>
+                                </td> -->
+                                <td><p class=""  [ngClass]="{'danger': mydata.is_company_employee == 0, 'success' : mydata.is_company_employee == 1 }"> {{mydata.is_company_employee == 1 ? "Yes" : "No"}} </p> </td>
+
+                                <td>
+                                    <button class="btn btn-sm btn-outline-primary"
+                                        (click)="viewIndividual(addIndividualModal, mydata, false)"><i
+                                            class="nav-icon fas fa-eye"></i>
+                                        View
+                                    </button>
+                                </td>
+
+                                <td *ngIf="showEditIndividual">
+                                    <button class="btn btn-sm btn-outline-primary"
+                                        (click)="editIndividual(addIndividualModal, mydata, false)"><i
+                                            class="nav-icon fas fa-edit"></i> Edit</button>
+                                </td>
+
+                                <td *ngIf="showEditIndividual">
+                                    <button *ngIf="mydata.has_valid_email == 1" class="btn btn-sm btn-outline-success"
+                                        [disabled]="mydata.has_valid_email == 1"
+                                        (click)="updateIndividualEmail(addIndividualModal, mydata, undefined)">
+                                        <i class="nav-icon fas fa-check-circle"></i> Email Provided</button>
+
+                                    <button *ngIf="mydata.has_valid_email == 0" class="btn btn-sm btn-outline-danger"
+                                        [disabled]="mydata.has_valid_email == 1"
+                                        (click)="updateIndividualEmail(addIndividualModal, mydata, undefined)">
+                                        <i class="nav-icon fas fa-times-circle"></i> Provide Email</button>
+                                </td>
+
+                                <td *ngIf="showEditIndividual">
+                                    <button *ngIf="mydata.active_status == 'active'"
+                                        class="btn btn-sm btn-outline-success" style="width: 85px !important;"
+                                        (click)="toggleStatus(mydata)">
+                                        <i class="nav-icon fas fa-arrow-circle-up"></i> <br/>Active</button>
+                                    
+                                    <button *ngIf="mydata.active_status == 'inactive'"
+                                        class="btn btn-sm btn-outline-danger" style="width: 85px !important;"
+                                        (click)="toggleStatus(mydata)">
+                                        <i class="nav-icon fas fa-arrow-circle-down"></i> <br/>Inactive</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                    <div id="page_info" class="mt-3 record-show-text-bottom" *ngIf="individualsData">
+                        Showing {{(config.currentPage-1) * config.itemsPerPage + 1}} - {{config.currentPage * config.itemsPerPage}}
+                        of {{ config.totalItems }} entries
+                    </div>
+
+                    <div class="pagination paging-pull-right" *ngIf="individualsData">
+                        <pagination-controls (pageChange)="pageChange($event)"
+                            class="my-pagination mt-2 pagination-server">
+                        </pagination-controls>
+                    </div>
+
+                    <ng-template #content>
+                        <p style="color: red;"> </p>
+                    </ng-template>
+
+                </div>
+                <!-- /.card-body -->
+                <div class="card-footer">
+
+                </div>
+            </div>
+
+        </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+</div>
+
+<ng-template #addIndividualModal let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">{{ individualTitle }}</h4>
+
+        <div *ngIf="showLinkedAssetButton">
+            <button type="button" class="btn btn button-login float-right" style="margin: 10px 0px;"
+                (click)="showLinkAssetModal(linkassetmodal)">Link Asset</button>
+        </div>    
+    </div>
+
+    <div class="modal-body">
+        <div class="container">
+            <div class="container">
+                <div class="row">
+                    <ul *ngIf="showOtherTabs" class="nav nav-tabs tabbing">
+                        <li (click)="showFooterNote()"><a data-toggle="tab" href="#taxpayerdetails" class="active">Taxpayer Details</a></li>
+                        <li (click)="hideFooterNote(true)"><a data-toggle="tab" href="#linkedassets">Linked Assets</a></li>
+                        <li (click)="hideFooterNote(false)"><a data-toggle="tab" href="#assessments">Assessments</a></li>
+                        <li (click)="hideFooterNote(false)"><a data-toggle="tab" href="#wallet">Wallet</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="tab-content">
+                <div id="taxpayerdetails" class="tab-pane fade in active mt-3">
+                    <div class="container-fluid">
+                        <div class="">
+                           
+                            <app-addindividual [modalRef]="addIndividualModalRef" [individualId]="selectedIndividualId" 
+                                (reloadListOfIndividuals)="getUpdatedListOfIndividuals($event)" [showSaveButton]="showSaveButton" [showHeader]="false">
+                            </app-addindividual>
+                            <!-- <form [formGroup]="addIndividualForm" (ngSubmit)="onSubmitAddIndividual(addIndividualForm.value)"
+                                class="width-100-per">
+                                <div class="form-row">
+                                    <div class="form-group col-md-6">
+                                        <label for="titleId">Title<sup style="font-weight: 800;" class="text-danger">*</sup></label>
+                                        <select type="text" name="titleId" formControlName="titleId" id="titleId"
+                                            class="form-control" [attr.disabled]="disableIndividualFormControls"
+                                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; addIndividualForm.controls.titleId.errors }">
+                                            <option value="">Select Title</option>
+                                            <option value="Mr.">Mr.</option>
+                                            <option value="Mrs.">Mrs.</option>
+                                            <option value="Miss.">Miss.</option>
+                                        </select>
+                                        <div *ngIf="submitted &amp;&amp; addIndividualForm.controls.titleId.errors"
+                                            class="text-danger">
+                                            <div *ngIf="addIndividualForm.controls.titleId.errors.required">Title is required</div>
+                                        </div>
+                                    </div>
+            
+                                    <div class="form-group col-md-6">
+                                        <label for="firstName" class="input-label pull-left">First Name<sup
+                                                style="font-weight: 800;" class="text-danger">*</sup>
+                                        </label>
+                                        <input type="text" formControlName="firstName" class="form-control" id="firstName"
+                                            placeholder="First Name"
+                                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; addIndividualForm.controls.firstName.errors }"
+                                            [attr.disabled]="disableIndividualFormControls" />
+            
+                                        <div *ngIf="submitted &amp;&amp; addIndividualForm.controls.firstName.errors"
+                                            class="text-danger">
+                                            <div *ngIf="addIndividualForm.controls.firstName.errors.required">First Name is required
+                                            </div>
+                                            <div *ngIf="addIndividualForm.controls.firstName.errors.pattern">Only Alphabets
+                                                allowed</div>
+                                            <div *ngIf="addIndividualForm.controls.firstName.errors.maxlength">First Name can not
+                                                exceed
+                                                60 characters</div>
+                                        </div>
+                                    </div>
+            
+                                </div>
+            
+                                <div class="form-row">
+                                    <div class="form-group col-md-6">
+                                        <label for="surname" class="input-label pull-left">Surname<sup style="font-weight: 800;"
+                                                class="text-danger">*</sup>
+                                        </label>
+                                        <input type="text" formControlName="surname" class="form-control" id="surname"
+                                            placeholder="Surname"
+                                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; addIndividualForm.controls.surname.errors }"
+                                            [attr.disabled]="disableIndividualFormControls" />
+            
+                                        <div *ngIf="submitted &amp;&amp; addIndividualForm.controls.surname.errors"
+                                            class="text-danger">
+                                            <div *ngIf="addIndividualForm.controls.surname.errors.required">Surname is required
+                                            </div>
+                                            <div *ngIf="addIndividualForm.controls.surname.errors.pattern">Only Alphabets
+                                                allowed</div>
+                                            <div *ngIf="addIndividualForm.controls.surname.errors.maxlength">Surname can not exceed
+                                                60 characters</div>
+                                        </div>
+                                    </div>
+            
+                                    <div class="form-group col-md-6">
+                                        <label for="emailAddress" class="input-label pull-left">Email Address</label>
+                                        <input type="text" formControlName="emailAddress" class="form-control" id="emailAddress"
+                                            placeholder="Email Address" [attr.disabled]="disableIndividualEmail"
+                                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; addIndividualForm.controls.emailAddress.errors }" />
+                                        <div *ngIf="submitted &amp;&amp; addIndividualForm.controls.emailAddress.errors"
+                                            class="text-danger">
+                                            <div *ngIf="addIndividualForm.controls.emailAddress.errors.pattern">Email Address must
+                                                be a
+                                                valid email
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+            
+                                <div class="form-row">
+                                    <div class="form-group col-md-6">
+                                        <label for="phoneNumber">Phone Number<sup style="font-weight: 800;"
+                                                class="text-danger">*</sup>
+                                        </label>
+                                        <input type="text" formControlName="phoneNumber" class="form-control"
+                                            placeholder="Phone Number" maxlength="11"
+                                            [attr.disabled]="disableIndividualFormControls"
+                                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; addIndividualForm.controls.phoneNumber.errors }" />
+                                        <div *ngIf="submitted &amp;&amp; addIndividualForm.controls.phoneNumber.errors"
+                                            class="text-danger">
+                                            <div *ngIf="addIndividualForm.controls.phoneNumber.errors.required">Phone Number is
+                                                required</div>
+                                            <div *ngIf="addIndividualForm.controls.phoneNumber.errors.minlength">Phone Number must
+                                                be at least 11 digits</div>
+                                            <div *ngIf="addIndividualForm.controls.phoneNumber.errors.maxlength">Phone Number must
+                                                not exceed 11 digits</div>
+                                            <div *ngIf="addIndividualForm.controls.phoneNumber.errors.pattern">Phone Number be
+                                                numeric
+                                                value only</div>
+                                        </div>
+                                    </div>
+            
+                                    <div class="form-group col-md-6">
+                                        <label for="individualTIN">JTB-TIN <span class="note-color">**</span>
+                                        </label>
+                                        <input type="text" formControlName="individualTIN" class="form-control"
+                                            placeholder="JTB-TIN" maxlength="10" [attr.disabled]="disableIndividualFormControls"
+                                            (keyup)="changeTinPhoneNinBvnStatus()"
+                                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; addIndividualForm.controls.individualTIN.errors || submitted &amp;&amp; validateCacTin }" />
+                                        <div *ngIf="submitted &amp;&amp; addIndividualForm.controls.individualTIN.errors"
+                                            class="text-danger">
+                                            <div *ngIf="addIndividualForm.controls.individualTIN.errors.minlength">JTB-TIN must be
+                                                at least
+                                                10 digits long.
+                                            </div>
+                                            <div *ngIf="addIndividualForm.controls.individualTIN.errors.maxlength">JTB-TIN must be
+                                                at most
+                                                10 digits long.</div>
+                                            <div *ngIf="addIndividualForm.controls.individualTIN.errors.pattern">JTB-TIN must be
+                                                numeric
+                                                value only</div>
+                                        </div>
+                                        <div *ngIf="submitted &amp;&amp; validateCacTin" class="text-danger">
+                                            <div>JTB-TIN or NIN or BVN Number is required</div>
+                                        </div>
+                                    </div>
+                                </div>
+            
+                                <div class="form-row">
+                                    <div class="form-group col-md-6">
+                                        <label for="nin">NIN <span class="note-color">**</span>
+                                        </label>
+                                        <input type="text" formControlName="nin" class="form-control" id="nin"
+                                            placeholder="Enter NIN" maxlength="11" [attr.disabled]="disableIndividualFormControls"
+                                            (keyup)="changeTinPhoneNinBvnStatus()"
+                                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; addIndividualForm.controls.nin.errors || submitted &amp;&amp; validateCacTin }" />
+                                        <div *ngIf="submitted &amp;&amp; addIndividualForm.controls.nin.errors" class="text-danger">
+                                            <div *ngIf="addIndividualForm.controls.nin.errors.minlength">NIN can not be
+                                                less than 11 characters</div>
+                                            <div *ngIf="addIndividualForm.controls.nin.errors.pattern">NIN must be numeric
+                                                value only</div>
+                                        </div>
+                                        <div *ngIf="submitted &amp;&amp; validateCacTin" class="text-danger">
+                                            <div>JTB-TIN or NIN or BVN Number is required</div>
+                                        </div>
+                                    </div>
+            
+                                    <div class="col-md-6 form-group">
+                                        <label for="bvn" class="input-label pull-left">BVN <span class="note-color">**</span>
+                                        </label>
+                                        <input type="text" formControlName="bvn" class="form-control" id="bvn"
+                                            placeholder="Enter BVN" maxlength="11" (keydown.space)="$event.preventDefault()"
+                                            (keyup)="changeTinPhoneNinBvnStatus()" [attr.disabled]="disableIndividualFormControls"
+                                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; addIndividualForm.controls.bvn.errors || submitted &amp;&amp; validateCacTin }" />
+            
+                                        <div *ngIf="submitted &amp;&amp; addIndividualForm.controls.bvn.errors" class="text-danger">
+                                            <div *ngIf="addIndividualForm.controls.bvn.errors.minlength">BVN can not be
+                                                less than 11 characters</div>
+                                            <div *ngIf="addIndividualForm.controls.bvn.errors.pattern">BVN must be numeric
+                                                value only</div>
+                                        </div>
+                                        <div *ngIf="submitted &amp;&amp; validateCacTin" class="text-danger">
+                                            <div>JTB-TIN or NIN or BVN Number is required</div>
+                                        </div>
+                                    </div>
+                                </div>
+            
+                                <div class="form-row">
+                                    <div class="form-group col-md-6">
+                                        <label for="genderId">Gender<sup style="font-weight: 800;"
+                                                class="text-danger">*</sup></label>
+                                        <select type="text" name="genderId" formControlName="genderId" id="genderId"
+                                            class="form-control" [attr.disabled]="disableIndividualFormControls"
+                                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; addIndividualForm.controls.genderId.errors }">
+                                            <option value="">Select Gender</option>
+                                            <option value="Male">Male</option>
+                                            <option value="Female">Female</option>
+            
+                                        </select>
+                                        <div *ngIf="submitted &amp;&amp; addIndividualForm.controls.genderId.errors"
+                                            class="text-danger">
+                                            <div *ngIf="addIndividualForm.controls.genderId.errors.required">Gender is
+                                                required</div>
+                                        </div>
+                                    </div>
+            
+                                    <div class="form-group col-md-6">
+                                        <label for="nationality">Nationality<sup style="font-weight: 800;"
+                                                class="text-danger">*</sup></label>
+                                        <input type="text" formControlName="nationality" class="form-control"
+                                            placeholder="Nationality" [attr.disabled]="disableIndividualFormControls"
+                                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; addIndividualForm.controls.nationality.errors }" />
+                                        <div *ngIf="submitted &amp;&amp; addIndividualForm.controls.nationality.errors"
+                                            class="text-danger">
+                                            <div *ngIf="addIndividualForm.controls.nationality.errors.required">Nationality is
+                                                required</div>
+                                        </div>
+                                    </div>
+                                </div>
+            
+                                <div class="form-row">
+                                    <div class="form-group col-md-6">
+                                        <label for="dateOfBirth">Date of Birth<sup style="font-weight: 800;"
+                                                class="text-danger">*</sup></label>
+                                        <input type="date" name="dateOfBirth" max="2021-01-01" min="1960-01-01"
+                                            formControlName="dateOfBirth" id="dateOfBirth" class="form-control"
+                                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; addIndividualForm.controls.dateOfBirth.errors || dateInvalid }"
+                                            [attr.disabled]="disableIndividualFormControls"
+                                            (keyup)="checkDate($event.target.value)" />
+            
+                                        <div *ngIf="submitted &amp;&amp; addIndividualForm.controls.dateOfBirth.errors"
+                                            class="text-danger">
+                                            <div *ngIf="addIndividualForm.controls.dateOfBirth.errors.required">Date of Birth is
+                                                required</div>
+                                        </div>
+                                        <div *ngIf="dateInvalid" class="text-danger">Date of Birth is invalid (min date: 01/01/1960,
+                                            max: 01/01/2021)</div>
+                                    </div>
+            
+                                    <div class="form-group col-md-6">
+                                        <label for="maritalStatus">Marital Status<sup style="font-weight: 800;"
+                                                class="text-danger">*</sup></label>
+                                        <select type="text" name="maritalStatus" formControlName="maritalStatus" id="maritalStatus"
+                                            class="form-control" [attr.disabled]="disableIndividualFormControls"
+                                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; addIndividualForm.controls.maritalStatus.errors }">
+                                            <option value="">Select Marital Status</option>
+                                            <option value="Single">Single</option>
+                                            <option value="Married">Married</option>
+                                            <option value="Divorced">Divorced</option>
+                                            <option value="Widow">Widow</option>
+                                            <option value="Widower">Widower</option>
+                                        </select>
+                                        <div *ngIf="submitted &amp;&amp; addIndividualForm.controls.maritalStatus.errors"
+                                            class="text-danger">
+                                            <div *ngIf="addIndividualForm.controls.maritalStatus.errors.required">Marital Status is
+                                                required
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+            
+                                <div class="form-row">
+                                    <div class="form-group col-md-6">
+                                        <label for="occupation">Occupation<sup style="font-weight: 800;"
+                                                class="text-danger">*</sup></label>
+                                        <input type="text" name="occupation" formControlName="occupation" maxlength="30"
+                                            class="form-control" placeholder="Occupation"
+                                            [attr.disabled]="disableIndividualFormControls"
+                                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; addIndividualForm.controls.occupation.errors }" />
+                                        <div *ngIf="submitted &amp;&amp; addIndividualForm.controls.occupation.errors"
+                                            class="text-danger">
+                                            <div *ngIf="addIndividualForm.controls.occupation.errors.required">Occupation is
+                                                required
+                                            </div>
+                                            <div *ngIf="addIndividualForm.controls.occupation.errors.pattern">Occupation can only
+                                                contain
+                                                alphabets</div>
+                                            <div *ngIf="addIndividualForm.controls.occupation.errors.maxlength">Occupation must be
+                                                at
+                                                most 30
+                                                characters</div>
+                                        </div>
+                                    </div>
+            
+                                    <div class="col-md-6 form-group">
+                                        <label for="zipCode">Zip Code<sup style="font-weight: 800;"
+                                                class="font-wegiht-bold text-danger">*</sup>
+                                        </label>
+                                        <select type="text" name="zipCode" formControlName="zipCode" id="zipCode"
+                                            class="form-control" style="min-width:339px"
+                                            [attr.disabled]="disableIndividualFormControls"
+                                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; addIndividualForm.controls.zipCode.errors }">
+                                            <option value="">Select Zip Code</option>
+                                            <option *ngFor="let zipcode of zipCodes" [value]="zipcode.id">
+                                                {{ zipcode.city + " - " + zipcode.postalcode}}
+                                            </option>
+                                        </select>
+                                        <div *ngIf="submitted &amp;&amp; addIndividualForm.controls.zipCode.errors"
+                                            class="text-danger">
+                                            <div *ngIf="addIndividualForm.controls.zipCode.errors.required">Zip Code is required
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+            
+                                <div class="form-row">
+                                    <div class="col-md-6 form-group">
+                                        <label for="taxOffice" class="input-label pull-left">Prefered Tax Office<sup
+                                                class=" font-wegiht-bold text-danger">*</sup></label>
+                                        <select type="text" name="taxOfficeId" formControlName="taxOfficeId" id="taxOfficeId"
+                                            class="form-control" [attr.disabled]="disableIndividualFormControls"
+                                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; addIndividualForm.controls.taxOfficeId.errors }">
+                                            <option value="">Select Preferred Tax Office</option>
+                                            <option *ngFor="let taxTaxOffice of taxTaxOffices" [value]="taxTaxOffice.id">
+                                                {{ taxTaxOffice.name }}
+                                            </option>
+                                        </select>
+                                        <div *ngIf="submitted &amp;&amp; addIndividualForm.controls.taxOfficeId.errors"
+                                            class="text-danger">
+                                            <div *ngIf="addIndividualForm.controls.taxOfficeId.errors.required">Prefered Tax Office
+                                                is
+                                                required</div>
+                                        </div>
+                                    </div>
+            
+                                    <div class="form-group col-md-6">
+                                        <label for="localGovernmentId" class="input-label pull-left">Local Government<sup
+                                                class=" font-wegiht-bold text-danger">*</sup>
+                                        </label>
+                                        <select type="text" name="localGovernmentId" formControlName="localGovernmentId"
+                                            id="localGovernmentId" class="form-control"
+                                            [attr.disabled]="disableIndividualFormControls"
+                                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; addIndividualForm.controls.localGovernmentId.errors }">
+                                            <option value="">Select Local Government</option>
+                                            <option *ngFor="let stateLocalGovt of stateLocalGovts"
+                                                [value]="stateLocalGovt.lga_code">
+                                                {{ stateLocalGovt.name }}
+                                            </option>
+                                        </select>
+                                        <div *ngIf="submitted &amp;&amp; addIndividualForm.controls.localGovernmentId.errors"
+                                            class="text-danger">
+                                            <div *ngIf="addIndividualForm.controls.localGovernmentId.errors.required">Local
+                                                Government is
+                                                required</div>
+                                        </div>
+                                    </div>
+                                </div>
+            
+                                <div class="form-row">
+                                    <div class="col-md-6 form-group">
+                                        <label for="contactAddress" class="input-label pull-left">Home Address<sup
+                                                style="font-weight: 800;" class="text-danger">*</sup></label>
+                                        <textarea formControlName="contactAddress" class="form-control" id="contactAddress" rows="3"
+                                            placeholder="Home Address" [attr.disabled]="disableIndividualFormControls"
+                                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; addIndividualForm.controls.contactAddress.errors }"></textarea>
+                                        <div *ngIf="submitted &amp;&amp; addIndividualForm.controls.contactAddress.errors"
+                                            class="text-danger">
+                                            <div *ngIf="addIndividualForm.controls.contactAddress.errors.required">Home Address is
+                                                required
+                                            </div>
+                                            <div *ngIf="addIndividualForm.controls.contactAddress.errors.maxlength">Home Address
+                                                cannot
+                                                contain more than 200 characters</div>
+                                            <div *ngIf="addIndividualForm.controls.contactAddress.errors.pattern">Only Alphanumeric
+                                                Characters
+                                                allowed</div>
+                                            <div *ngIf="addIndividualForm.controls.contactAddress.errors.minlength">Home Address
+                                                cannot
+                                                contain less than 6 characters</div>
+                                        </div>
+                                    </div>
+                                </div>
+            
+                                <button *ngIf="showCreateIndividual" type="submit" (click)="createIndividual()"
+                                    class="btn btn button-login"><i class="fas fa-plus-square"></i> Create Individual</button>
+                                <button *ngIf="showUpdateIndividual" type="submit" (click)="updateIndividual()"
+                                    class="btn btn button-login"><i class="far fa-save"></i> Update Individual</button>
+                            </form>           -->
+                        </div>
+                    </div>
+                </div>
+
+                <div id="linkedassets" class="tab-pane fade mt-3" style="min-height: 500px;">
+                    <div class="container-fluid">
+                        <div class="">
+                            <table class="table table-bordered table-condensed" *ngIf="linkedAssetData; else content"
+                                datatable [dtOptions]="dtOptionsPopUp" width="100%">
+                                <thead>
+                                    <tr>
+                                        <th>S/N</th>
+                                        <th>Asset Type</th>
+                                        <th>Asset Name</th>
+                                        <th>Asset ID</th>
+                                        <th>Role</th>
+                                        <th>View Asset</th>
+                                        <th>Unlink Asset</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let linkedAsset of linkedAssetData; index as i">
+                                        <th>{{i + 1}}</th>
+                                        <td>{{ linkedAsset.asset_type_name }}</td>
+                                        <td>{{ linkedAsset.asset_name }}</td>
+                                        <td>{{ linkedAsset.asset_id }}</td>                                        
+                                        <td>{{ linkedAsset.role_name }}</td>
+                                        <td>
+                                            <button class="btn btn-sm btn-outline-primary" (click)="viewAsset(linkedAsset, viewassetmodal)">
+                                            <i class="nav-icon fas fa-eye"></i> View Asset</button>
+                                        </td>
+                                        <td>
+                                            <button class="btn btn-sm btn-outline-primary" (click)="unlinkAsset(linkedAsset)">
+                                                <i class="nav-icon fas fa-unlink"></i> Unlink Asset</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="modal-footer">
+                            
+                        </div>
+                    </div>
+                </div>
+
+                <div id="assessments" class="tab-pane fade mt-3" style="min-height: 500px;">
+                    <div class="container-fluid">
+                        <div>
+                            <div class="modal-header">
+                                <h4 class="modal-title" id="modal-basic-title">Direct Assessment</h4>
+
+                                <div *ngIf="managerRole || editorRole">
+                                    <button type="button" class="btn btn button-login float-right" style="margin: 10px 10px;"
+                                        (click)="generateAssessment('/filedeclaration')">Generate Assessment</button>
+                                </div>
+                            </div>
+                        
+                            <div class="modal-body">
+                                <table class="table table-bordered font-12" *ngIf="payeAssessmentData; else content" datatable
+                                    [dtOptions]="dtOptionsPopUp" width="100%">
+                                    <thead>
+                                        <tr>
+                                            <th>S/N</th>
+                                            <th>Date Generated</th>
+                                            <th>Generated From</th>
+                                            <th>Invoice ID</th>
+                                            <th>Tax Year</th>
+                                            <th>Total Monthly Tax</th>
+                                            <th>Amount Paid</th>
+                                            <th>Balance</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor="let mydata of payeAssessmentData; index as i">
+                                            <th>{{i + 1}}</th>
+                                            <td>{{ mydata.created_at | date: "dd MMM yyyy" }}</td>
+                                            <td>{{ mydata.created_by_app_id == 1 ? "Self Service Portal" : mydata.created_by_app_id == 2 ? "Admin Portal" : "Direct Assessment" }}</td>
+                                            <td>{{ mydata.invoice_number == null ? 'N/A' : mydata.invoice_number }}</td>
+                                            <td>{{ getTaxYear(mydata.due_date) }}</td>
+                                            <td>{{ mydata.amount_due | number }}</td>
+                                            <td>{{ mydata.amount_paid == null ? '0' : mydata.amount_paid | number}}</td>
+                                            <td>{{ mydata.amount_due - mydata.amount_paid | number }}</td>
+
+                                            <td *ngIf="mydata.payment_status == 0" class="text-danger" style="font-weight: 600;">Unsettled</td>
+                                            <td *ngIf="mydata.payment_status == 1" class="text-success" style="font-weight: 600;">Settled</td>
+                                            <td *ngIf="mydata.payment_status == 2" style="font-weight: 600; color: #4315ff;">Overdue</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <div class="modal-header">
+                                <h4 class="modal-title" id="modal-basic-title">With Holding Assessment</h4>
+
+                                <div *ngIf="managerRole || editorRole">
+                                    <button type="button" class="btn btn button-login float-right" style="margin: 10px 10px;"
+                                    (click)="generateAssessment('/generatewhtassessment')">Generate Assessment</button>
+                                </div>
+                            </div>
+                        
+                            <div class="modal-body">
+                                <table class="table table-bordered font-12" *ngIf="whtAssessmentsData; else content" datatable
+                                    [dtOptions]="dtOptionsPopUp" width="100%">
+                                    <thead>
+                                        <tr>
+                                            <th>S/N</th>
+                                            <th>Date Generated</th>
+                                            <th>Generated From</th>
+                                            <th>Invoice ID</th>
+                                            <!-- <th>Collector's Name</th> -->
+                                            <th>Tax Due(₦)</th>
+                                            <th>Amount Paid(₦)</th>
+                                            <th>Balance(₦)</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor="let mydata of whtAssessmentsData; index as i">
+                                            <th>{{i + 1}}</th>
+                                            <td>{{ mydata.date_generated | date }}</td>
+                                            <td>{{ mydata.generated_from }}</td>
+                                            <td>{{ mydata.invoice_number == null ? 'N/A' : mydata.invoice_number }}</td>
+                                            <!-- <td>{{ mydata.corporate_collector_name == null ? mydata.individual_collector_first_name + " " + mydata.individual_collector_surname : mydata.corporate_collector_name }}</td> -->
+                                            <td>{{ mydata.tax_due | number }}</td>
+                                            <td>{{ mydata.amount_paid == null ? '0' : mydata.amount_paid | number}}</td>
+                                            <td>{{ mydata.tax_due - mydata.amount_paid | number }}</td>
+        
+                                            <td *ngIf="mydata.payment_status != 1"><span class="text-danger"
+                                                    style="font-weight: 600;">Unsettled</span></td>
+                                            <td *ngIf="mydata.payment_status == 1"><span class="text-success"
+                                                    style="font-weight: 600;">Settled</span></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div>
+                            <div class="modal-header">
+                                <h4 class="modal-title" id="modal-basic-title">Business Premise Assessment</h4>
+
+                                <div *ngIf="managerRole || editorRole">
+                                    <button type="button" class="btn btn button-login float-right" style="margin: 10px 10px;"
+                                        (click)="showCreateAssessmentModal(createassetmodal)">Generate Assessment</button>
+                                </div>
+                            </div>
+                        
+                            <div class="modal-body">
+                                <table class="table table-bordered font-12" *ngIf="assessmentData; else content" datatable
+                                    [dtOptions]="dtOptionsPopUp" width="100%">
+                                    <thead>
+                                        <tr>
+                                            <th>S/N</th>
+                                            <th>Date Generated</th>
+                                            <th>Generated From</th>
+                                            <th>Invoice ID</th>
+                                            <th>Tax Year</th>
+                                            <th>Tax Month</th>
+                                            <th>Employees Count</th>
+                                            <th>Total Monthly Tax</th>
+                                            <th>Amount Paid</th>
+                                            <th>Balance</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor="let assessment of assessmentData; index as i">
+                                            <th>{{i + 1}}</th>
+                                            <td>{{ assessment.company_name == null ? 'N/A' : assessment.company_name }}</td>
+                                            <td>{{ assessment.employee_count == null ? 'N/A' : assessment.employee_count }}
+                                            </td>
+                                            <td>{{ assessment.industry_sector == null ? 'N/A' : assessment.industry_sector }}
+                                            </td>
+                                            <td>{{ assessment.taxpayer_id == null ? 'N/A' : assessment.taxpayer_id }}</td>
+                                            <td>{{ assessment.created_at == null ? 'N/A' : assessment.created_at | date: "dd MMM yyyy" }}
+                                            </td>
+                                            <td>{{ assessment.company_name == null ? 'N/A' : assessment.company_name }}</td>
+                                            <td>{{ assessment.employee_count == null ? 'N/A' : assessment.employee_count }}
+                                            </td>
+                                            <td>{{ assessment.industry_sector == null ? 'N/A' : assessment.industry_sector }}
+                                            </td>
+                                            <td>{{ assessment.taxpayer_id == null ? 'N/A' : assessment.taxpayer_id }}</td>
+                                            <td>{{ assessment.taxpayer_id == null ? 'N/A' : assessment.taxpayer_id }}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="wallet" class="tab-pane fade mt-3" style="min-height: 500px;">
+                    <div class="container-fluid">
+                        <div class="">
+                            <app-wallet [individualId]="selectedIndividualId"></app-wallet>                       
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="col-md-12">
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="modal-footer-1">
+        <div class="note-1 float-left">
+            <span *ngIf="showFootNote">
+                <strong>** Note:</strong> This field is required as either Phone Number or JBT-TIN Number or NIN Number or BVN Number
+                or you can provide all to proceed further.
+            </span>
+        </div>
+
+        <button type="button" class="btn btn-outline-dark button-login" (click)="modal.close('Save click')">Ok</button>
+    </div>
+</ng-template>
+
+<ng-template #bulkIndividualModal let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">Upload Bulk Individuals</h4>
+    </div>
+
+    <div class="modal-body">
+        <div class="container">
+
+            <div class="form-row">
+                <div class="col-md-12">
+
+                </div>
+            </div>
+
+            <form [formGroup]="myForm" (ngSubmit)="submit()">
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="fileInput">Select File to Upload </label>
+
+                        <div class="custom-file">
+                            <input formControlName="myfile" id="myfile" type="file" class="custom-file-input"
+                                (change)="onFileChange($event)"
+                                [ngClass]="{ 'is-invalid': submitted && myForm.controls.myfile.errors }"
+                                accept=".xls,.xlsx">
+                            <label class="custom-file-label" for="customFile">{{filePath == null ? 'Choose file (xlsx or xls)' :
+                                filePath}}</label>
+                        </div>
+
+                        <div *ngIf="submitted &amp;&amp; f.myfile.touched && f.myfile.invalid" class="text-danger">
+                            <div *ngIf="f.myfile.errors.required">File is required.</div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <button type="submit" class="btn btn button-login" [disabled]="file==null">Upload File</button>
+            </form>
+
+            <div class="login-remeber">
+                <a href="{{sample_file}}" target="_blank">
+                    Download individual template here</a>
+            </div>
+
+
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button type="button" class="btn btn-outline-dark button-login" (click)="modal.close('Save click')">Ok</button>
+    </div>
+</ng-template>
+
+<ng-template #existingUserModal let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">Already have a Taxpayer ID? Enter BVN to create account</h4>
+    </div>
+
+    <div class="modal-body">
+        <div class="container">
+
+            <div class="form-row">
+                <div class="col-md-12">
+
+                </div>
+            </div>
+
+            <form [formGroup]="retrieveAccountForm" (ngSubmit)="onSubmitRetrieveAccount(retrieveAccountForm.value)">
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="surname" class="input-label pull-left">BVN<sup style="font-weight: 800;"
+                                class="text-danger">*</sup>
+                        </label>
+                        <input type="text" formControlName="bvn" class="form-control" id="bvn" placeholder="Enter BVN"
+                            maxlength="11" (keydown.space)="$event.preventDefault()"
+                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; retrieveAccountForm.controls.bvn.errors }" />
+
+                        <div *ngIf="submitted &amp;&amp; retrieveAccountForm.controls.bvn.errors" class="text-danger">
+                            <div *ngIf="retrieveAccountForm.controls.bvn.errors.required">BVN is required
+                            </div>
+                            <div *ngIf="retrieveAccountForm.controls.bvn.errors.minlength">BVN can not be
+                                less than 11 characters</div>
+                            <div *ngIf="retrieveAccountForm.controls.bvn.errors.pattern">Valid BVN required</div>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn button-login"><i class="fas fa-plus-square"></i> Proceed</button>
+            </form>
+
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button type="button" class="btn btn-outline-dark button-login" (click)="modal.close('Save click')">Ok</button>
+    </div>
+</ng-template>
+
+<ng-template #linkassetmodal let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">Link Asset</h4>
+
+        <div *ngIf="showSearchAssetButton">
+            <button type="button" class="btn btn button-login float-right" style="margin: 10px 0px;"
+                (click)="showSearchAssetModal(searchassetmodal)">Search Asset</button>
+        </div>
+    </div>
+
+    <div class="modal-body">
+        <div class="container">
+            <form [formGroup]="linkAssetForm" (ngSubmit)="onSubmitLinkAsset(linkAssetForm.value)">
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="assetTypeId" class="input-label pull-left">Select Asset Type<sup
+                                class=" font-wegiht-bold text-danger">*</sup>
+                        </label>
+                        <select type="text" name="assetTypeId" formControlName="assetTypeId" id="assetTypeId" [attr.disabled]="disableLinkAssetFormControl"
+                            class="form-control" #linkAssetTypeSelect (change)="onLinkAssetTypeSelect(linkAssetTypeSelect.value)"
+                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; linkAssetForm.controls.assetTypeId.errors }">
+                            <option value="">Select Asset Type</option>
+                            <option *ngFor="let assetType of assetTypes" [value]="assetType.id">
+                                {{ assetType.name }}
+                            </option>
+                        </select>
+                        <div *ngIf="submitted &amp;&amp; linkAssetForm.controls.assetTypeId.errors" class="text-danger">
+                            <div *ngIf="linkAssetForm.controls.assetTypeId.errors.required">Asset Type is required</div>
+                        </div>
+                    </div>
+
+                    <div class="form-group col-md-6">
+                        <label for="taxpayerRoleId" class="input-label pull-left">Taxpayer Role<sup
+                                class=" font-wegiht-bold text-danger">*</sup>
+                        </label>
+                        <select type="text" name="taxpayerRoleId" formControlName="taxpayerRoleId" id="taxpayerRoleId" [attr.disabled]="disableLinkAssetFormControl"
+                            class="form-control" #linkTaxpayerRoleSelect (change)="onLinkTaxpayerRoleSelect(linkTaxpayerRoleSelect.value)"
+                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; linkAssetForm.controls.taxpayerRoleId.errors }">
+                            <option value="">Select Taxpayer Role</option>
+                            <option *ngFor="let taxpayerRole of taxpayerRoles" [value]="taxpayerRole.id">
+                                {{ taxpayerRole.name }}
+                            </option>
+                        </select>
+                        <div *ngIf="submitted &amp;&amp; linkAssetForm.controls.taxpayerRoleId.errors" class="text-danger">
+                            <div *ngIf="linkAssetForm.controls.taxpayerRoleId.errors.required">Taxpayer Role is required
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="assetName" class="input-label pull-left">Asset Name<sup
+                                class=" font-wegiht-bold text-danger">*</sup>
+                        </label>
+                        <input type="text" formControlName="assetName" class="form-control" id="assetName"
+                            placeholder="Asset Name" [attr.disabled]="true"
+                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; linkAssetForm.controls.assetName.errors }" />
+                        <div *ngIf="submitted &amp;&amp; linkAssetForm.controls.assetName.errors" class="text-danger">
+                            <div *ngIf="linkAssetForm.controls.assetName.errors.required">Asset Name is required, use the 'Search Asset' button
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn button-login">
+                    Link Asset
+                </button>
+
+            </form>
+        </div>
+    </div>
+
+    <div class="modal-footer-1">
+        <div class="note-1 float-left">
+            <span>
+                <strong>** Note:</strong> Select 'Asset Type' to search for assets.
+            </span>
+        </div>
+
+        <button type="button" class="btn btn-outline-dark button-login" (click)="modal.close('Save click')">Ok</button>
+    </div>
+</ng-template>
+
+<ng-template #createassetmodal let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">Add New Asset</h4>
+    </div>
+
+    <div class="modal-body">
+        <div class="container">
+            <form [formGroup]="assetTypeForm">
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="assetTypeId" class="input-label pull-left">Select Asset Type<sup
+                                class=" font-wegiht-bold text-danger">*</sup>
+                        </label>
+                        <select type="text" name="assetTypeId" formControlName="assetTypeId" id="assetTypeId" [attr.disabled]="true"
+                            #selectAssetType (change)="onAssetTypeChange(selectAssetType.value)" class="form-control"
+                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; assetTypeForm.controls.assetTypeId.errors }">
+                            <option value="">Select Asset Type</option>
+                            <option *ngFor="let assetType of assetTypes" [value]="assetType.id">
+                                {{ assetType.name }}
+                            </option>
+                        </select>
+                        <div *ngIf="submitted &amp;&amp; assetTypeForm.controls.assetTypeId.errors" class="text-danger">
+                            <div *ngIf="assetTypeForm.controls.assetTypeId.errors.required">Asset Type is required</div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+    <div style="min-height: 200px;">
+        <app-addbusiness *ngIf="businessAsset" [modalRef]="assessmentModalRef" [showHeader]="true"
+            (reloadAssetList)="getUpdatedLinkedAssets($event)" [businessId]="null" [individualId]="selectedIndividualId"
+            [showSaveButton]="true">
+        </app-addbusiness>
+    
+        <app-addland *ngIf="landAsset" [modalRef]="assessmentModalRef" [landId]="null" [showHeader]="true"
+            (reloadAssetList)="getUpdatedLinkedAssets($event)" [individualId]="selectedIndividualId"
+            [showSaveButton]="true">
+        </app-addland>
+    
+        <app-addbuilding *ngIf="buildingAsset" [modalRef]="assessmentModalRef" [buildingId]="null" [showHeader]="true"
+            (reloadAssetList)="getUpdatedLinkedAssets($event)" [individualId]="selectedIndividualId" [showSaveButton]="true">
+        </app-addbuilding>
+    </div>
+
+    <div class="modal-footer">
+        <button type="button" class="btn btn-outline-dark button-login" (click)="modal.close('Save click')">Ok</button>
+    </div>
+</ng-template>
+
+<ng-template #searchassetmodal let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">Search Asset</h4>
+
+        <div *ngIf="showLinkedAssetButton">
+            <button *ngIf="showCreateAssetButton" type="button" class="btn btn button-login float-right" style="margin: 10px 10px;"
+                (click)="showCreateAssessmentModal(createassetmodal)">Create Asset</button>
+        </div>    
+    </div>
+
+    <div class="modal-body">
+        <div class="container">
+            <form [formGroup]="searchAssetForm" (ngSubmit)="onSubmitSearchAsset(searchAssetForm.value)">
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="assetName" class="input-label pull-left">Asset Name<sup
+                                class=" font-wegiht-bold text-danger">*</sup>
+                        </label>
+                        <input type="text" formControlName="assetName" class="form-control" id="assetName"
+                            placeholder="Asset Name" maxlength="40"
+                            [ngClass]="{ 'is-invalid': submitted &amp;&amp; searchAssetForm.controls.assetName.errors }" />
+                      
+                        <div *ngIf="submitted &amp;&amp; searchAssetForm.controls.assetName.errors" class="text-danger">
+                            <div *ngIf="searchAssetForm.controls.assetName.errors.required">Asset Name is required
+                            </div>
+                            <div *ngIf="searchAssetForm.controls.assetName.errors.pattern">Only Alphanumeric
+                                Characters
+                                allowed</div>
+                            <div *ngIf="searchAssetForm.controls.assetName.errors.minlength">Asset Name
+                                cannot be less than 3 characters</div>
+                            <div *ngIf="searchAssetForm.controls.assetName.errors.maxlength">Asset Name can not
+                                exceed
+                                40 characters</div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <button type="submit" class="btn btn button-login">
+                            Search Asset
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div class="container">
+            <div *ngIf="businessData.length > 0;">
+                <h6 class="text-center">LIST OF BUSINESSES</h6>
+                <table class="table table-bordered table-condensed" datatable *ngIf="businessData;"
+                    [dtOptions]="dtOptionsPopUp" width="100%">
+                    <thead>
+                        <tr>
+                            <th>S/N</th>
+                            <th>Business ID</th>
+                            <th>Business Name</th>
+                            <th>Indusstry Sector</th>
+                            <th>Indusstry Sub Sector</th>                        
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let mydata of businessData; index as i">
+                            <td>{{ i + 1 }}</td>
+                            <td>{{ mydata.business_id }}</td>
+                            <td>{{ mydata.business_name }}</td>
+    
+                            <td>{{ mydata.industry_sector_name }}</td>
+                            <td>{{ mydata.industry_subsector_name }}</td>                        
+                            <td>
+                                <button class="btn btn-sm btn-outline-primary" (click)="selectBusiness(mydata)">
+                                    Select</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+           
+            <div *ngIf="landData.length > 0;">
+                <h6 class="text-center">LIST OF LANDS</h6>
+                <table class="table table-bordered table-condensed" datatable *ngIf="landData;"
+                    [dtOptions]="dtOptionsPopUp" width="100%">
+                    <thead>
+                        <tr>
+                            <th>S/N</th>
+                            <th>Land ID</th>
+                            <th>Land Name</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let mydata of landData; index as i">
+                            <td>{{ i + 1 }}</td>
+                            <td>{{ mydata.land_id }}</td>
+                            <td>{{ mydata.land_name }}</td>                                              
+                            <td>
+                                <button class="btn btn-sm btn-outline-primary" (click)="selectLand(mydata)">
+                                    Select</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div *ngIf="buildingData.length > 0;">
+                <h6 class="text-center">LIST OF BUILDINGS</h6>
+                <table class="table table-bordered table-condensed" datatable *ngIf="buildingData;"
+                    [dtOptions]="dtOptionsPopUp" width="100%">
+                    <thead>
+                        <tr>
+                            <th>S/N</th>
+                            <th>Building ID</th>
+                            <th>Building Name</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let mydata of buildingData; index as i">
+                            <td>{{ i + 1 }}</td>
+                            <td>{{ mydata.building_id }}</td>
+                            <td>{{ mydata.building_name }}</td>                                              
+                            <td>
+                                <button class="btn btn-sm btn-outline-primary" (click)="selectBuilding(mydata)">
+                                    Select</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button type="button" class="btn btn-outline-dark button-login" (click)="modal.close('Save click')">Ok</button>
+    </div>
+</ng-template>
+
+<ng-template #viewassetmodal let-modal>
+    <app-addbusiness *ngIf="businessAsset" [modalRef]="assessmentModalRef" [showHeader]="true"
+        [businessId]="selectedBusinessId" [individualId]="selectedIndividualId" [showSaveButton]="false">
+    </app-addbusiness>
+
+    <app-addland *ngIf="landAsset" [modalRef]="assessmentModalRef" [landId]="selectedLandId" [showHeader]="true"
+        [individualId]="selectedIndividualId" [showSaveButton]="false"></app-addland>
+
+    <app-addbuilding *ngIf="buildingAsset" [modalRef]="assessmentModalRef" [buildingId]="selectedBuildingId"
+        [showHeader]="true" [corporateId]="selectedCorporateId" [showSaveButton]="false"></app-addbuilding>
+
+    <div class="modal-footer">
+        <button type="button" class="btn btn-outline-dark button-login" (click)="modal.close('Save click')">Ok</button>
+    </div>
+</ng-template>
